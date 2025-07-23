@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prepare": "husky",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.5",
@@ -40,7 +42,9 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.5",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.1.4",
@@ -66,5 +70,12 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "npm run type-check",
+      "jest --bail --findRelatedTests --passWithNoTests"
+    ]
   }
 }
