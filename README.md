@@ -26,6 +26,62 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Prerequisites
+
+This project requires specific versions of Node.js and pnpm to ensure consistency across all development environments.
+
+### Required Versions
+
+- **Node.js**: 22.17.1 (LTS)
+- **pnpm**: 9.15.0 (managed by corepack)
+
+### Setup Instructions
+
+#### Option 1: Automated Setup (Recommended)
+
+Run the setup script that will handle everything for you:
+
+```bash
+./scripts/setup.sh
+```
+
+#### Option 2: Manual Setup
+
+1. **Install Node.js 22.17.1**
+
+   If you're using fnm (recommended):
+
+   ```bash
+   fnm install 22.17.1
+   fnm use 22.17.1
+   ```
+
+   If you're using nvm:
+
+   ```bash
+   nvm install 22.17.1
+   nvm use 22.17.1
+   ```
+
+2. **Enable corepack** (this manages pnpm version automatically):
+
+   ```bash
+   corepack enable
+   ```
+
+3. **Verify versions**:
+   ```bash
+   node --version  # Should output: v22.17.1
+   pnpm --version  # Should output: 9.15.0
+   ```
+
+The project includes:
+
+- `.nvmrc` file for Node.js version management
+- `.node-version` file for additional compatibility
+- `packageManager` field in `package.json` for corepack
+- `engines` field in `package.json` to enforce versions
+
 ## Project setup
 
 ```bash

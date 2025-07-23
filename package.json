@@ -5,6 +5,11 @@
   "author": "Thiago R. V. Martins",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": "22.17.1",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
