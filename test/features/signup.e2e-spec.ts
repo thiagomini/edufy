@@ -40,7 +40,29 @@ describe('Signup (e2e)', () => {
           ],
         });
     });
-    test.todo('returns an error when the password is too short');
-    test.todo('returns an error when email is already in use');
+    test('returns an error when email is already in use', async () => {
+      await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'john',
+          email: 'john@mail.com',
+          password: 'password123',
+        })
+        .expect(201);
+
+      return request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'john',
+          email: 'john@mail.com',
+          password: 'password123',
+        })
+        .expect(409)
+        .expect({
+          statusCode: 409,
+          error: 'Conflict',
+          message: 'Email already in use',
+        });
+    });
   });
 });
