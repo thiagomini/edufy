@@ -1,11 +1,12 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
-import * as request from 'supertest';
 import { configServer } from '../../src/server-config';
+import { createDSL, DSL } from '../dsl/dsl.factory';
 
 describe('Signup (e2e)', () => {
   let app: INestApplication;
+  let dsl: DSL;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -15,17 +16,17 @@ describe('Signup (e2e)', () => {
     app = moduleFixture.createNestApplication();
     configServer(app);
     await app.init();
+    dsl = createDSL(app);
   });
 
   describe('success cases', () => {
     test('successfully signs up a user with valid data', async () => {
       const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
 
-      const response = await request(app.getHttpServer())
-        .post('/users')
-        .send({
-          name: 'Jane',
-          email: 'jane@mail.com',
+      const response = await dsl.users
+        .createUser({
+          name: 'John Doe',
+          email: 'john.doe@mail.com',
           password: 'password123',
         })
         .expect(201);
@@ -37,9 +38,8 @@ describe('Signup (e2e)', () => {
   });
   describe('error cases', () => {
     test('returns an error when signup data is invalid', async () => {
-      return request(app.getHttpServer())
-        .post('/users')
-        .send({
+      return dsl.users
+        .createUser({
           name: '',
           email: 'invalid-email',
           password: 'short',
@@ -56,18 +56,16 @@ describe('Signup (e2e)', () => {
         });
     });
     test('returns an error when email is already in use', async () => {
-      await request(app.getHttpServer())
-        .post('/users')
-        .send({
+      await dsl.users
+        .createUser({
           name: 'john',
           email: 'john@mail.com',
           password: 'password123',
         })
         .expect(201);
 
-      return request(app.getHttpServer())
-        .post('/users')
-        .send({
+      return dsl.users
+        .createUser({
           name: 'john',
           email: 'john@mail.com',
           password: 'password123',
