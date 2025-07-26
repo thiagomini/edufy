@@ -1,5 +1,6 @@
 import { Body, ConflictException, Controller, Post } from '@nestjs/common';
 import { SignupUserDto } from './signup-user.dto';
+import { LoginDto } from './login.dto';
 
 @Controller('users')
 export class UserController {
@@ -16,4 +17,7 @@ export class UserController {
       jwtAccessToken: 'header.payload.signature',
     };
   }
+
+  @Post('/login')
+  async login(@Body() credentials: LoginDto) {}
 }
