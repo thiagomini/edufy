@@ -82,7 +82,7 @@ describe('Login (e2e)', () => {
           message: 'Invalid email or password',
         });
     });
-    test.skip('returns an error when password is incorrect', async () => {
+    test('returns an error when password is incorrect', async () => {
       await dsl.users
         .createUser({
           name: 'John Test',

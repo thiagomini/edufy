@@ -27,7 +27,8 @@ export class UserController {
   @Post('/login')
   async login(@Body() credentials: LoginDto) {
     const user = this.users.get(credentials.email);
-    if (!user) {
+    const passMatch = user?.password === credentials.password;
+    if (!user || !passMatch) {
       throw new UnauthorizedException('Invalid email or password');
     }
   }
