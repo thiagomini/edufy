@@ -40,5 +40,5 @@ Funcionalidade: Cadastro de Usuário
     Cenário: Cadastro falha com campos obrigatórios em branco
         Quando eu preencho o formulário de cadastro com:
             | Nome     | Email          | Senha     |
-            |          |               |           |
+            |          |                |           |
         Então eu devo ver uma mensagem de erro "Alguns campos são inválidos - preencha-os corretamente"
