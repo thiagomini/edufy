@@ -12,6 +12,8 @@ export class UserController {
       throw new ConflictException('Email already in use');
     }
     this.users.set(signupUserDto.email, signupUserDto);
-    return signupUserDto;
+    return {
+      jwtAccessToken: 'header.payload.signature',
+    };
   }
 }

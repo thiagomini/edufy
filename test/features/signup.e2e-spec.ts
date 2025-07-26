@@ -18,7 +18,22 @@ describe('Signup (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully signs up a user with valid data');
+    test('successfully signs up a user with valid data', async () => {
+      const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'Jane',
+          email: 'jane@mail.com',
+          password: 'password123',
+        })
+        .expect(201);
+
+      expect(response.body).toEqual({
+        jwtAccessToken: expect.stringMatching(jwtRegex),
+      });
+    });
   });
   describe('error cases', () => {
     test('returns an error when signup data is invalid', async () => {
