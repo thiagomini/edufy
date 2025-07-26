@@ -20,7 +20,7 @@ describe('Login (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.skip('successfully logs in a user with valid credentials', async () => {
+    test('successfully logs in a user with valid credentials', async () => {
       await dsl.users
         .createUser({
           name: 'John Doe',

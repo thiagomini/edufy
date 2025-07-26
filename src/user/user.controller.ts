@@ -2,6 +2,8 @@ import {
   Body,
   ConflictException,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -24,6 +26,7 @@ export class UserController {
     };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(@Body() credentials: LoginDto) {
     const user = this.users.get(credentials.email);
@@ -31,5 +34,8 @@ export class UserController {
     if (!user || !passMatch) {
       throw new UnauthorizedException('Invalid email or password');
     }
+    return {
+      jwtAccessToken: 'header.payload.signature',
+    };
   }
 }
