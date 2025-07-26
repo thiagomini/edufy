@@ -60,6 +60,28 @@ describe('Login (e2e)', () => {
           ],
         });
     });
+
+    test('returns an error when email is incorrect', async () => {
+      await dsl.users
+        .createUser({
+          name: 'John Test',
+          email: 'john-wrong-email-test@mail.com',
+          password: 'password123',
+        })
+        .expect(201);
+
+      return dsl.users
+        .login({
+          email: 'nonexistent-user@mail.com',
+          password: 'password123',
+        })
+        .expect(401)
+        .expect({
+          statusCode: 401,
+          error: 'Unauthorized',
+          message: 'Invalid email or password',
+        });
+    });
     test.skip('returns an error when password is incorrect', async () => {
       await dsl.users
         .createUser({
@@ -73,27 +95,6 @@ describe('Login (e2e)', () => {
         .login({
           email: 'john-wrong-pass-test@mail.com',
           password: 'wrong-password',
-        })
-        .expect(401)
-        .expect({
-          statusCode: 401,
-          error: 'Unauthorized',
-          message: 'Invalid email or password',
-        });
-    });
-    test.skip('returns an error when email is incorrect', async () => {
-      await dsl.users
-        .createUser({
-          name: 'John Test',
-          email: 'john-wrong-email-test@mail.com',
-          password: 'password123',
-        })
-        .expect(201);
-
-      return dsl.users
-        .login({
-          email: 'john-wrong-email-test@mail.com',
-          password: 'password123',
         })
         .expect(401)
         .expect({

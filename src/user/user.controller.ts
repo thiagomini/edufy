@@ -1,4 +1,10 @@
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignupUserDto } from './signup-user.dto';
 import { LoginDto } from './login.dto';
 
@@ -19,5 +25,10 @@ export class UserController {
   }
 
   @Post('/login')
-  async login(@Body() credentials: LoginDto) {}
+  async login(@Body() credentials: LoginDto) {
+    const user = this.users.get(credentials.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+  }
 }
