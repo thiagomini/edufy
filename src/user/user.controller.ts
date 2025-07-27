@@ -10,6 +10,7 @@ import {
 import { SignupUserDto } from './signup-user.dto';
 import { LoginDto } from './login.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as argon2 from 'argon2';
 
 @Controller('users')
 export class UserController {
@@ -23,7 +24,10 @@ export class UserController {
     if (userExists) {
       throw new ConflictException('Email already in use');
     }
-    this.users.set(signupUserDto.email, signupUserDto);
+    this.users.set(signupUserDto.email, {
+      ...signupUserDto,
+      password: await argon2.hash(signupUserDto.password),
+    });
     return {
       jwtAccessToken: this.signJwtToken(signupUserDto.email),
     };
@@ -33,8 +37,11 @@ export class UserController {
   @Post('/login')
   async login(@Body() credentials: LoginDto) {
     const user = this.users.get(credentials.email);
-    const passMatch = user?.password === credentials.password;
-    if (!user || !passMatch) {
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+    const passMatch = await argon2.verify(user.password, credentials.password);
+    if (!passMatch) {
       throw new UnauthorizedException('Invalid email or password');
     }
     return {
