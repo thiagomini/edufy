@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig, { JwtConfig } from '../configuration/jwt.config';
+import { UserRepository } from './user.repository';
+import { InMemoryUserRepository } from './in-memory.user.repository';
 
 @Module({
   imports: [
@@ -15,5 +17,11 @@ import jwtConfig, { JwtConfig } from '../configuration/jwt.config';
     }),
   ],
   controllers: [UserController],
+  providers: [
+    {
+      provide: UserRepository,
+      useClass: InMemoryUserRepository,
+    },
+  ],
 })
 export class UserModule {}
