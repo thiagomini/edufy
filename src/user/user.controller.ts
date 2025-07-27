@@ -9,9 +9,12 @@ import {
 } from '@nestjs/common';
 import { SignupUserDto } from './signup-user.dto';
 import { LoginDto } from './login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UserController {
+  constructor(private readonly jwtService: JwtService) {}
+
   private readonly users = new Map<string, SignupUserDto>();
 
   @Post('/')
@@ -22,7 +25,7 @@ export class UserController {
     }
     this.users.set(signupUserDto.email, signupUserDto);
     return {
-      jwtAccessToken: 'header.payload.signature',
+      jwtAccessToken: this.signJwtToken(signupUserDto.email),
     };
   }
 
@@ -35,7 +38,11 @@ export class UserController {
       throw new UnauthorizedException('Invalid email or password');
     }
     return {
-      jwtAccessToken: 'header.payload.signature',
+      jwtAccessToken: this.signJwtToken(user.email),
     };
+  }
+
+  private signJwtToken(email: string): string {
+    return this.jwtService.sign({ sub: email });
   }
 }
