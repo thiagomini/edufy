@@ -7,18 +7,17 @@ import {
   HttpStatus,
   Inject,
   Post,
-  Req,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { SignupUserDto } from './signup-user.dto';
-import { LoginDto } from './login.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
-import { IUserRepository, UserRepository } from './user.repository';
-import { UserEntity } from './user.entity';
-import { JwtGuard } from './jwt.guard';
 import { CurrentUser } from './current-user.decorator';
+import { JwtGuard } from './jwt.guard';
+import { LoginDto } from './login.dto';
+import { SignupUserDto } from './signup-user.dto';
+import { UserEntity } from './user.entity';
+import { IUserRepository, UserRepository } from './user.repository';
 
 @Controller('users')
 export class UserController {
