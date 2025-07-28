@@ -34,7 +34,7 @@ export class JwtGuard implements CanActivate {
       return true;
     } catch (e) {
       this.logger.error('JWT validation failed', e);
-      return false;
+      throw new UnauthorizedException('Invalid JWT token');
     }
   }
 

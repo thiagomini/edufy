@@ -52,5 +52,17 @@ describe('Me (e2e)', () => {
         error: 'Unauthorized',
       });
     });
+
+    test('returns an error when JWT is invalid', () => {
+      return dsl.users
+        .authenticatedAs('invalid.jwt.token')
+        .me()
+        .expect(401)
+        .expect({
+          statusCode: 401,
+          message: 'Invalid JWT token',
+          error: 'Unauthorized',
+        });
+    });
   });
 });
