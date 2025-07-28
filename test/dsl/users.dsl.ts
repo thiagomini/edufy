@@ -3,10 +3,14 @@ import { AbstractDSL } from './abstract.dsl';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
-    return this.req().post('/users').send(userData);
+    return this.req().post('/users').set(this.headers).send(userData);
   }
 
   login(credentials: { email: string; password: string }) {
-    return this.req().post('/users/login').send(credentials);
+    return this.req().post('/users/login').set(this.headers).send(credentials);
+  }
+
+  me() {
+    return this.req().get('/users/me').set(this.headers);
   }
 }

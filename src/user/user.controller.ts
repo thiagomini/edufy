@@ -2,11 +2,14 @@ import {
   Body,
   ConflictException,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
   Post,
+  Req,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { SignupUserDto } from './signup-user.dto';
 import { LoginDto } from './login.dto';
@@ -14,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { IUserRepository, UserRepository } from './user.repository';
 import { UserEntity } from './user.entity';
+import { JwtGuard } from './jwt.guard';
 
 @Controller('users')
 export class UserController {
@@ -40,7 +44,7 @@ export class UserController {
     await this.userRepository.save(newUser);
 
     return {
-      jwtAccessToken: this.signJwtToken(signupUserDto.email),
+      jwtAccessToken: this.signJwtToken(newUser),
     };
   }
 
@@ -56,11 +60,21 @@ export class UserController {
       throw new UnauthorizedException('Invalid email or password');
     }
     return {
-      jwtAccessToken: this.signJwtToken(user.email),
+      jwtAccessToken: this.signJwtToken(user),
     };
   }
 
-  private signJwtToken(email: string): string {
-    return this.jwtService.sign({ sub: email });
+  @UseGuards(JwtGuard)
+  @Get('/me')
+  async me(@Req() request: any) {
+    return {
+      id: request.user.id,
+      name: request.user.name,
+      email: request.user.email,
+    };
+  }
+
+  private signJwtToken(user: UserEntity): string {
+    return this.jwtService.sign({ sub: user.id });
   }
 }

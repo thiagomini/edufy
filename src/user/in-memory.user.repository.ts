@@ -10,6 +10,11 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.users.get(email) ?? null;
   }
 
+  async findOneById(id: string): Promise<UserEntity | null> {
+    const allUsers = Array.from(this.users.values());
+    return allUsers.find((user) => user.id === id) ?? null;
+  }
+
   async save(user: UserEntity): Promise<void> {
     this.users.set(user.email, user);
   }

@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import jwtConfig, { JwtConfig } from '../configuration/jwt.config';
 import { UserRepository } from './user.repository';
 import { InMemoryUserRepository } from './in-memory.user.repository';
+import { JwtGuard } from './jwt.guard';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { InMemoryUserRepository } from './in-memory.user.repository';
       provide: UserRepository,
       useClass: InMemoryUserRepository,
     },
+    JwtGuard,
   ],
 })
 export class UserModule {}
