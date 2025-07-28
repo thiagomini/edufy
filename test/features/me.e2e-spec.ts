@@ -20,7 +20,7 @@ describe('Me (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.only('returns user data when authenticated', async () => {
+    test('returns user data when authenticated', async () => {
       const jwtAccessToken = await dsl.users
         .createUser({
           name: 'Test User',
