@@ -18,6 +18,7 @@ import * as argon2 from 'argon2';
 import { IUserRepository, UserRepository } from './user.repository';
 import { UserEntity } from './user.entity';
 import { JwtGuard } from './jwt.guard';
+import { CurrentUser } from './current-user.decorator';
 
 @Controller('users')
 export class UserController {
@@ -66,11 +67,11 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get('/me')
-  async me(@Req() request: any) {
+  async me(@CurrentUser() user: UserEntity) {
     return {
-      id: request.user.id,
-      name: request.user.name,
-      email: request.user.email,
+      id: user.id,
+      name: user.name,
+      email: user.email,
     };
   }
 
