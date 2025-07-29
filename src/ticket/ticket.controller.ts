@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Inject,
   Param,
+  ParseUUIDPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -33,7 +35,17 @@ export class TicketController {
 
   @UseGuards(JwtGuard)
   @Post(':id/resolve')
-  async resolve(@Param('id') id: string) {
+  async resolve(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory() {
+          return new BadRequestException('Invalid ticket ID format');
+        },
+      }),
+    )
+    id: string,
+  ) {
     return {
       message: `Ticket with ID ${id} has been resolved.`,
     };

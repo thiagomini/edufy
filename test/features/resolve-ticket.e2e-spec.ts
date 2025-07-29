@@ -40,7 +40,17 @@ describe('Resolve Ticket (e2e)', () => {
         error: 'Unauthorized',
       });
     });
-    test.todo('returns an error when ticket ID is invalid');
+    test('returns an error when ticket ID is invalid', () => {
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve('invalid-ticket-id')
+        .expect(400)
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Invalid ticket ID format',
+        });
+    });
     test.todo('returns an error when ticket is not found');
     test.todo(
       'returns an error when trying to resolve a ticket that is not open',
