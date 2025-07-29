@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
-import { configServer } from '../../src/server-config';
-import { createDSL, DSL } from '../dsl/dsl.factory';
+import { AppModule } from '@src/app.module';
+import { configServer } from '@src/server-config';
+import { createDSL, DSL } from '@test/dsl/dsl.factory';
 
 describe('Signup (e2e)', () => {
   let app: INestApplication;

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '../user/user.module';
+import { UserModule } from '@src/user/user.module';
 import { TicketController } from './ticket.controller';
-import { ConfiguredJwtModule } from '../jwt/jwt.module';
+import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
 import { TicketRepository } from './ticket.repository';
 import { InMemoryTicketRepository } from './in-memory.ticket.repository';
 

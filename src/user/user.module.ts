@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfiguredJwtModule } from '../jwt/jwt.module';
+import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
 import { InMemoryUserRepository } from './in-memory.user.repository';
 import { JwtGuard } from './jwt.guard';
 import { UserController } from './user.controller';
