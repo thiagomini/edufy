@@ -1,22 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { JwtModule } from '@nestjs/jwt';
-import jwtConfig, { JwtConfig } from '../configuration/jwt.config';
-import { UserRepository } from './user.repository';
+import { ConfiguredJwtModule } from '../jwt/jwt.module';
 import { InMemoryUserRepository } from './in-memory.user.repository';
 import { JwtGuard } from './jwt.guard';
+import { UserController } from './user.controller';
+import { UserRepository } from './user.repository';
 
 @Module({
-  imports: [
-    JwtModule.registerAsync({
-      useFactory: (config: JwtConfig) => ({
-        global: true,
-        secret: config.secret,
-        signOptions: { expiresIn: config.expiration },
-      }),
-      inject: [jwtConfig.KEY],
-    }),
-  ],
+  imports: [ConfiguredJwtModule],
   controllers: [UserController],
   providers: [
     {
@@ -25,5 +15,6 @@ import { JwtGuard } from './jwt.guard';
     },
     JwtGuard,
   ],
+  exports: [UserRepository],
 })
 export class UserModule {}
