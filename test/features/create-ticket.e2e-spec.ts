@@ -36,6 +36,31 @@ describe('Submit Ticket (e2e)', () => {
           error: 'Unauthorized',
         });
     });
-    test.todo('returns an error when ticket data is invalid');
+    test('returns an error when ticket data is invalid', async () => {
+      const jwtAccessToken = await dsl.users
+        .createUser({
+          name: 'Test User',
+          email: 'jwt-test@mail.com',
+          password: 'password123',
+        })
+        .expect(201)
+        .then((response) => response.body.jwtAccessToken);
+
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: '',
+          description: '',
+        })
+        .expect(400)
+        .expect({
+          statusCode: 400,
+          message: [
+            'title should not be empty',
+            'description should not be empty',
+          ],
+          error: 'Bad Request',
+        });
+    });
   });
 });
