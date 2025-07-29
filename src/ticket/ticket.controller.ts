@@ -1,4 +1,11 @@
-import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtGuard } from '@src/user/presentation/jwt.guard';
 import { CreateTicketDto } from './create-ticket.dto';
 import { TicketEntity } from './ticket.entity';
@@ -21,6 +28,14 @@ export class TicketController {
       title: newTicket.title,
       description: newTicket.description,
       status: newTicket.status,
+    };
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':id/resolve')
+  async resolve(@Param('id') id: string) {
+    return {
+      message: `Ticket with ID ${id} has been resolved.`,
     };
   }
 }

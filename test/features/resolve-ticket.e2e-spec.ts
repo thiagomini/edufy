@@ -33,7 +33,13 @@ describe('Resolve Ticket (e2e)', () => {
   });
 
   describe('error cases', () => {
-    test.todo('returns an error when request is not authenticated');
+    test('returns an error when request is not authenticated', () => {
+      return dsl.tickets.resolve('ticket-id').expect(401).expect({
+        statusCode: 401,
+        message: 'Authorization header is missing or malformed',
+        error: 'Unauthorized',
+      });
+    });
     test.todo('returns an error when ticket ID is invalid');
     test.todo('returns an error when ticket is not found');
     test.todo(
