@@ -7,6 +7,7 @@ import { DSL, createDSL } from '../dsl/dsl.factory';
 describe('Submit Ticket (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
+  let jwtAccessToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,10 +18,34 @@ describe('Submit Ticket (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
+    jwtAccessToken = await dsl.users
+      .createUser({
+        name: 'Test User',
+        email: 'jwt-test@mail.com',
+        password: 'password123',
+      })
+      .expect(201)
+      .then((response) => response.body.jwtAccessToken);
   });
 
   describe('success cases', () => {
-    test.todo('successfully submits a ticket with valid data');
+    test('successfully submits a ticket with valid data', async () => {
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toEqual({
+            id: expect.any(String),
+            title: 'Test Ticket',
+            description: 'This is a test ticket',
+            status: 'open',
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', async () => {
@@ -37,15 +62,6 @@ describe('Submit Ticket (e2e)', () => {
         });
     });
     test('returns an error when ticket data is invalid', async () => {
-      const jwtAccessToken = await dsl.users
-        .createUser({
-          name: 'Test User',
-          email: 'jwt-test@mail.com',
-          password: 'password123',
-        })
-        .expect(201)
-        .then((response) => response.body.jwtAccessToken);
-
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .create({
