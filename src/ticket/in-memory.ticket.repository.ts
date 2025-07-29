@@ -8,4 +8,8 @@ export class InMemoryTicketRepository implements ITicketRepository {
     this.tickets.set(ticket.id, ticket);
     return Promise.resolve();
   }
+
+  async findOneById(id: string): Promise<TicketEntity | null> {
+    return this.tickets.get(id) || null;
+  }
 }

@@ -47,6 +47,22 @@ export class TicketController {
     )
     id: string,
   ) {
-    throw new NotFoundException(`Ticket with ID ${id} not found`);
+    const ticket = await this.ticketRepository.findOneById(id);
+    if (!ticket) {
+      throw new NotFoundException(`Ticket with ID ${id} not found`);
+    }
+    if (ticket.status !== 'open') {
+      throw new BadRequestException(
+        `Ticket with ID ${id} is not open and cannot be resolved`,
+      );
+    }
+    ticket.status = 'closed'; // Assuming the status can be changed directly
+    await this.ticketRepository.save(ticket);
+    return {
+      id: ticket.id,
+      title: ticket.title,
+      description: ticket.description,
+      status: ticket.status,
+    };
   }
 }

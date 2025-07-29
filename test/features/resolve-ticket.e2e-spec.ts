@@ -30,7 +30,26 @@ describe('Resolve Ticket (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully resolves a ticket');
+    test('successfully resolves a ticket', async () => {
+      const ticket = await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .then((response) => response.body);
+
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve(ticket.id)
+        .expect(201)
+        .expect({
+          id: ticket.id,
+          title: ticket.title,
+          description: ticket.description,
+          status: 'closed',
+        });
+    });
   });
 
   describe('error cases', () => {
@@ -64,8 +83,29 @@ describe('Resolve Ticket (e2e)', () => {
           message: `Ticket with ID ${randomTicketId} not found`,
         });
     });
-    test.todo(
-      'returns an error when trying to resolve a ticket that is not open',
-    );
+    test('returns an error when trying to resolve a ticket that is not open', async () => {
+      const ticket = await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .then((response) => response.body);
+
+      // Resolving the ticket to change its status
+      await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve(ticket.id)
+        .expect(201);
+
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve(ticket.id)
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: `Ticket with ID ${ticket.id} is not open and cannot be resolved`,
+        });
+    });
   });
 });
