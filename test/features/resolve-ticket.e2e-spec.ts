@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { randomUUID } from 'crypto';
 
 describe('Resolve Ticket (e2e)', () => {
   let app: INestApplication;
@@ -51,7 +52,18 @@ describe('Resolve Ticket (e2e)', () => {
           message: 'Invalid ticket ID format',
         });
     });
-    test.todo('returns an error when ticket is not found');
+    test('returns an error when ticket is not found', async () => {
+      const randomTicketId = randomUUID();
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve(randomTicketId)
+        .expect(404)
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: `Ticket with ID ${randomTicketId} not found`,
+        });
+    });
     test.todo(
       'returns an error when trying to resolve a ticket that is not open',
     );

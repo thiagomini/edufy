@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Inject,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -46,8 +47,6 @@ export class TicketController {
     )
     id: string,
   ) {
-    return {
-      message: `Ticket with ID ${id} has been resolved.`,
-    };
+    throw new NotFoundException(`Ticket with ID ${id} not found`);
   }
 }
