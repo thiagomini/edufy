@@ -16,8 +16,8 @@ import { CurrentUser } from './current-user.decorator';
 import { JwtGuard } from './jwt.guard';
 import { LoginDto } from './login.dto';
 import { SignupUserDto } from './signup-user.dto';
-import { UserEntity } from './user.entity';
-import { IUserRepository, UserRepository } from './user.repository';
+import { UserEntity } from '../domain/user.entity';
+import { IUserRepository, UserRepository } from '../domain/user.repository';
 
 @Controller('users')
 export class UserController {

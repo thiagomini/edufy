@@ -1,5 +1,5 @@
 import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
-import { JwtGuard } from '@src/user/jwt.guard';
+import { JwtGuard } from '@src/user/presentation/jwt.guard';
 import { CreateTicketDto } from './create-ticket.dto';
 import { TicketEntity } from './ticket.entity';
 import { ITicketRepository, TicketRepository } from './ticket.repository';

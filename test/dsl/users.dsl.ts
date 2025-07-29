@@ -1,4 +1,4 @@
-import { SignupUserDto } from 'src/user/signup-user.dto';
+import { SignupUserDto } from '@src/user/presentation/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
 
 export class UsersDSL extends AbstractDSL {
