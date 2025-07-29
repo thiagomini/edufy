@@ -1,0 +1,11 @@
+import { TicketEntity } from './ticket.entity';
+import { ITicketRepository } from './ticket.repository';
+
+export class InMemoryTicketRepository implements ITicketRepository {
+  private readonly tickets: Map<string, TicketEntity> = new Map();
+
+  save(ticket: TicketEntity): Promise<void> {
+    this.tickets.set(ticket.id, ticket);
+    return Promise.resolve();
+  }
+}
