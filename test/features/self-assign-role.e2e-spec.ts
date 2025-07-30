@@ -44,7 +44,20 @@ describe('Self-Assign Role (e2e)', () => {
           expect(response.body.role).toBe('student');
         });
     });
-    test.todo('successfully assigns an instructor role');
+    test('successfully assigns an instructor role', async () => {
+      await dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .selfAssignRole('instructor')
+        .expect(204);
+
+      return dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .me()
+        .expect(200)
+        .then((response) => {
+          expect(response.body.role).toBe('instructor');
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', async () => {
