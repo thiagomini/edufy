@@ -5,6 +5,7 @@ import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
 import { UserRepository } from './domain/user.repository';
 import { APP_GUARD } from '@nestjs/core';
+import { UserService } from './application/user.service';
 
 @Module({
   imports: [ConfiguredJwtModule],
@@ -18,7 +19,8 @@ import { APP_GUARD } from '@nestjs/core';
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
+    UserService,
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, UserService],
 })
 export class UserModule {}

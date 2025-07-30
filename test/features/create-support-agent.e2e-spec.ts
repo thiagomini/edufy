@@ -24,7 +24,7 @@ describe('Create support agent (e2e)', () => {
 
   describe('success cases', () => {
     test('successfully creates a support agent', async () => {
-      return dsl.admin
+      const supportAgentData = await dsl.admin
         .usingAdminKey(adminKey)
         .createSupportAgent({
           email: 'test@mail.com',
@@ -32,11 +32,34 @@ describe('Create support agent (e2e)', () => {
           password: 'password123',
         })
         .expect(201)
+        .then((response) => response.body);
+
+      expect(supportAgentData).toEqual({
+        id: expect.any(String),
+        email: 'test@mail.com',
+        name: 'Test Agent',
+      });
+
+      // Verify the agent can log in
+      const token = await dsl.users
+        .login({
+          email: 'test@mail.com',
+          password: 'password123',
+        })
+        .expect(200)
+        .then((response) => response.body.jwtAccessToken);
+
+      // Verify the agent role
+      return dsl.users
+        .authenticatedAs(token)
+        .me()
+        .expect(200)
         .then((response) => {
           expect(response.body).toEqual({
-            id: expect.any(String),
-            email: 'test@mail.com',
-            name: 'Test Agent',
+            id: supportAgentData.id,
+            email: supportAgentData.email,
+            name: supportAgentData.name,
+            role: 'support_agent',
           });
         });
     });

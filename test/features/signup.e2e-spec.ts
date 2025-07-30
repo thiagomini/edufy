@@ -45,6 +45,7 @@ describe('Signup (e2e)', () => {
             id: expect.any(String),
             name: signupUserData.name,
             email: signupUserData.email,
+            role: null,
           });
         });
     });

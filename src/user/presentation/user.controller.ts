@@ -1,6 +1,5 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -11,12 +10,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
+import { UserService } from '../application/user.service';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
 import { CurrentUser } from './current-user.decorator';
 import { LoginDto } from './login.dto';
-import { SignupUserDto } from './signup-user.dto';
 import { Public } from './public.decorator';
+import { SignupUserDto } from './signup-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -24,24 +24,17 @@ export class UserController {
     private readonly jwtService: JwtService,
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
+    private readonly userService: UserService,
   ) {}
 
   @Public()
   @Post('/')
   async createUser(@Body() signupUserDto: SignupUserDto) {
-    const userExists = await this.userRepository.findOneByEmail(
-      signupUserDto.email,
-    );
-    if (userExists) {
-      throw new ConflictException('Email already in use');
-    }
-    const newUser = new UserEntity(
-      signupUserDto.name,
-      signupUserDto.email,
-      await argon2.hash(signupUserDto.password),
-    );
-
-    await this.userRepository.save(newUser);
+    const newUser = await this.userService.createUser({
+      name: signupUserDto.name,
+      email: signupUserDto.email,
+      password: signupUserDto.password,
+    });
 
     return {
       jwtAccessToken: this.signJwtToken(newUser),
@@ -71,6 +64,7 @@ export class UserController {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     };
   }
 

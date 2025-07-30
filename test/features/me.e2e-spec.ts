@@ -40,6 +40,7 @@ describe('Me (e2e)', () => {
             id: expect.any(String),
             name: 'Test User',
             email: 'testuser@example.com',
+            role: null, // Role is unset for new users. They decide their role later (student or instructor)
           });
         });
     });
