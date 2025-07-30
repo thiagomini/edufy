@@ -7,9 +7,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from '@src/user/presentation/jwt.guard';
 import { CreateTicketDto } from './create-ticket.dto';
 import { TicketEntity } from './ticket.entity';
 import { ITicketRepository, TicketRepository } from './ticket.repository';
@@ -21,7 +19,6 @@ export class TicketController {
     private readonly ticketRepository: ITicketRepository,
   ) {}
 
-  @UseGuards(JwtGuard)
   @Post('/')
   async create(@Body() ticket: CreateTicketDto) {
     const newTicket = new TicketEntity(ticket.title, ticket.description);
@@ -34,7 +31,6 @@ export class TicketController {
     };
   }
 
-  @UseGuards(JwtGuard)
   @Post(':id/resolve')
   async resolve(
     @Param(

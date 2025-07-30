@@ -10,6 +10,8 @@ import { JwtService } from '@nestjs/jwt';
 import { IncomingMessage } from 'http';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
 import { UserEntity } from '../domain/user.entity';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from './public.decorator';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -18,9 +20,18 @@ export class JwtGuard implements CanActivate {
     private readonly jwtService: JwtService,
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
+    private reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
     const request = this.getRequest(context);
     const token = this.getToken(request);
 

@@ -8,16 +8,15 @@ import {
   Inject,
   Post,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
-import { CurrentUser } from './current-user.decorator';
-import { JwtGuard } from './jwt.guard';
-import { LoginDto } from './login.dto';
-import { SignupUserDto } from './signup-user.dto';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
+import { CurrentUser } from './current-user.decorator';
+import { LoginDto } from './login.dto';
+import { SignupUserDto } from './signup-user.dto';
+import { Public } from './public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +26,7 @@ export class UserController {
     private readonly userRepository: IUserRepository,
   ) {}
 
+  @Public()
   @Post('/')
   async createUser(@Body() signupUserDto: SignupUserDto) {
     const userExists = await this.userRepository.findOneByEmail(
@@ -48,6 +48,7 @@ export class UserController {
     };
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(@Body() credentials: LoginDto) {
@@ -64,7 +65,6 @@ export class UserController {
     };
   }
 
-  @UseGuards(JwtGuard)
   @Get('/me')
   async me(@CurrentUser() user: UserEntity) {
     return {

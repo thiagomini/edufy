@@ -4,6 +4,7 @@ import { InMemoryUserRepository } from './data/in-memory.user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
 import { UserRepository } from './domain/user.repository';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [ConfiguredJwtModule],
@@ -13,7 +14,10 @@ import { UserRepository } from './domain/user.repository';
       provide: UserRepository,
       useClass: InMemoryUserRepository,
     },
-    JwtGuard,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
   ],
   exports: [UserRepository],
 })
