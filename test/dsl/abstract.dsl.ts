@@ -16,4 +16,11 @@ export abstract class AbstractDSL {
       authorization: `Bearer ${jwt}`,
     });
   }
+
+  public usingAdminKey(adminKey: string): this {
+    return new (this.constructor as new (...args: any[]) => this)(this.app, {
+      ...this.headers,
+      'x-admin-key': adminKey,
+    });
+  }
 }

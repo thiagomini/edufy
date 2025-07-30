@@ -37,7 +37,22 @@ describe('Create support agent (e2e)', () => {
           error: 'Unauthorized',
         });
     });
-    test.todo('returns an error when request admin key is invalid');
+    test('returns an error when request admin key is invalid', async () => {
+      const wrongAdminKey = 'wrong-admin-key';
+      return dsl.admin
+        .usingAdminKey(wrongAdminKey)
+        .createSupportAgent({
+          email: 'test@mail.com',
+          name: 'Test Agent',
+          password: 'password123',
+        })
+        .expect(401)
+        .expect({
+          statusCode: 401,
+          message: 'Invalid admin key',
+          error: 'Unauthorized',
+        });
+    });
     test.todo('returns an error when request input data is invalid');
   });
 });
