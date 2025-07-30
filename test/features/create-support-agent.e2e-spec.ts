@@ -22,7 +22,23 @@ describe('Create support agent (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully creates a support agent');
+    test('successfully creates a support agent', async () => {
+      return dsl.admin
+        .usingAdminKey(adminKey)
+        .createSupportAgent({
+          email: 'test@mail.com',
+          name: 'Test Agent',
+          password: 'password123',
+        })
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toEqual({
+            id: expect.any(String),
+            email: 'test@mail.com',
+            name: 'Test Agent',
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', async () => {
