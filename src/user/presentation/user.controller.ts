@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -76,6 +77,11 @@ export class UserController {
     @Body()
     selfAssignRoleDto: SelfAssignRoleDto,
   ) {
+    if (user.role) {
+      throw new ConflictException(
+        `User already has a "${user.role}" role assigned`,
+      );
+    }
     user.role = selfAssignRoleDto.role;
     await this.userRepository.save(user);
   }

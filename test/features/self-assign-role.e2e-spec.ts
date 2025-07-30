@@ -8,7 +8,6 @@ import { response, validationErrors } from '@test/utils/response';
 describe('Self-Assign Role (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let jwtAccessToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,18 +18,11 @@ describe('Self-Assign Role (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users
-      .createUser({
-        name: 'Test User',
-        email: 'self-assign-test@mail.com',
-        password: 'password123',
-      })
-      .expect(201)
-      .then((response) => response.body.jwtAccessToken);
   });
 
   describe('success cases', () => {
     test('successfully assigns a student role', async () => {
+      const jwtAccessToken = await dsl.users.createRandomUser();
       await dsl.users
         .authenticatedAs(jwtAccessToken)
         .selfAssignRole('student')
@@ -45,6 +37,7 @@ describe('Self-Assign Role (e2e)', () => {
         });
     });
     test('successfully assigns an instructor role', async () => {
+      const jwtAccessToken = await dsl.users.createRandomUser();
       await dsl.users
         .authenticatedAs(jwtAccessToken)
         .selfAssignRole('instructor')
@@ -67,6 +60,7 @@ describe('Self-Assign Role (e2e)', () => {
         .expect(response.unauthorized());
     });
     test('returns an error when input is invalid', async () => {
+      const jwtAccessToken = await dsl.users.createRandomUser();
       return dsl.users
         .authenticatedAs(jwtAccessToken)
         .selfAssignRole('invalid-role')
@@ -77,6 +71,20 @@ describe('Self-Assign Role (e2e)', () => {
           ]),
         );
     });
-    test.todo('returns an error when user already has a role');
+    test('returns an error when user already has a role', async () => {
+      const jwtAccessToken = await dsl.users.createRandomUser();
+      await dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .selfAssignRole('student')
+        .expect(204);
+
+      return dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .selfAssignRole('instructor')
+        .expect(409)
+        .expect(
+          response.conflict('User already has a "student" role assigned'),
+        );
+    });
   });
 });
