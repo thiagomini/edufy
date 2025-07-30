@@ -36,4 +36,6 @@ export const validationErrors = {
   isEmail: (field: string) => `${field} must be an email` as const,
   minLength: (field: string, length: number) =>
     `${field} must be longer than or equal to ${length} characters` as const,
+  oneOfValues: (field: string, values: string[]) =>
+    `${field} must be one of the following values: ${values.join(', ')}` as const,
 };

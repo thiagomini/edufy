@@ -16,6 +16,7 @@ import { IUserRepository, UserRepository } from '../domain/user.repository';
 import { CurrentUser } from './current-user.decorator';
 import { LoginDto } from './login.dto';
 import { Public } from './public.decorator';
+import { SelfAssignRoleDto } from './self-assign-role.dto';
 import { SignupUserDto } from './signup-user.dto';
 
 @Controller('users')
@@ -71,7 +72,8 @@ export class UserController {
   @Post('/self-assign-role')
   async selfAssignRole(
     @CurrentUser() user: UserEntity,
-    @Body('role') role: 'student' | 'instructor',
+    @Body()
+    selfAssignRoleDto: SelfAssignRoleDto,
   ) {
     return;
   }

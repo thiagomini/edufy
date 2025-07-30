@@ -14,7 +14,7 @@ export class UsersDSL extends AbstractDSL {
     return this.req().get('/users/me').set(this.headers);
   }
 
-  selfAssignRole(role: 'student' | 'instructor') {
+  selfAssignRole(role: string) {
     return this.req()
       .post('/users/self-assign-role')
       .set(this.headers)
