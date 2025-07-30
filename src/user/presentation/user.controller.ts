@@ -69,13 +69,15 @@ export class UserController {
     };
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post('/self-assign-role')
   async selfAssignRole(
     @CurrentUser() user: UserEntity,
     @Body()
     selfAssignRoleDto: SelfAssignRoleDto,
   ) {
-    return;
+    user.role = selfAssignRoleDto.role;
+    await this.userRepository.save(user);
   }
 
   private signJwtToken(user: UserEntity): string {

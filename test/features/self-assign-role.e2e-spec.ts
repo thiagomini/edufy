@@ -30,7 +30,20 @@ describe('Self-Assign Role (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully assigns a student role');
+    test('successfully assigns a student role', async () => {
+      await dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .selfAssignRole('student')
+        .expect(204);
+
+      return dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .me()
+        .expect(200)
+        .then((response) => {
+          expect(response.body.role).toBe('student');
+        });
+    });
     test.todo('successfully assigns an instructor role');
   });
   describe('error cases', () => {
