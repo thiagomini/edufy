@@ -1,7 +1,9 @@
+import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { configServer } from '@src/server-config';
+import { SignupUserDto } from '@src/user/presentation/signup-user.dto';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
 
 describe('Signup (e2e)', () => {
@@ -22,18 +24,28 @@ describe('Signup (e2e)', () => {
   describe('success cases', () => {
     test('successfully signs up a user with valid data', async () => {
       const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
+      const signupUserData = buildSignupUserData({
+        name: 'John Doe',
+        email: 'john@doe.com',
+        password: 'password123',
+      });
 
-      const response = await dsl.users
-        .createUser({
-          name: 'John Doe',
-          email: 'john.doe@mail.com',
-          password: 'password123',
-        })
-        .expect(201);
+      const response = await dsl.users.createUser(signupUserData).expect(201);
 
       expect(response.body).toEqual({
         jwtAccessToken: expect.stringMatching(jwtRegex),
       });
+      return dsl.users
+        .authenticatedAs(response.body.jwtAccessToken)
+        .me()
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual({
+            id: expect.any(String),
+            name: signupUserData.name,
+            email: signupUserData.email,
+          });
+        });
     });
   });
   describe('error cases', () => {
@@ -56,20 +68,17 @@ describe('Signup (e2e)', () => {
         });
     });
     test('returns an error when email is already in use', async () => {
-      await dsl.users
-        .createUser({
-          name: 'john',
-          email: 'john@mail.com',
-          password: 'password123',
-        })
-        .expect(201);
+      const email = 'existing@mail.com';
+      const signupData = buildSignupUserData({ email });
+      await dsl.users.createUser(signupData).expect(201);
 
       return dsl.users
-        .createUser({
-          name: 'john',
-          email: 'john@mail.com',
-          password: 'password123',
-        })
+        .createUser(
+          buildSignupUserData({
+            email,
+            name: 'Another User',
+          }),
+        )
         .expect(409)
         .expect({
           statusCode: 409,
@@ -79,3 +88,16 @@ describe('Signup (e2e)', () => {
     });
   });
 });
+
+function buildSignupUserData(
+  overrides: Partial<SignupUserDto> = {},
+): SignupUserDto {
+  return {
+    name: faker.person.fullName(),
+    email: faker.internet.email({
+      allowSpecialCharacters: true,
+    }),
+    password: faker.internet.password({ length: 8 }),
+    ...overrides,
+  };
+}
