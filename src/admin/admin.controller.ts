@@ -1,9 +1,9 @@
-import { Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
+import { AdminGuard } from './admin.guard';
 
+@UseGuards(AdminGuard)
 @Controller('admin')
 export class AdminController {
   @Post('support-agents')
-  async createSupportAgent() {
-    throw new UnauthorizedException('Admin key is missing or malformed');
-  }
+  async createSupportAgent() {}
 }
