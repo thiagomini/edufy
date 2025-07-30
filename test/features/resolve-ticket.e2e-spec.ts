@@ -107,5 +107,8 @@ describe('Resolve Ticket (e2e)', () => {
           message: `Ticket with ID ${ticket.id} is not open and cannot be resolved`,
         });
     });
+    test.todo(
+      'returns an error when the user does not have permission to resolve the ticket',
+    );
   });
 });
