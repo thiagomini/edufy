@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
+import { response } from '@test/utils/response';
 
 describe('Me (e2e)', () => {
   let app: INestApplication;
@@ -46,11 +47,12 @@ describe('Me (e2e)', () => {
 
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.users.me().expect(401).expect({
-        statusCode: 401,
-        message: 'Authorization header is missing or malformed',
-        error: 'Unauthorized',
-      });
+      return dsl.users
+        .me()
+        .expect(401)
+        .expect(
+          response.unauthorized('Authorization header is missing or malformed'),
+        );
     });
 
     test('returns an error when JWT is invalid', () => {
@@ -58,11 +60,7 @@ describe('Me (e2e)', () => {
         .authenticatedAs('invalid.jwt.token')
         .me()
         .expect(401)
-        .expect({
-          statusCode: 401,
-          message: 'Invalid JWT token',
-          error: 'Unauthorized',
-        });
+        .expect(response.unauthorized('Invalid JWT token'));
     });
   });
 });

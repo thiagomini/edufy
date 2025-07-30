@@ -5,6 +5,7 @@ import { AppModule } from '@src/app.module';
 import { configServer } from '@src/server-config';
 import { SignupUserDto } from '@src/user/presentation/signup-user.dto';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Signup (e2e)', () => {
   let app: INestApplication;
@@ -57,15 +58,13 @@ describe('Signup (e2e)', () => {
           password: 'short',
         })
         .expect(400)
-        .expect({
-          statusCode: 400,
-          error: 'Bad Request',
-          message: [
-            'name should not be empty',
-            'email must be an email',
-            'password must be longer than or equal to 8 characters',
-          ],
-        });
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('name'),
+            validationErrors.isEmail('email'),
+            validationErrors.minLength('password', 8),
+          ]),
+        );
     });
     test('returns an error when email is already in use', async () => {
       const email = 'existing@mail.com';
@@ -80,11 +79,7 @@ describe('Signup (e2e)', () => {
           }),
         )
         .expect(409)
-        .expect({
-          statusCode: 409,
-          error: 'Conflict',
-          message: 'Email already in use',
-        });
+        .expect(response.conflict('Email already in use'));
     });
   });
 });

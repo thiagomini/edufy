@@ -3,6 +3,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { configServer } from '@src/server-config';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Create support agent (e2e)', () => {
   let app: INestApplication;
@@ -49,11 +50,7 @@ describe('Create support agent (e2e)', () => {
           password: 'password123',
         })
         .expect(401)
-        .expect({
-          statusCode: 401,
-          message: 'Admin key is missing or malformed',
-          error: 'Unauthorized',
-        });
+        .expect(response.unauthorized('Admin key is missing or malformed'));
     });
     test('returns an error when request admin key is invalid', async () => {
       const wrongAdminKey = 'wrong-admin-key';
@@ -65,11 +62,7 @@ describe('Create support agent (e2e)', () => {
           password: 'password123',
         })
         .expect(401)
-        .expect({
-          statusCode: 401,
-          message: 'Invalid admin key',
-          error: 'Unauthorized',
-        });
+        .expect(response.unauthorized('Invalid admin key'));
     });
     test('returns an error when request input data is invalid', async () => {
       return dsl.admin
@@ -80,15 +73,13 @@ describe('Create support agent (e2e)', () => {
           password: 'short',
         })
         .expect(400)
-        .expect({
-          statusCode: 400,
-          message: [
-            'name should not be empty',
-            'email must be an email',
-            'password must be longer than or equal to 8 characters',
-          ],
-          error: 'Bad Request',
-        });
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('name'),
+            validationErrors.isEmail('email'),
+            validationErrors.minLength('password', 8),
+          ]),
+        );
     });
   });
 });

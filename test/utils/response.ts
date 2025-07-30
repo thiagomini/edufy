@@ -1,0 +1,37 @@
+export const response = {
+  badRequest(message: string) {
+    return {
+      statusCode: 400,
+      error: 'Bad Request',
+      message,
+    } as const;
+  },
+  unauthorized(message: string) {
+    return {
+      statusCode: 401,
+      error: 'Unauthorized',
+      message,
+    } as const;
+  },
+  conflict(message: string) {
+    return {
+      statusCode: 409,
+      error: 'Conflict',
+      message,
+    } as const;
+  },
+  validationFailed(errors: string[]) {
+    return {
+      statusCode: 400,
+      error: 'Bad Request',
+      message: errors,
+    } as const;
+  },
+};
+
+export const validationErrors = {
+  isNotEmpty: (field: string) => `${field} should not be empty` as const,
+  isEmail: (field: string) => `${field} must be an email` as const,
+  minLength: (field: string, length: number) =>
+    `${field} must be longer than or equal to ${length} characters` as const,
+};

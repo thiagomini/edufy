@@ -3,6 +3,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Login (e2e)', () => {
   let app: INestApplication;
@@ -51,14 +52,12 @@ describe('Login (e2e)', () => {
           password: 'short',
         })
         .expect(400)
-        .expect({
-          statusCode: 400,
-          error: 'Bad Request',
-          message: [
-            'email must be an email',
-            'password must be longer than or equal to 8 characters',
-          ],
-        });
+        .expect(
+          response.validationFailed([
+            validationErrors.isEmail('email'),
+            validationErrors.minLength('password', 8),
+          ]),
+        );
     });
 
     test('returns an error when email is incorrect', async () => {
@@ -76,11 +75,7 @@ describe('Login (e2e)', () => {
           password: 'password123',
         })
         .expect(401)
-        .expect({
-          statusCode: 401,
-          error: 'Unauthorized',
-          message: 'Invalid email or password',
-        });
+        .expect(response.unauthorized('Invalid email or password'));
     });
     test('returns an error when password is incorrect', async () => {
       await dsl.users
@@ -97,11 +92,7 @@ describe('Login (e2e)', () => {
           password: 'wrong-password',
         })
         .expect(401)
-        .expect({
-          statusCode: 401,
-          error: 'Unauthorized',
-          message: 'Invalid email or password',
-        });
+        .expect(response.unauthorized('Invalid email or password'));
     });
   });
 });

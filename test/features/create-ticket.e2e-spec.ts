@@ -3,6 +3,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Submit Ticket (e2e)', () => {
   let app: INestApplication;
@@ -55,11 +56,9 @@ describe('Submit Ticket (e2e)', () => {
           description: 'This is a test ticket',
         })
         .expect(401)
-        .expect({
-          statusCode: 401,
-          message: 'Authorization header is missing or malformed',
-          error: 'Unauthorized',
-        });
+        .expect(
+          response.unauthorized('Authorization header is missing or malformed'),
+        );
     });
     test('returns an error when ticket data is invalid', async () => {
       return dsl.tickets
@@ -69,14 +68,12 @@ describe('Submit Ticket (e2e)', () => {
           description: '',
         })
         .expect(400)
-        .expect({
-          statusCode: 400,
-          message: [
-            'title should not be empty',
-            'description should not be empty',
-          ],
-          error: 'Bad Request',
-        });
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('title'),
+            validationErrors.isNotEmpty('description'),
+          ]),
+        );
     });
   });
 });

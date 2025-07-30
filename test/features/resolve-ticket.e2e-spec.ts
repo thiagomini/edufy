@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { response } from '@test/utils/response';
 import { randomUUID } from 'crypto';
 
 describe('Resolve Ticket (e2e)', () => {
@@ -54,22 +55,19 @@ describe('Resolve Ticket (e2e)', () => {
 
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.tickets.resolve('ticket-id').expect(401).expect({
-        statusCode: 401,
-        message: 'Authorization header is missing or malformed',
-        error: 'Unauthorized',
-      });
+      return dsl.tickets
+        .resolve('ticket-id')
+        .expect(401)
+        .expect(
+          response.unauthorized('Authorization header is missing or malformed'),
+        );
     });
     test('returns an error when ticket ID is invalid', () => {
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .resolve('invalid-ticket-id')
         .expect(400)
-        .expect({
-          statusCode: 400,
-          error: 'Bad Request',
-          message: 'Invalid ticket ID format',
-        });
+        .expect(response.badRequest('Invalid ticket ID format'));
     });
     test('returns an error when ticket is not found', async () => {
       const randomTicketId = randomUUID();
@@ -101,11 +99,11 @@ describe('Resolve Ticket (e2e)', () => {
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .resolve(ticket.id)
-        .expect({
-          statusCode: 400,
-          error: 'Bad Request',
-          message: `Ticket with ID ${ticket.id} is not open and cannot be resolved`,
-        });
+        .expect(
+          response.badRequest(
+            `Ticket with ID ${ticket.id} is not open and cannot be resolved`,
+          ),
+        );
     });
     test.todo(
       'returns an error when the user does not have permission to resolve the ticket',
