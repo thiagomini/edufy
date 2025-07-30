@@ -68,6 +68,14 @@ export class UserController {
     };
   }
 
+  @Post('/self-assign-role')
+  async selfAssignRole(
+    @CurrentUser() user: UserEntity,
+    @Body('role') role: 'student' | 'instructor',
+  ) {
+    return;
+  }
+
   private signJwtToken(user: UserEntity): string {
     return this.jwtService.sign({ sub: user.id });
   }

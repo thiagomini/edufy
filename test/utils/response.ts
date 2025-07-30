@@ -6,7 +6,9 @@ export const response = {
       message,
     } as const;
   },
-  unauthorized(message: string) {
+  unauthorized(
+    message: string = 'Authorization header is missing or malformed',
+  ) {
     return {
       statusCode: 401,
       error: 'Unauthorized',
