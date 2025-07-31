@@ -11,6 +11,8 @@ import {
 import { CreateTicketDto } from './create-ticket.dto';
 import { TicketEntity } from './ticket.entity';
 import { ITicketRepository, TicketRepository } from './ticket.repository';
+import { CurrentUser } from '@src/user/presentation/current-user.decorator';
+import { UserEntity } from '@src/user/domain/user.entity';
 
 @Controller('tickets')
 export class TicketController {
@@ -20,14 +22,22 @@ export class TicketController {
   ) {}
 
   @Post('/')
-  async create(@Body() ticket: CreateTicketDto) {
-    const newTicket = new TicketEntity(ticket.title, ticket.description);
+  async create(
+    @Body() ticket: CreateTicketDto,
+    @CurrentUser() user: UserEntity,
+  ) {
+    const newTicket = new TicketEntity(
+      ticket.title,
+      ticket.description,
+      user.id,
+    );
     await this.ticketRepository.save(newTicket);
     return {
       id: newTicket.id,
       title: newTicket.title,
       description: newTicket.description,
       status: newTicket.status,
+      createdBy: newTicket.createdBy,
     };
   }
 

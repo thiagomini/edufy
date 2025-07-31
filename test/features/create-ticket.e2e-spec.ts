@@ -31,6 +31,11 @@ describe('Submit Ticket (e2e)', () => {
 
   describe('success cases', () => {
     test('successfully submits a ticket with valid data', async () => {
+      const userId = await dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .me()
+        .expect(200)
+        .then((response) => response.body.id);
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .create({
@@ -44,6 +49,7 @@ describe('Submit Ticket (e2e)', () => {
             title: 'Test Ticket',
             description: 'This is a test ticket',
             status: 'open',
+            createdBy: userId,
           });
         });
     });
