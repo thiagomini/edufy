@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { UserService } from '@src/user/application/user.service';
-import { Public } from '@src/user/presentation/public.decorator';
+import { UserService } from '@src/app/user/application/user.service';
+import { Public } from '@src/app/user/presentation/public.decorator';
 import { AdminGuard } from './admin.guard';
 import { CreateSupportAgentDto } from './create-support-agent.dto';
 

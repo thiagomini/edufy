@@ -11,8 +11,8 @@ import {
 import { CreateTicketDto } from './create-ticket.dto';
 import { TicketEntity } from './ticket.entity';
 import { ITicketRepository, TicketRepository } from './ticket.repository';
-import { CurrentUser } from '@src/user/presentation/current-user.decorator';
-import { UserEntity } from '@src/user/domain/user.entity';
+import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
+import { UserEntity } from '@src/app/user/domain/user.entity';
 
 @Controller('tickets')
 export class TicketController {
