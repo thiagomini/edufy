@@ -19,14 +19,11 @@ describe('Submit Ticket (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users
-      .createUser({
-        name: 'Test User',
-        email: 'jwt-test@mail.com',
-        password: 'password123',
-      })
-      .expect(201)
-      .then((response) => response.body.jwtAccessToken);
+    jwtAccessToken = await dsl.users.createRandomUser();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   describe('success cases', () => {

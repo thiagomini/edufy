@@ -20,6 +20,10 @@ describe('Login (e2e)', () => {
     dsl = createDSL(app);
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('success cases', () => {
     test('successfully logs in a user with valid credentials', async () => {
       await dsl.users

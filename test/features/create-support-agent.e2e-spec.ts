@@ -22,6 +22,10 @@ describe('Create support agent (e2e)', () => {
     adminKey = dsl.config.admin.key;
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('success cases', () => {
     test('successfully creates a support agent', async () => {
       const supportAgentData = await dsl.admin

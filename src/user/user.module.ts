@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
-import { InMemoryUserRepository } from './data/in-memory.user.repository';
+import { UserService } from './application/user.service';
+import { KyselyUserRepository } from './data/kysely.user.repository';
+import { UserRepository } from './domain/user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
-import { UserRepository } from './domain/user.repository';
-import { APP_GUARD } from '@nestjs/core';
-import { UserService } from './application/user.service';
 
 @Module({
   imports: [ConfiguredJwtModule],
@@ -13,7 +13,7 @@ import { UserService } from './application/user.service';
   providers: [
     {
       provide: UserRepository,
-      useClass: InMemoryUserRepository,
+      useClass: KyselyUserRepository,
     },
     {
       provide: APP_GUARD,

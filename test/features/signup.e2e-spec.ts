@@ -22,6 +22,10 @@ describe('Signup (e2e)', () => {
     dsl = createDSL(app);
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('success cases', () => {
     test('successfully signs up a user with valid data', async () => {
       const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;

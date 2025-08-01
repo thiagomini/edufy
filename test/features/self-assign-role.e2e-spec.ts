@@ -20,6 +20,10 @@ describe('Self-Assign Role (e2e)', () => {
     dsl = createDSL(app);
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('success cases', () => {
     test('successfully assigns a student role', async () => {
       const jwtAccessToken = await dsl.users.createRandomUser();

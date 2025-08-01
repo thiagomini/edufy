@@ -20,6 +20,10 @@ describe('Me (e2e)', () => {
     dsl = createDSL(app);
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('success cases', () => {
     test('returns user data when authenticated', async () => {
       const jwtAccessToken = await dsl.users
