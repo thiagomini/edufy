@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
+import { ConfiguredJwtModule } from '@src/libs/jwt/jwt.module';
 import { UserModule } from '@src/user/user.module';
 import { KyselyTicketRepository } from './kysely.ticket.repository';
 import { TicketController } from './ticket.controller';

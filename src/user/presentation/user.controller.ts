@@ -19,7 +19,7 @@ import { LoginDto } from './login.dto';
 import { Public } from './public.decorator';
 import { SelfAssignRoleDto } from './self-assign-role.dto';
 import { SignupUserDto } from './signup-user.dto';
-import { Jwt } from '@src/jwt/jwt';
+import { Jwt } from '@src/libs/jwt/jwt';
 
 @Controller('users')
 export class UserController {

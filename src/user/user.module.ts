@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
+import { ConfiguredJwtModule } from '@src/libs/jwt/jwt.module';
 import { UserService } from './application/user.service';
 import { KyselyUserRepository } from './data/kysely.user.repository';
 import { UserRepository } from './domain/user.repository';

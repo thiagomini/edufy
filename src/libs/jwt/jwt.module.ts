@@ -1,5 +1,5 @@
 import { JwtModule } from '@nestjs/jwt';
-import jwtConfig, { JwtConfig } from '../configuration/jwt.config';
+import jwtConfig, { JwtConfig } from '@src/configuration/jwt.config';
 
 export const ConfiguredJwtModule = JwtModule.registerAsync({
   useFactory: (config: JwtConfig) => ({

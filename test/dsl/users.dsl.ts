@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { SignupUserDto } from '@src/user/presentation/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
-import { Jwt } from '@src/jwt/jwt';
+import { Jwt } from '@src/libs/jwt/jwt';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {

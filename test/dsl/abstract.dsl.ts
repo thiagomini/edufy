@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { Jwt } from '@src/jwt/jwt';
+import { Jwt } from '@src/libs/jwt/jwt';
 import * as supertest from 'supertest';
 
 export abstract class AbstractDSL {

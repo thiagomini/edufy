@@ -4,7 +4,7 @@ import { AppModule } from '../../src/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
 import { response, validationErrors } from '@test/utils/response';
-import { type Jwt } from '@src/jwt/jwt';
+import { type Jwt } from '@src/libs/jwt/jwt';
 
 describe('Submit Ticket (e2e)', () => {
   let app: INestApplication;
