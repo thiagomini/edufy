@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfiguredJwtModule } from '@src/libs/jwt/jwt.module';
 import { UserService } from './application/user.service';
-import { KyselyUserRepository } from './data/kysely.user.repository';
+import { KyselyUserRepository } from './infrastructure/kysely.user.repository';
 import { UserRepository } from './domain/user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
