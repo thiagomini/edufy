@@ -23,12 +23,12 @@ export class UserService {
     if (userExists) {
       throw new ConflictException('Email already in use');
     }
-    const newUser = new UserEntity(
-      command.name,
-      command.email,
-      await argon2.hash(command.password),
-      command.role,
-    );
+    const newUser = UserEntity.create({
+      name: command.name,
+      email: command.email,
+      password: await argon2.hash(command.password),
+      role: command.role,
+    });
 
     await this.userRepository.save(newUser);
     return newUser;

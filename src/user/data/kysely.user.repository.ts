@@ -61,12 +61,12 @@ export class KyselyUserRepository implements IUserRepository {
     if (!userInDb) {
       return null;
     }
-    return new UserEntity(
-      userInDb.name,
-      userInDb.email,
-      userInDb.password,
-      userInDb.role as UserRoleEnum,
-      userInDb.id,
-    );
+    return UserEntity.fromProps({
+      id: userInDb.id,
+      name: userInDb.name,
+      email: userInDb.email,
+      password: userInDb.password,
+      role: userInDb.role as UserRoleEnum,
+    });
   }
 }
