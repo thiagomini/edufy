@@ -7,6 +7,7 @@ export class TicketEntity {
     public readonly description: string,
     public readonly createdBy: string,
     public status: TicketStatusEnum = TicketStatus.Open,
+    public readonly resolvedBy?: string,
     public readonly id: string = randomUUID(),
   ) {}
 }

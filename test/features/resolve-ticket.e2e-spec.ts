@@ -22,7 +22,6 @@ describe('Resolve Ticket (e2e)', () => {
     await app.init();
     dsl = createDSL(app);
     jwtAccessToken = await dsl.users.createRandomUser();
-    console.log('JWT Access Token:', jwtAccessToken);
   });
 
   afterAll(async () => {

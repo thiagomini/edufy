@@ -54,6 +54,11 @@ module.exports = [
 
   // Ignore patterns
   {
-    ignores: ['eslint.config.js', 'dist/**', 'node_modules/**'],
+    ignores: [
+      'eslint.config.js',
+      'dist/**',
+      'node_modules/**',
+      '**/generated/**',
+    ],
   },
 ];

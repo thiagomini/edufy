@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '@src/user/user.module';
-import { TicketController } from './ticket.controller';
 import { ConfiguredJwtModule } from '@src/jwt/jwt.module';
+import { UserModule } from '@src/user/user.module';
+import { KyselyTicketRepository } from './kysely.ticket.repository';
+import { TicketController } from './ticket.controller';
 import { TicketRepository } from './ticket.repository';
-import { InMemoryTicketRepository } from './in-memory.ticket.repository';
 
 @Module({
   imports: [ConfiguredJwtModule, UserModule],
@@ -11,7 +11,7 @@ import { InMemoryTicketRepository } from './in-memory.ticket.repository';
   providers: [
     {
       provide: TicketRepository,
-      useClass: InMemoryTicketRepository,
+      useClass: KyselyTicketRepository,
     },
   ],
 })
