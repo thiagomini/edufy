@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
+import { AppModule } from '../../src/app/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
 import { response } from '@test/utils/response';

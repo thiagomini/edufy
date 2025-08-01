@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
+import { AppModule } from '@src/app/app.module';
 import { type Jwt } from '@src/libs/jwt/jwt';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';

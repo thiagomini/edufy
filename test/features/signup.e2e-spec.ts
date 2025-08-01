@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
+import { AppModule } from '@src/app/app.module';
 import { configServer } from '@src/server-config';
 import { SignupUserDto } from '@src/app/user/presentation/signup-user.dto';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
