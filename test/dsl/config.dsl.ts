@@ -1,4 +1,4 @@
-import adminConfig, { AdminConfig } from '@src/configuration/admin.config';
+import adminConfig, { AdminConfig } from '@src/libs/configuration/admin.config';
 import { AbstractDSL } from './abstract.dsl';
 
 export class ConfigDSL extends AbstractDSL {

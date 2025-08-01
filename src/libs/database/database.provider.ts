@@ -2,7 +2,7 @@ import { FactoryProvider, Logger, Scope } from '@nestjs/common';
 import { DATABASE } from './constants';
 import databaseConfig, {
   DatabaseConfig,
-} from '@src/configuration/database.config';
+} from '@src/libs/configuration/database.config';
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
 import { DB } from './generated/db';
 import { Pool } from 'pg';
