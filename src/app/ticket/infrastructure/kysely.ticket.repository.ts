@@ -1,11 +1,11 @@
 import { Database } from '@src/libs/database/database.type';
-import { TicketEntity } from './ticket.entity';
-import { ITicketRepository } from './ticket.repository';
+import { TicketEntity } from '../domain/ticket.entity';
+import { ITicketRepository } from '../domain/ticket.repository';
 import { Inject } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
 import { Selectable } from 'kysely';
 import { Ticket } from '@src/libs/database/generated/db';
-import { TicketStatusEnum } from './ticket.status';
+import { TicketStatusEnum } from '../domain/ticket.status';
 
 export class KyselyTicketRepository implements ITicketRepository {
   constructor(@Inject(DATABASE) private readonly db: Database) {}

@@ -9,8 +9,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateTicketDto } from './create-ticket.dto';
-import { TicketEntity } from './ticket.entity';
-import { ITicketRepository, TicketRepository } from './ticket.repository';
+import { TicketEntity } from '../domain/ticket.entity';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '../domain/ticket.repository';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 

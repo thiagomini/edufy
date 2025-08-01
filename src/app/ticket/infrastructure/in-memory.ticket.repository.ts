@@ -1,5 +1,5 @@
-import { TicketEntity } from './ticket.entity';
-import { ITicketRepository } from './ticket.repository';
+import { TicketEntity } from '../domain/ticket.entity';
+import { ITicketRepository } from '../domain/ticket.repository';
 
 export class InMemoryTicketRepository implements ITicketRepository {
   private readonly tickets: Map<string, TicketEntity> = new Map();
