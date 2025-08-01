@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository } from '../domain/user.repository';
-import { Database } from '@src/database/database.type';
-import { DATABASE } from '@src/database/constants';
+import { Database } from '@src/libs/database/database.type';
+import { DATABASE } from '@src/libs/database/constants';
 import { UserRoleEnum } from '../domain/user.role';
 import { Selectable } from 'kysely';
-import { User } from '@src/database/generated/db';
+import { User } from '@src/libs/database/generated/db';
 
 @Injectable()
 export class KyselyUserRepository implements IUserRepository {

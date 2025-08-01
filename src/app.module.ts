@@ -5,7 +5,7 @@ import { UserModule } from './user/user.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { TicketModule } from './ticket/ticket.module';
 import { AdminModule } from './admin/admin.module';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './libs/database/database.module';
 
 @Module({
   imports: [
