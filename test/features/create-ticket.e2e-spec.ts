@@ -4,11 +4,12 @@ import { AppModule } from '../../src/app.module';
 import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
 import { response, validationErrors } from '@test/utils/response';
+import { type Jwt } from '@src/jwt/jwt';
 
 describe('Submit Ticket (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let jwtAccessToken: string;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

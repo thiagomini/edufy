@@ -19,6 +19,7 @@ import { LoginDto } from './login.dto';
 import { Public } from './public.decorator';
 import { SelfAssignRoleDto } from './self-assign-role.dto';
 import { SignupUserDto } from './signup-user.dto';
+import { Jwt } from '@src/jwt/jwt';
 
 @Controller('users')
 export class UserController {
@@ -39,7 +40,7 @@ export class UserController {
     });
 
     return {
-      jwtAccessToken: this.signJwtToken(newUser),
+      jwtAccessToken: this.signJwtToken(newUser).toString(),
     };
   }
 
@@ -56,7 +57,7 @@ export class UserController {
       throw new UnauthorizedException('Invalid email or password');
     }
     return {
-      jwtAccessToken: this.signJwtToken(user),
+      jwtAccessToken: this.signJwtToken(user).toString(),
     };
   }
 
@@ -86,7 +87,7 @@ export class UserController {
     await this.userRepository.save(user);
   }
 
-  private signJwtToken(user: UserEntity): string {
-    return this.jwtService.sign({ sub: user.id });
+  private signJwtToken(user: UserEntity): Jwt {
+    return new Jwt(this.jwtService.sign({ sub: user.id }));
   }
 }

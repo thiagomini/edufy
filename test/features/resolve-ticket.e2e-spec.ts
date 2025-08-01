@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
+import { type Jwt } from '@src/jwt/jwt';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
@@ -9,7 +10,7 @@ import { randomUUID } from 'crypto';
 describe('Resolve Ticket (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let jwtAccessToken: string;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,6 +22,7 @@ describe('Resolve Ticket (e2e)', () => {
     await app.init();
     dsl = createDSL(app);
     jwtAccessToken = await dsl.users.createRandomUser();
+    console.log('JWT Access Token:', jwtAccessToken);
   });
 
   afterAll(async () => {
@@ -46,6 +48,7 @@ describe('Resolve Ticket (e2e)', () => {
           title: ticket.title,
           description: ticket.description,
           status: 'closed',
+          resolvedBy: jwtAccessToken.payload().sub,
         });
     });
   });

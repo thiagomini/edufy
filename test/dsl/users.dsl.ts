@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { SignupUserDto } from '@src/user/presentation/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
+import { Jwt } from '@src/jwt/jwt';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
@@ -13,7 +14,7 @@ export class UsersDSL extends AbstractDSL {
    */
   async createRandomUser(
     partial: Partial<SignupUserDto> = {},
-  ): Promise<string> {
+  ): Promise<Jwt<{ sub: string }>> {
     const userData: SignupUserDto = {
       name: faker.person.fullName(),
       email: faker.internet.email(),
@@ -22,7 +23,7 @@ export class UsersDSL extends AbstractDSL {
     };
     return this.createUser(userData)
       .expect(201)
-      .then((response) => response.body.jwtAccessToken);
+      .then((response) => new Jwt(response.body.jwtAccessToken));
   }
 
   login(credentials: { email: string; password: string }) {

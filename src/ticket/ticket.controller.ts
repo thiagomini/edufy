@@ -52,6 +52,7 @@ export class TicketController {
       }),
     )
     id: string,
+    @CurrentUser() user: UserEntity,
   ) {
     const ticket = await this.ticketRepository.findOneById(id);
     if (!ticket) {
@@ -69,6 +70,7 @@ export class TicketController {
       title: ticket.title,
       description: ticket.description,
       status: ticket.status,
+      resolvedBy: user.id,
     };
   }
 }

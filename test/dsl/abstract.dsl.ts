@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { Jwt } from '@src/jwt/jwt';
 import * as supertest from 'supertest';
 
 export abstract class AbstractDSL {
@@ -11,7 +12,7 @@ export abstract class AbstractDSL {
     return supertest(this.app.getHttpServer());
   }
 
-  public authenticatedAs(jwt: string): this {
+  public authenticatedAs(jwt: Jwt | string): this {
     return new (this.constructor as new (...args: any[]) => this)(this.app, {
       authorization: `Bearer ${jwt}`,
     });
