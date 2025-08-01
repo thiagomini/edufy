@@ -1,13 +1,51 @@
 import { randomUUID } from 'node:crypto';
 import { TicketStatus, TicketStatusEnum } from './ticket.status';
 
+export interface CreateTicketInput {
+  title: string;
+  description: string;
+  createdBy: string;
+  status?: TicketStatusEnum;
+  id?: string;
+}
+
+export interface TicketProps {
+  id: string;
+  title: string;
+  description: string;
+  createdBy: string;
+  status: TicketStatusEnum;
+  resolvedBy?: string;
+}
+
 export class TicketEntity {
-  constructor(
+  private constructor(
+    public readonly id: string,
     public readonly title: string,
     public readonly description: string,
     public readonly createdBy: string,
-    public status: TicketStatusEnum = TicketStatus.Open,
+    public status: TicketStatusEnum,
     public readonly resolvedBy?: string,
-    public readonly id: string = randomUUID(),
   ) {}
+
+  public static create(input: CreateTicketInput): TicketEntity {
+    return new TicketEntity(
+      input.id ?? randomUUID(),
+      input.title,
+      input.description,
+      input.createdBy,
+      input.status ?? TicketStatus.Open,
+    );
+  }
+
+  public static fromProps(props: TicketProps): TicketEntity {
+    return new TicketEntity(
+      props.id,
+      props.title,
+      props.description,
+      props.createdBy,
+      props.status,
+      props.resolvedBy,
+    );
+  }
 }

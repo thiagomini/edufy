@@ -44,13 +44,13 @@ export class KyselyTicketRepository implements ITicketRepository {
   private mapToEntity(row: Selectable<Ticket>): TicketEntity | null {
     if (!row) return null;
 
-    return new TicketEntity(
-      row.title,
-      row.description,
-      row.createdBy,
-      row.status as TicketStatusEnum,
-      row.resolvedBy,
-      row.id,
-    );
+    return TicketEntity.fromProps({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      createdBy: row.createdBy,
+      status: row.status as TicketStatusEnum,
+      resolvedBy: row.resolvedBy,
+    });
   }
 }

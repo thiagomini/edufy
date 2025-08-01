@@ -26,11 +26,11 @@ export class TicketController {
     @Body() ticket: CreateTicketDto,
     @CurrentUser() user: UserEntity,
   ) {
-    const newTicket = new TicketEntity(
-      ticket.title,
-      ticket.description,
-      user.id,
-    );
+    const newTicket = TicketEntity.create({
+      title: ticket.title,
+      description: ticket.description,
+      createdBy: user.id,
+    });
     await this.ticketRepository.save(newTicket);
     return {
       id: newTicket.id,
