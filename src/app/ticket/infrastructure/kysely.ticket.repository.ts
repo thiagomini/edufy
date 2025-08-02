@@ -43,6 +43,15 @@ export class KyselyTicketRepository implements ITicketRepository {
       .then((row) => this.mapToEntity(row));
   }
 
+  async findAllCreatedByUser(userId: string): Promise<TicketEntity[]> {
+    return this.db
+      .selectFrom('ticket')
+      .selectAll()
+      .where('createdBy', '=', userId)
+      .execute()
+      .then((rows) => rows.map((row) => this.mapToEntity(row)).filter(Boolean));
+  }
+
   private mapToEntity(row: Selectable<Ticket>): TicketEntity | null {
     if (!row) return null;
 

@@ -48,6 +48,8 @@ describe('Resolve Ticket (e2e)', () => {
           description: ticket.description,
           status: 'closed',
           resolvedBy: jwtAccessToken.payload().sub,
+          createdBy: ticket.createdBy,
+          replies: [],
         });
     });
   });

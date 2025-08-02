@@ -11,7 +11,7 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { CreateTicketDto } from './create-ticket.dto';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 import { TicketEntity } from '../domain/ticket.entity';
 import {
   ITicketRepository,
@@ -19,8 +19,9 @@ import {
 } from '../domain/ticket.repository';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { UserEntity } from '@src/app/user/domain/user.entity';
-import { ReplyTicketDto } from './reply-ticket.dto';
+import { ReplyTicketDto } from './dto/reply-ticket.dto';
 import { TicketStatus } from '../domain/ticket.status';
+import { TicketReadDto } from './dto/ticket.read-dto';
 
 @Controller('tickets')
 export class TicketController {
@@ -44,14 +45,7 @@ export class TicketController {
     if (!ticket) {
       throw new NotFoundException(`Ticket with ID ${id} not found`);
     }
-    return {
-      id: ticket.id,
-      title: ticket.title,
-      description: ticket.description,
-      status: ticket.status,
-      createdBy: ticket.createdBy,
-      replies: ticket.replies,
-    };
+    return new TicketReadDto(ticket);
   }
 
   @Post('/')
@@ -65,13 +59,7 @@ export class TicketController {
       createdBy: user.id,
     });
     await this.ticketRepository.save(newTicket);
-    return {
-      id: newTicket.id,
-      title: newTicket.title,
-      description: newTicket.description,
-      status: newTicket.status,
-      createdBy: newTicket.createdBy,
-    };
+    return new TicketReadDto(newTicket);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -128,14 +116,9 @@ export class TicketController {
         `Ticket with ID ${id} is not open and cannot be resolved`,
       );
     }
-    ticket.status = 'closed'; // Assuming the status can be changed directly
+    ticket.status = 'closed';
+    ticket.resolvedBy = user.id;
     await this.ticketRepository.save(ticket);
-    return {
-      id: ticket.id,
-      title: ticket.title,
-      description: ticket.description,
-      status: ticket.status,
-      resolvedBy: user.id,
-    };
+    return new TicketReadDto(ticket);
   }
 }

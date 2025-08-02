@@ -22,6 +22,11 @@ import { SelfAssignRoleDto } from './self-assign-role.dto';
 import { SignupUserDto } from './signup-user.dto';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { UpdateUserDto } from './update-user.dto';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '@src/app/ticket/domain/ticket.repository';
+import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
 
 @Controller('users')
 export class UserController {
@@ -30,6 +35,8 @@ export class UserController {
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
     private readonly userService: UserService,
+    @Inject(TicketRepository)
+    private readonly ticketRepository: ITicketRepository,
   ) {}
 
   @Public()
@@ -113,6 +120,14 @@ export class UserController {
     }
 
     await this.userRepository.save(user);
+  }
+
+  @Get('/me/tickets')
+  async getMyTickets(@CurrentUser() user: UserEntity) {
+    const userTickets = await this.ticketRepository.findAllCreatedByUser(
+      user.id,
+    );
+    return userTickets.map((ticket) => new TicketReadDto(ticket));
   }
 
   private signJwtToken(user: UserEntity): Jwt {

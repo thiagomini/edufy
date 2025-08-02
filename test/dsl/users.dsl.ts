@@ -44,4 +44,8 @@ export class UsersDSL extends AbstractDSL {
   update(userData: any) {
     return this.req().patch('/users/me').set(this.headers).send(userData);
   }
+
+  tickets() {
+    return this.req().get('/users/me/tickets').set(this.headers);
+  }
 }

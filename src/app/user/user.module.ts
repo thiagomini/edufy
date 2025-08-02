@@ -6,9 +6,10 @@ import { KyselyUserRepository } from './infrastructure/kysely.user.repository';
 import { UserRepository } from './domain/user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
+import { TicketModule } from '../ticket/ticket.module';
 
 @Module({
-  imports: [ConfiguredJwtModule],
+  imports: [ConfiguredJwtModule, TicketModule],
   controllers: [UserController],
   providers: [
     {

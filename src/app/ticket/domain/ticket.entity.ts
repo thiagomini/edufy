@@ -31,7 +31,7 @@ export class TicketEntity {
     public readonly description: string,
     public readonly createdBy: string,
     public status: TicketStatusEnum,
-    public readonly resolvedBy?: string,
+    public resolvedBy: string | null = null,
     public readonly replies: TicketReply[] = [],
   ) {}
 

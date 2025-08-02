@@ -48,6 +48,8 @@ describe('Submit Ticket (e2e)', () => {
             description: 'This is a test ticket',
             status: 'open',
             createdBy: userId,
+            resolvedBy: null,
+            replies: [],
           });
         });
     });
