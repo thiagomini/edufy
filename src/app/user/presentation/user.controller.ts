@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Patch,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -86,6 +87,13 @@ export class UserController {
     user.role = selfAssignRoleDto.role;
     await this.userRepository.save(user);
   }
+
+  @Patch('/me')
+  async updateUser(
+    @CurrentUser() user: UserEntity,
+    @Body()
+    updateUserDto: any,
+  ) {}
 
   private signJwtToken(user: UserEntity): Jwt {
     return new Jwt(this.jwtService.sign({ sub: user.id }));

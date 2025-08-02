@@ -40,4 +40,8 @@ export class UsersDSL extends AbstractDSL {
       .set(this.headers)
       .send({ role });
   }
+
+  update(userData: any) {
+    return this.req().patch('/users/me').set(this.headers).send(userData);
+  }
 }
