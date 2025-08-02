@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { SignupUserDto } from '@src/app/user/presentation/signup-user.dto';
+import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
 import { Jwt } from '@src/libs/jwt/jwt';
 

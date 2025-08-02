@@ -16,17 +16,18 @@ import { UserService } from '../application/user.service';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
 import { CurrentUser } from './current-user.decorator';
-import { LoginDto } from './login.dto';
+import { LoginDto } from './dto/login.dto';
 import { Public } from './public.decorator';
-import { SelfAssignRoleDto } from './self-assign-role.dto';
-import { SignupUserDto } from './signup-user.dto';
+import { SelfAssignRoleDto } from './dto/self-assign-role.dto';
+import { SignupUserDto } from './dto/signup-user.dto';
 import { Jwt } from '@src/libs/jwt/jwt';
-import { UpdateUserDto } from './update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ITicketRepository,
   TicketRepository,
 } from '@src/app/ticket/domain/ticket.repository';
 import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+import { UserReadDto } from './dto/user.read-dto';
 
 @Controller('users')
 export class UserController {
@@ -72,15 +73,7 @@ export class UserController {
 
   @Get('/me')
   async me(@CurrentUser() user: UserEntity) {
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      biography: user.biography,
-      interests: user.interests,
-      profilePictureUrl: user.profilePictureUrl,
-    };
+    return new UserReadDto(user);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
