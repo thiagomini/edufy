@@ -9,6 +9,11 @@ export interface CreateTicketInput {
   id?: string;
 }
 
+export interface TicketReply {
+  content: string;
+  createdBy: string;
+}
+
 export interface TicketProps {
   id: string;
   title: string;
@@ -16,6 +21,7 @@ export interface TicketProps {
   createdBy: string;
   status: TicketStatusEnum;
   resolvedBy?: string;
+  replies: TicketReply[];
 }
 
 export class TicketEntity {
@@ -26,6 +32,7 @@ export class TicketEntity {
     public readonly createdBy: string,
     public status: TicketStatusEnum,
     public readonly resolvedBy?: string,
+    public readonly replies: TicketReply[] = [],
   ) {}
 
   public static create(input: CreateTicketInput): TicketEntity {
@@ -46,6 +53,7 @@ export class TicketEntity {
       props.createdBy,
       props.status,
       props.resolvedBy,
+      props.replies,
     );
   }
 }

@@ -50,6 +50,7 @@ export class TicketController {
       description: ticket.description,
       status: ticket.status,
       createdBy: ticket.createdBy,
+      replies: ticket.replies,
     };
   }
 
@@ -73,6 +74,7 @@ export class TicketController {
     };
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post(':id/reply')
   async reply(
     @Param(
@@ -85,6 +87,7 @@ export class TicketController {
     )
     id: string,
     @Body() replyData: ReplyTicketDto,
+    @CurrentUser() user: UserEntity,
   ) {
     const ticket = await this.ticketRepository.findOneById(id);
     if (!ticket) {
@@ -95,6 +98,11 @@ export class TicketController {
         `Ticket with ID ${id} is not open and cannot be replied to`,
       );
     }
+    ticket.replies.push({
+      content: replyData.content,
+      createdBy: user.id,
+    });
+    await this.ticketRepository.save(ticket);
   }
 
   @HttpCode(HttpStatus.OK)

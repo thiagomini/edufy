@@ -49,6 +49,7 @@ describe('Get Ticket E2E Tests', () => {
             description: 'This is a test ticket',
             status: ticket.status,
             createdBy: ticket.createdBy,
+            replies: [],
           });
         });
     });

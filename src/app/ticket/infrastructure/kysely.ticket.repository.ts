@@ -1,10 +1,10 @@
-import { Database } from '@src/libs/database/database.type';
-import { TicketEntity } from '../domain/ticket.entity';
-import { ITicketRepository } from '../domain/ticket.repository';
 import { Inject } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
-import { Selectable } from 'kysely';
+import { Database } from '@src/libs/database/database.type';
 import { Ticket } from '@src/libs/database/generated/db';
+import { Selectable } from 'kysely';
+import { TicketEntity, TicketReply } from '../domain/ticket.entity';
+import { ITicketRepository } from '../domain/ticket.repository';
 import { TicketStatusEnum } from '../domain/ticket.status';
 
 export class KyselyTicketRepository implements ITicketRepository {
@@ -20,6 +20,7 @@ export class KyselyTicketRepository implements ITicketRepository {
         status: ticket.status,
         createdBy: ticket.createdBy,
         resolvedBy: ticket.resolvedBy,
+        replies: JSON.stringify(ticket.replies ?? []),
       })
       .onConflict((oc) =>
         oc.column('id').doUpdateSet({
@@ -27,6 +28,7 @@ export class KyselyTicketRepository implements ITicketRepository {
           description: ticket.description,
           status: ticket.status,
           resolvedBy: ticket.resolvedBy,
+          replies: JSON.stringify(ticket.replies ?? []),
           updatedAt: new Date(),
         }),
       )
@@ -44,6 +46,7 @@ export class KyselyTicketRepository implements ITicketRepository {
   private mapToEntity(row: Selectable<Ticket>): TicketEntity | null {
     if (!row) return null;
 
+    const replies: TicketReply[] = row.replies as unknown as TicketReply[];
     return TicketEntity.fromProps({
       id: row.id,
       title: row.title,
@@ -51,6 +54,7 @@ export class KyselyTicketRepository implements ITicketRepository {
       createdBy: row.createdBy,
       status: row.status as TicketStatusEnum,
       resolvedBy: row.resolvedBy,
+      replies,
     });
   }
 }
