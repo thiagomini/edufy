@@ -3,7 +3,12 @@ import { DATABASE } from './constants';
 import databaseConfig, {
   DatabaseConfig,
 } from '@src/libs/configuration/database.config';
-import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
+import {
+  CamelCasePlugin,
+  Kysely,
+  ParseJSONResultsPlugin,
+  PostgresDialect,
+} from 'kysely';
 import { DB } from './generated/db';
 import { Pool } from 'pg';
 
@@ -21,6 +26,7 @@ export const databaseProvider: FactoryProvider = {
         new CamelCasePlugin({
           underscoreBeforeDigits: true,
         }),
+        new ParseJSONResultsPlugin(),
       ],
       log: (event) => {
         if (event.level === 'error') {

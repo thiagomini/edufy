@@ -50,6 +50,9 @@ describe('Signup (e2e)', () => {
             name: signupUserData.name,
             email: signupUserData.email,
             role: null,
+            biography: null,
+            interests: [],
+            profilePictureUrl: null,
           });
         });
     });

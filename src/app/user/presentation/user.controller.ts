@@ -70,6 +70,9 @@ export class UserController {
       name: user.name,
       email: user.email,
       role: user.role,
+      biography: user.biography,
+      interests: user.interests,
+      profilePictureUrl: user.profilePictureUrl,
     };
   }
 
@@ -89,12 +92,28 @@ export class UserController {
     await this.userRepository.save(user);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('/me')
   async updateUser(
     @CurrentUser() user: UserEntity,
     @Body()
     updateUserDto: UpdateUserDto,
-  ) {}
+  ) {
+    if (updateUserDto.name) {
+      user.name = updateUserDto.name;
+    }
+    if (updateUserDto.biography) {
+      user.biography = updateUserDto.biography;
+    }
+    if (updateUserDto.interests) {
+      user.interests = updateUserDto.interests;
+    }
+    if (updateUserDto.profilePictureUrl) {
+      user.profilePictureUrl = updateUserDto.profilePictureUrl;
+    }
+
+    await this.userRepository.save(user);
+  }
 
   private signJwtToken(user: UserEntity): Jwt {
     return new Jwt(this.jwtService.sign({ sub: user.id }));

@@ -25,7 +25,32 @@ describe('Update User Info', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully updates user information');
+    test('successfully updates user information', async () => {
+      const accessToken = await dsl.users.createRandomUser();
+
+      await dsl.users
+        .authenticatedAs(accessToken)
+        .update({
+          name: 'New Name',
+          biography: 'Updated biography',
+          interests: ['coding', 'testing'],
+          profilePictureUrl: 'http://example.com/new-profile.jpg',
+        })
+        .expect(204);
+      return dsl.users
+        .authenticatedAs(accessToken)
+        .me()
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            id: accessToken.payload().sub,
+            name: 'New Name',
+            biography: 'Updated biography',
+            interests: ['coding', 'testing'],
+            profilePictureUrl: 'http://example.com/new-profile.jpg',
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('return an error when request is not authenticated', () => {

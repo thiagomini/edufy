@@ -15,15 +15,21 @@ export interface UserProps {
   email: string;
   password: string;
   role: UserRoleEnum | null;
+  biography?: string;
+  interests?: string[];
+  profilePictureUrl?: string;
 }
 
 export class UserEntity {
   private constructor(
     public readonly id: string,
-    public readonly name: string,
+    public name: string,
     public readonly email: string,
     public readonly password: string,
     public role: UserRoleEnum | null = null,
+    public biography?: string,
+    public interests?: string[],
+    public profilePictureUrl?: string,
   ) {}
 
   public static create(input: CreateUserInput): UserEntity {
@@ -43,6 +49,9 @@ export class UserEntity {
       props.email,
       props.password,
       props.role,
+      props.biography,
+      props.interests,
+      props.profilePictureUrl,
     );
   }
 }

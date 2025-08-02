@@ -64,6 +64,9 @@ describe('Create support agent (e2e)', () => {
             email: supportAgentData.email,
             name: supportAgentData.name,
             role: 'support_agent',
+            biography: null,
+            interests: [],
+            profilePictureUrl: null,
           });
         });
     });
