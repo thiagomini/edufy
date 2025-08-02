@@ -11,6 +11,9 @@ describe('Reply Ticket E2E Tests', () => {
   let app: INestApplication;
   let dsl: DSL;
   let jwtAccessToken: Jwt<{ sub: string }>;
+  const DUMMY_TICKET_REPLY = {
+    content: 'This is a reply to the ticket',
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -34,19 +37,27 @@ describe('Reply Ticket E2E Tests', () => {
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
       return dsl.tickets
-        .reply(randomUUID())
+        .reply(randomUUID(), DUMMY_TICKET_REPLY)
         .expect(401)
         .expect(response.unauthorized());
     });
     test('returns an error when ticket ID is invalid', () => {
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
-        .reply('invalid-id')
+        .reply('invalid-id', DUMMY_TICKET_REPLY)
         .expect(400)
         .expect(response.badRequest('Invalid ticket ID format'));
     });
+    test('returns an error when data is invalid', () => {
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .reply(randomUUID(), {
+          content: '',
+        })
+        .expect(400)
+        .expect(response.validationFailed(['content should not be empty']));
+    });
     test.todo('returns an error when ticket does not exist');
-    test.todo('returns an error when data is invalid');
     test.todo('returns an error when ticket is closed');
   });
 });

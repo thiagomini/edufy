@@ -17,6 +17,7 @@ import {
 } from '../domain/ticket.repository';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { UserEntity } from '@src/app/user/domain/user.entity';
+import { ReplyTicketDto } from './reply-ticket.dto';
 
 @Controller('tickets')
 export class TicketController {
@@ -80,6 +81,7 @@ export class TicketController {
       }),
     )
     id: string,
+    @Body() replyData: ReplyTicketDto,
   ) {}
 
   @Post(':id/resolve')
