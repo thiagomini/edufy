@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Inject,
   NotFoundException,
   Param,
@@ -22,6 +23,12 @@ export class TicketController {
   constructor(
     @Inject(TicketRepository)
     private readonly ticketRepository: ITicketRepository,
+  ) {}
+
+  @Get(':id')
+  async getTicketById(
+    @Param('id')
+    id: string,
   ) {}
 
   @Post('/')

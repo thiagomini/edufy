@@ -7,4 +7,7 @@ export class TicketsDSL extends AbstractDSL {
   resolve(ticketId: string) {
     return this.req().post(`/tickets/${ticketId}/resolve`).set(this.headers);
   }
+  getTicketById(ticketId: string) {
+    return this.req().get(`/tickets/${ticketId}`).set(this.headers);
+  }
 }
