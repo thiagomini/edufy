@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 describe('Reply Ticket E2E Tests', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let _jwtAccessToken: Jwt<{ sub: string }>;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Reply Ticket E2E Tests', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    _jwtAccessToken = await dsl.users.createRandomUser();
+    jwtAccessToken = await dsl.users.createRandomUser();
   });
 
   afterAll(async () => {
@@ -38,7 +38,13 @@ describe('Reply Ticket E2E Tests', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when ticket ID is invalid');
+    test('returns an error when ticket ID is invalid', () => {
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .reply('invalid-id')
+        .expect(400)
+        .expect(response.badRequest('Invalid ticket ID format'));
+    });
     test.todo('returns an error when ticket does not exist');
     test.todo('returns an error when data is invalid');
     test.todo('returns an error when ticket is closed');

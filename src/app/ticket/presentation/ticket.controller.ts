@@ -70,7 +70,17 @@ export class TicketController {
   }
 
   @Post(':id/reply')
-  async reply() {}
+  async reply(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory() {
+          return new BadRequestException('Invalid ticket ID format');
+        },
+      }),
+    )
+    id: string,
+  ) {}
 
   @Post(':id/resolve')
   async resolve(
