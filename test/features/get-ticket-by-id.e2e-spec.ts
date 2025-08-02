@@ -38,6 +38,13 @@ describe('Get Ticket E2E Tests', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
+    test('returns an error when ticket ID is invalid', () => {
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .getTicketById('invalid-id')
+        .expect(400)
+        .expect(response.badRequest('Invalid ticket ID format'));
+    });
     test('returns an error when ticket does not exist', () => {
       const nonExistingTicketId = randomUUID();
       return dsl.tickets

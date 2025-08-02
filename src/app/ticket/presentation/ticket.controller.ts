@@ -27,7 +27,13 @@ export class TicketController {
 
   @Get(':id')
   async getTicketById(
-    @Param('id')
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory: () =>
+          new BadRequestException('Invalid ticket ID format'),
+      }),
+    )
     id: string,
   ) {
     const ticket = await this.ticketRepository.findOneById(id);
