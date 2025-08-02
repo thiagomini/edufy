@@ -69,6 +69,9 @@ export class TicketController {
     };
   }
 
+  @Post(':id/reply')
+  async reply() {}
+
   @Post(':id/resolve')
   async resolve(
     @Param(
