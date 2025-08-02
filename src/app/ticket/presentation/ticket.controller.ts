@@ -40,6 +40,13 @@ export class TicketController {
     if (!ticket) {
       throw new NotFoundException(`Ticket with ID ${id} not found`);
     }
+    return {
+      id: ticket.id,
+      title: ticket.title,
+      description: ticket.description,
+      status: ticket.status,
+      createdBy: ticket.createdBy,
+    };
   }
 
   @Post('/')

@@ -29,7 +29,29 @@ describe('Get Ticket E2E Tests', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully retrieves a ticket with valid ID');
+    test('successfully retrieves a ticket with valid ID', async () => {
+      const ticket = await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .then((response) => response.body);
+
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .getTicketById(ticket.id)
+        .expect(200)
+        .expect((response) => {
+          expect(response.body).toEqual({
+            id: ticket.id,
+            title: 'Test Ticket',
+            description: 'This is a test ticket',
+            status: ticket.status,
+            createdBy: ticket.createdBy,
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
