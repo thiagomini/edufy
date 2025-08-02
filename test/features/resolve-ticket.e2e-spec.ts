@@ -41,7 +41,7 @@ describe('Resolve Ticket (e2e)', () => {
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .resolve(ticket.id)
-        .expect(201)
+        .expect(200)
         .expect({
           id: ticket.id,
           title: ticket.title,
@@ -93,7 +93,7 @@ describe('Resolve Ticket (e2e)', () => {
       await dsl.tickets
         .authenticatedAs(jwtAccessToken)
         .resolve(ticket.id)
-        .expect(201);
+        .expect(200);
 
       return dsl.tickets
         .authenticatedAs(jwtAccessToken)

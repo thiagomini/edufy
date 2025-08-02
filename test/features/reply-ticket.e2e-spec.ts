@@ -67,6 +67,29 @@ describe('Reply Ticket E2E Tests', () => {
           response.notFound(`Ticket with ID ${nonExistentTicketId} not found`),
         );
     });
-    test.todo('returns an error when ticket is closed');
+    test('returns an error when ticket is closed', async () => {
+      const ticket = await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Closed Ticket',
+          description: 'This ticket will be closed before replying',
+        })
+        .expect(201)
+        .then((response) => response.body);
+      await dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .resolve(ticket.id)
+        .expect(200);
+
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .reply(ticket.id, DUMMY_TICKET_REPLY)
+        .expect(400)
+        .expect(
+          response.badRequest(
+            `Ticket with ID ${ticket.id} is not open and cannot be replied to`,
+          ),
+        );
+    });
   });
 });

@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Inject,
   NotFoundException,
   Param,
@@ -18,6 +20,7 @@ import {
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { ReplyTicketDto } from './reply-ticket.dto';
+import { TicketStatus } from '../domain/ticket.status';
 
 @Controller('tickets')
 export class TicketController {
@@ -87,8 +90,14 @@ export class TicketController {
     if (!ticket) {
       throw new NotFoundException(`Ticket with ID ${id} not found`);
     }
+    if (ticket.status !== TicketStatus.Open) {
+      throw new BadRequestException(
+        `Ticket with ID ${id} is not open and cannot be replied to`,
+      );
+    }
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post(':id/resolve')
   async resolve(
     @Param(
