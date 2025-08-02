@@ -3,7 +3,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '@src/app/app.module';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
-import { response } from '@test/utils/response';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Update User Info', () => {
   let app: INestApplication;
@@ -39,6 +39,24 @@ describe('Update User Info', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('return an error when data is invalid');
+    test('return an error when data is invalid', async () => {
+      const accessToken = await dsl.users.createRandomUser({
+        name: 'Test User',
+      });
+
+      return dsl.users
+        .authenticatedAs(accessToken)
+        .update({
+          name: '',
+          profilePictureUrl: 'not-a-valid-url',
+        })
+        .expect(400)
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('name'),
+            validationErrors.isUrl('profilePictureUrl'),
+          ]),
+        );
+    });
   });
 });

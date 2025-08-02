@@ -38,4 +38,5 @@ export const validationErrors = {
     `${field} must be longer than or equal to ${length} characters` as const,
   oneOfValues: (field: string, values: string[]) =>
     `${field} must be one of the following values: ${values.join(', ')}` as const,
+  isUrl: (field: string) => `${field} must be a URL address` as const,
 };

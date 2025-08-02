@@ -21,6 +21,7 @@ import { Public } from './public.decorator';
 import { SelfAssignRoleDto } from './self-assign-role.dto';
 import { SignupUserDto } from './signup-user.dto';
 import { Jwt } from '@src/libs/jwt/jwt';
+import { UpdateUserDto } from './update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -92,7 +93,7 @@ export class UserController {
   async updateUser(
     @CurrentUser() user: UserEntity,
     @Body()
-    updateUserDto: any,
+    updateUserDto: UpdateUserDto,
   ) {}
 
   private signJwtToken(user: UserEntity): Jwt {
