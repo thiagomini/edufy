@@ -29,7 +29,12 @@ export class TicketController {
   async getTicketById(
     @Param('id')
     id: string,
-  ) {}
+  ) {
+    const ticket = await this.ticketRepository.findOneById(id);
+    if (!ticket) {
+      throw new NotFoundException(`Ticket with ID ${id} not found`);
+    }
+  }
 
   @Post('/')
   async create(

@@ -10,7 +10,7 @@ import { randomUUID } from 'node:crypto';
 describe('Get Ticket E2E Tests', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let _jwtAccessToken: Jwt<{ sub: string }>;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Get Ticket E2E Tests', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    _jwtAccessToken = await dsl.users.createRandomUser();
+    jwtAccessToken = await dsl.users.createRandomUser();
   });
 
   afterAll(async () => {
@@ -38,6 +38,15 @@ describe('Get Ticket E2E Tests', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when ticket does not exist');
+    test('returns an error when ticket does not exist', () => {
+      const nonExistingTicketId = randomUUID();
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .getTicketById(nonExistingTicketId)
+        .expect(404)
+        .expect(
+          response.notFound(`Ticket with ID ${nonExistingTicketId} not found`),
+        );
+    });
   });
 });

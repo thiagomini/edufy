@@ -6,6 +6,13 @@ export const response = {
       message,
     } as const;
   },
+  notFound(message: string) {
+    return {
+      statusCode: 404,
+      error: 'Not Found',
+      message,
+    } as const;
+  },
   unauthorized(
     message: string = 'Authorization header is missing or malformed',
   ) {
