@@ -57,7 +57,16 @@ describe('Reply Ticket E2E Tests', () => {
         .expect(400)
         .expect(response.validationFailed(['content should not be empty']));
     });
-    test.todo('returns an error when ticket does not exist');
+    test('returns an error when ticket does not exist', () => {
+      const nonExistentTicketId = randomUUID();
+      return dsl.tickets
+        .authenticatedAs(jwtAccessToken)
+        .reply(nonExistentTicketId, DUMMY_TICKET_REPLY)
+        .expect(404)
+        .expect(
+          response.notFound(`Ticket with ID ${nonExistentTicketId} not found`),
+        );
+    });
     test.todo('returns an error when ticket is closed');
   });
 });

@@ -82,7 +82,12 @@ export class TicketController {
     )
     id: string,
     @Body() replyData: ReplyTicketDto,
-  ) {}
+  ) {
+    const ticket = await this.ticketRepository.findOneById(id);
+    if (!ticket) {
+      throw new NotFoundException(`Ticket with ID ${id} not found`);
+    }
+  }
 
   @Post(':id/resolve')
   async resolve(
