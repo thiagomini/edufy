@@ -38,7 +38,12 @@ describe('Get Course by ID (e2e)', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when course ID is invalid');
+    test('returns an error when course ID is invalid', () => {
+      return dsl.courses
+        .authenticatedAs(_jwtAccessToken)
+        .getById('Invalid course ID format')
+        .expect(400);
+    });
     test.todo('returns an error when course does not exist');
   });
 });

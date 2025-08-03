@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
   Get,
   Inject,
   Param,
+  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { UserEntity } from '../../user/domain/user.entity';
@@ -51,7 +53,17 @@ export class CourseController {
   }
 
   @Get(':id')
-  async getCourseById(@Param('id') id: string) {
+  async getCourseById(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        exceptionFactory() {
+          return new BadRequestException('Invalid course ID format');
+        },
+      }),
+    )
+    id: string,
+  ) {
     const course = await this.courseRepository.findOneById(id);
 
     return course;
