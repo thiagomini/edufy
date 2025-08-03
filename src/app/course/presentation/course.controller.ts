@@ -5,11 +5,14 @@ import {
   Inject,
   Post,
 } from '@nestjs/common';
-import { UserEntity } from '../user/domain/user.entity';
-import { CurrentUser } from '../user/presentation/current-user.decorator';
-import { CourseEntity } from './course.entity';
+import { UserEntity } from '../../user/domain/user.entity';
+import { CurrentUser } from '../../user/presentation/current-user.decorator';
+import { CourseEntity } from '../domain/course.entity';
 import { CreateCourseDto } from './create-course.dto';
-import { CourseRepository, ICourseRepository } from './course.repository';
+import {
+  CourseRepository,
+  ICourseRepository,
+} from '../domain/course.repository';
 
 @Controller('courses')
 export class CourseController {

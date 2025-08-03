@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CourseEntity } from './course.entity';
-import { ICourseRepository } from './course.repository';
+import { CourseEntity } from '../domain/course.entity';
+import { ICourseRepository } from '../domain/course.repository';
 import { DATABASE } from '@src/libs/database/constants';
 import { Database } from '@src/libs/database/database.type';
 

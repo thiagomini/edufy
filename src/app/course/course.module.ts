@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CourseController } from './course.controller';
-import { CourseRepository } from './course.repository';
-import { KyselyCourseRepository } from './kysely.course-repository';
+import { CourseController } from './presentation/course.controller';
+import { CourseRepository } from './domain/course.repository';
+import { KyselyCourseRepository } from './infrastructure/kysely.course-repository';
 
 @Module({
   controllers: [CourseController],
