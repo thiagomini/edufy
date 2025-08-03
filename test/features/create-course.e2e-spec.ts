@@ -58,6 +58,22 @@ describe('Create Course E2E Tests', () => {
           ]),
         );
     });
-    test.todo('returns an error when user is not an instructor');
+    test('returns an error when user is not an instructor', async () => {
+      const studentUserJwt = await dsl.users.createUserWithRole('student');
+
+      return dsl.courses
+        .authenticatedAs(studentUserJwt)
+        .create({
+          title: 'New Course',
+          description: 'Course description',
+          price: 100,
+        })
+        .expect(403)
+        .expect({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'You do not have permission to create a course',
+        });
+    });
   });
 });
