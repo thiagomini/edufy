@@ -21,7 +21,7 @@ describe('Get Course by ID (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users.createRandomUser();
+    jwtAccessToken = await dsl.users.createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -29,7 +29,31 @@ describe('Get Course by ID (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully retrieves a course by valid ID');
+    test('successfully retrieves a course by valid ID', async () => {
+      const course = await dsl.courses
+        .authenticatedAs(jwtAccessToken)
+        .create({
+          title: 'Test Course',
+          description: 'This is a test course',
+          price: 100,
+        })
+        .expect(201)
+        .then((response) => response.body);
+
+      return dsl.courses
+        .authenticatedAs(jwtAccessToken)
+        .getById(course.id)
+        .expect(200)
+        .expect((response) => {
+          expect(response.body).toEqual({
+            id: course.id,
+            title: 'Test Course',
+            description: 'This is a test course',
+            price: 100,
+            instructorId: jwtAccessToken.payload().sub,
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {

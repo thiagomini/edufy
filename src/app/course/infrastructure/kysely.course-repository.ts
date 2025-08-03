@@ -3,6 +3,8 @@ import { CourseEntity } from '../domain/course.entity';
 import { ICourseRepository } from '../domain/course.repository';
 import { DATABASE } from '@src/libs/database/constants';
 import { Database } from '@src/libs/database/database.type';
+import { Selectable } from 'kysely';
+import { Course } from '@src/libs/database/generated/db';
 
 @Injectable()
 export class KyselyCourseRepository implements ICourseRepository {
@@ -41,7 +43,9 @@ export class KyselyCourseRepository implements ICourseRepository {
       .then((courseInDb) => this.mapToCourseEntity(courseInDb));
   }
 
-  private mapToCourseEntity(courseInDb: any): CourseEntity | null {
+  private mapToCourseEntity(
+    courseInDb: Selectable<Course>,
+  ): CourseEntity | null {
     if (!courseInDb) {
       return null;
     }
@@ -49,7 +53,7 @@ export class KyselyCourseRepository implements ICourseRepository {
       id: courseInDb.id,
       title: courseInDb.title,
       description: courseInDb.description,
-      price: courseInDb.price,
+      price: +courseInDb.price,
       instructorId: courseInDb.instructorId,
     });
   }
