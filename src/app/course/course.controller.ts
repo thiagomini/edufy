@@ -1,12 +1,25 @@
-import { Body, Controller, ForbiddenException, Post } from '@nestjs/common';
-import { CreateCourseDto } from './create-course.dto';
-import { CurrentUser } from '../user/presentation/current-user.decorator';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Inject,
+  Post,
+} from '@nestjs/common';
 import { UserEntity } from '../user/domain/user.entity';
+import { CurrentUser } from '../user/presentation/current-user.decorator';
+import { CourseEntity } from './course.entity';
+import { CreateCourseDto } from './create-course.dto';
+import { CourseRepository, ICourseRepository } from './course.repository';
 
 @Controller('courses')
 export class CourseController {
+  constructor(
+    @Inject(CourseRepository)
+    private readonly courseRepository: ICourseRepository,
+  ) {}
+
   @Post('/')
-  createCourse(
+  async createCourse(
     @Body() createCourseDto: CreateCourseDto,
     @CurrentUser() user: UserEntity,
   ) {
@@ -16,9 +29,19 @@ export class CourseController {
         'You do not have permission to create a course',
       );
     }
+    const newCourse = CourseEntity.create({
+      description: createCourseDto.description,
+      title: createCourseDto.title,
+      price: createCourseDto.price,
+      instructorId: user.id,
+    });
+    await this.courseRepository.save(newCourse);
+
     return {
-      id: 'generated-course-id',
-      ...createCourseDto,
+      id: newCourse.id,
+      title: newCourse.title,
+      description: newCourse.description,
+      price: newCourse.price,
       instructor: user.id,
     };
   }
