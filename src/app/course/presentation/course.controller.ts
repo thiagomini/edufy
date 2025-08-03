@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Inject,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -65,7 +66,9 @@ export class CourseController {
     id: string,
   ) {
     const course = await this.courseRepository.findOneById(id);
-
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
     return course;
   }
 }

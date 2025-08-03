@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 describe('Get Course by ID (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let _jwtAccessToken: Jwt<{ sub: string }>;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Get Course by ID (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    _jwtAccessToken = await dsl.users.createRandomUser();
+    jwtAccessToken = await dsl.users.createRandomUser();
   });
 
   afterAll(async () => {
@@ -40,10 +40,16 @@ describe('Get Course by ID (e2e)', () => {
     });
     test('returns an error when course ID is invalid', () => {
       return dsl.courses
-        .authenticatedAs(_jwtAccessToken)
+        .authenticatedAs(jwtAccessToken)
         .getById('Invalid course ID format')
         .expect(400);
     });
-    test.todo('returns an error when course does not exist');
+    test('returns an error when course does not exist', () => {
+      return dsl.courses
+        .authenticatedAs(jwtAccessToken)
+        .getById(randomUUID())
+        .expect(404)
+        .expect(response.notFound('Course not found'));
+    });
   });
 });
