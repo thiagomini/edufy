@@ -3,6 +3,7 @@ import { UsersDSL } from './users.dsl';
 import { TicketsDSL } from './tickets.dsl';
 import { AdminDSL } from './admin.dsl';
 import { ConfigDSL } from './config.dsl';
+import { CoursesDSL } from './courses.dsl';
 
 export function createDSL(app: INestApplication) {
   return {
@@ -10,6 +11,7 @@ export function createDSL(app: INestApplication) {
     tickets: new TicketsDSL(app),
     admin: new AdminDSL(app),
     config: new ConfigDSL(app),
+    courses: new CoursesDSL(app),
   };
 }
 
