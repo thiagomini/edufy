@@ -28,7 +28,25 @@ describe('Create Course E2E Tests', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully creates a course');
+    test('successfully creates a course', () => {
+      return dsl.courses
+        .authenticatedAs(instructorUserJwt)
+        .create({
+          title: 'New Course',
+          description: 'Course description',
+          price: 100,
+        })
+        .expect(201)
+        .expect((res) => {
+          expect(res.body).toEqual({
+            id: expect.any(String),
+            title: 'New Course',
+            description: 'Course description',
+            price: 100,
+            instructor: instructorUserJwt.payload().sub,
+          });
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is unauthenticated', () => {

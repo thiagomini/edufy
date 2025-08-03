@@ -16,6 +16,10 @@ export class CourseController {
         'You do not have permission to create a course',
       );
     }
-    return { message: 'Course created successfully' };
+    return {
+      id: 'generated-course-id',
+      ...createCourseDto,
+      instructor: user.id,
+    };
   }
 }
