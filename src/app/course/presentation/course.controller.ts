@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Inject,
+  Param,
   Post,
 } from '@nestjs/common';
 import { UserEntity } from '../../user/domain/user.entity';
@@ -26,7 +28,6 @@ export class CourseController {
     @Body() createCourseDto: CreateCourseDto,
     @CurrentUser() user: UserEntity,
   ) {
-    // Logic to create a course will go here
     if (user.role !== 'instructor') {
       throw new ForbiddenException(
         'You do not have permission to create a course',
@@ -47,5 +48,12 @@ export class CourseController {
       price: newCourse.price,
       instructor: user.id,
     };
+  }
+
+  @Get(':id')
+  async getCourseById(@Param('id') id: string) {
+    const course = await this.courseRepository.findOneById(id);
+
+    return course;
   }
 }
