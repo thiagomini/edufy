@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
 import { Jwt } from '@src/libs/jwt/jwt';
+import { UserRoleEnum } from '@src/app/user/domain/user.role';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
@@ -24,6 +25,21 @@ export class UsersDSL extends AbstractDSL {
     return this.createUser(userData)
       .expect(201)
       .then((response) => new Jwt(response.body.jwtAccessToken));
+  }
+
+  async createUserWithRole(
+    role: UserRoleEnum,
+    userData: Partial<SignupUserDto> = {},
+  ) {
+    const jwt = await this.createRandomUser({
+      ...userData,
+      name: userData.name || faker.person.fullName(),
+      email: userData.email || faker.internet.email(),
+    });
+
+    await this.authenticatedAs(jwt).selfAssignRole(role).expect(204);
+
+    return jwt;
   }
 
   login(credentials: { email: string; password: string }) {

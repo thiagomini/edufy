@@ -46,4 +46,5 @@ export const validationErrors = {
   oneOfValues: (field: string, values: string[]) =>
     `${field} must be one of the following values: ${values.join(', ')}` as const,
   isUrl: (field: string) => `${field} must be a URL address` as const,
+  isPositive: (field: string) => `${field} must be a positive number` as const,
 };

@@ -1,13 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '@src/app/app.module';
+import { Jwt } from '@src/libs/jwt/jwt';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
-import { response } from '@test/utils/response';
+import { response, validationErrors } from '@test/utils/response';
 
 describe('Create Course E2E Tests', () => {
   let app: INestApplication;
   let dsl: DSL;
+  let instructorUserJwt: Jwt;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,6 +20,7 @@ describe('Create Course E2E Tests', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
+    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -38,7 +41,23 @@ describe('Create Course E2E Tests', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
+    test('returns an error when course data is invalid', () => {
+      return dsl.courses
+        .authenticatedAs(instructorUserJwt)
+        .create({
+          title: '',
+          description: '',
+          price: -10,
+        })
+        .expect(400)
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('title'),
+            validationErrors.isNotEmpty('description'),
+            validationErrors.isPositive('price'),
+          ]),
+        );
+    });
     test.todo('returns an error when user is not an instructor');
-    test.todo('returns an error when course data is invalid');
   });
 });
