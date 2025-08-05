@@ -13,6 +13,15 @@ export class KyselyCourseRepository implements ICourseRepository {
     private readonly database: Database,
   ) {}
 
+  async findAllLecturedBy(userId: string): Promise<CourseEntity[]> {
+    return await this.database
+      .selectFrom('course')
+      .selectAll()
+      .where('instructorId', '=', userId)
+      .execute()
+      .then((courses) => courses.map(this.mapToCourseEntity));
+  }
+
   async save(course: CourseEntity): Promise<void> {
     await this.database
       .insertInto('course')

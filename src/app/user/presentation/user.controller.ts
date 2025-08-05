@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Patch,
   Post,
   UnauthorizedException,
@@ -28,6 +29,10 @@ import {
 } from '@src/app/ticket/domain/ticket.repository';
 import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
 import { UserReadDto } from './dto/user.read-dto';
+import {
+  CourseRepository,
+  ICourseRepository,
+} from '@src/app/course/domain/course.repository';
 
 @Controller('users')
 export class UserController {
@@ -38,6 +43,8 @@ export class UserController {
     private readonly userService: UserService,
     @Inject(TicketRepository)
     private readonly ticketRepository: ITicketRepository,
+    @Inject(CourseRepository)
+    private readonly courseRepository: ICourseRepository,
   ) {}
 
   @Public()
@@ -121,6 +128,11 @@ export class UserController {
       user.id,
     );
     return userTickets.map((ticket) => new TicketReadDto(ticket));
+  }
+
+  @Get('/:id/courses')
+  async getLecturedCourses(@Param('id') userId: string) {
+    return this.courseRepository.findAllLecturedBy(userId);
   }
 
   private signJwtToken(user: UserEntity): Jwt {

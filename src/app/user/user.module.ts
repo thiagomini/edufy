@@ -7,9 +7,10 @@ import { UserRepository } from './domain/user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
 import { TicketModule } from '../ticket/ticket.module';
+import { CourseModule } from '../course/course.module';
 
 @Module({
-  imports: [ConfiguredJwtModule, TicketModule],
+  imports: [ConfiguredJwtModule, TicketModule, CourseModule],
   controllers: [UserController],
   providers: [
     {
