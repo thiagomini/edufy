@@ -63,4 +63,10 @@ export class CourseController {
     }
     return course;
   }
+
+  @Get('/')
+  async getAllCourses() {
+    const courses = await this.courseRepository.findAll();
+    return courses;
+  }
 }

@@ -13,6 +13,14 @@ export class KyselyCourseRepository implements ICourseRepository {
     private readonly database: Database,
   ) {}
 
+  async findAll(): Promise<CourseEntity[]> {
+    return await this.database
+      .selectFrom('course')
+      .selectAll()
+      .execute()
+      .then((courses) => courses.map(this.mapToCourseEntity));
+  }
+
   async findAllLecturedBy(userId: string): Promise<CourseEntity[]> {
     return await this.database
       .selectFrom('course')
