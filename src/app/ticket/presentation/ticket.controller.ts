@@ -8,19 +8,19 @@ import {
   Inject,
   NotFoundException,
   Param,
-  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { CreateTicketDto } from './dto/create-ticket.dto';
+import { UserEntity } from '@src/app/user/domain/user.entity';
+import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
+import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';
 import { TicketEntity } from '../domain/ticket.entity';
 import {
   ITicketRepository,
   TicketRepository,
 } from '../domain/ticket.repository';
-import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
-import { UserEntity } from '@src/app/user/domain/user.entity';
-import { ReplyTicketDto } from './dto/reply-ticket.dto';
 import { TicketStatus } from '../domain/ticket.status';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { ReplyTicketDto } from './dto/reply-ticket.dto';
 import { TicketReadDto } from './dto/ticket.read-dto';
 
 @Controller('tickets')
@@ -32,13 +32,7 @@ export class TicketController {
 
   @Get(':id')
   async getTicketById(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        exceptionFactory: () =>
-          new BadRequestException('Invalid ticket ID format'),
-      }),
-    )
+    @Param('id', parseUUIDWithMessage('Invalid ticket ID format'))
     id: string,
   ) {
     const ticket = await this.ticketRepository.findOneById(id);
@@ -65,14 +59,7 @@ export class TicketController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post(':id/reply')
   async reply(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        exceptionFactory() {
-          return new BadRequestException('Invalid ticket ID format');
-        },
-      }),
-    )
+    @Param('id', parseUUIDWithMessage('Invalid ticket ID format'))
     id: string,
     @Body() replyData: ReplyTicketDto,
     @CurrentUser() user: UserEntity,
@@ -96,14 +83,7 @@ export class TicketController {
   @HttpCode(HttpStatus.OK)
   @Post(':id/resolve')
   async resolve(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        exceptionFactory() {
-          return new BadRequestException('Invalid ticket ID format');
-        },
-      }),
-    )
+    @Param('id', parseUUIDWithMessage('Invalid ticket ID format'))
     id: string,
     @CurrentUser() user: UserEntity,
   ) {

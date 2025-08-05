@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
@@ -7,17 +6,17 @@ import {
   Inject,
   NotFoundException,
   Param,
-  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
+import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';
 import { UserEntity } from '../../user/domain/user.entity';
 import { CurrentUser } from '../../user/presentation/current-user.decorator';
 import { CourseEntity } from '../domain/course.entity';
-import { CreateCourseDto } from './create-course.dto';
 import {
   CourseRepository,
   ICourseRepository,
 } from '../domain/course.repository';
+import { CreateCourseDto } from './create-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -55,14 +54,7 @@ export class CourseController {
 
   @Get(':id')
   async getCourseById(
-    @Param(
-      'id',
-      new ParseUUIDPipe({
-        exceptionFactory() {
-          return new BadRequestException('Invalid course ID format');
-        },
-      }),
-    )
+    @Param('id', parseUUIDWithMessage('Invalid course ID format'))
     id: string,
   ) {
     const course = await this.courseRepository.findOneById(id);
