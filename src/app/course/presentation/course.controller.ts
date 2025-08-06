@@ -18,12 +18,14 @@ import {
   ICourseRepository,
 } from '../domain/course.repository';
 import { CreateCourseDto } from './create-course.dto';
+import { PurchaseService } from '../application/purchase.service';
 
 @Controller('courses')
 export class CourseController {
   constructor(
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
+    private readonly purchaseService: PurchaseService,
   ) {}
 
   @Post('/')
@@ -76,13 +78,15 @@ export class CourseController {
   async checkoutCourse(
     @Param('id', parseUUIDWithMessage('Invalid course ID format'))
     courseId: string,
+    @CurrentUser() user: UserEntity,
   ) {
     const course = await this.courseRepository.findOneById(courseId);
     if (!course) {
       throw new NotFoundException('Course not found');
     }
-    return {
-      checkoutUrl: `https://checkout.example.com/${courseId}`,
-    };
+    return await this.purchaseService.processPurchase({
+      course,
+      user,
+    });
   }
 }

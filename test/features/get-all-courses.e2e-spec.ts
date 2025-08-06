@@ -23,6 +23,10 @@ describe('Get All Courses (e2e)', () => {
     instructorUserJwt = await dsl.users.createUserWithRole('instructor');
   });
 
+  beforeEach(async () => {
+    await dsl.courses.deleteAllCourses();
+  });
+
   afterAll(async () => {
     await app.close();
   });

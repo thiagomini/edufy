@@ -1,5 +1,8 @@
 import { CreateCourseDto } from '@src/app/course/presentation/create-course.dto';
 import { AbstractDSL } from './abstract.dsl';
+import { Database } from '@src/libs/database/database.type';
+import { DATABASE } from '@src/libs/database/constants';
+import { sql } from 'kysely';
 
 export class CoursesDSL extends AbstractDSL {
   create(courseData: CreateCourseDto) {
@@ -31,5 +34,14 @@ export class CoursesDSL extends AbstractDSL {
 
   checkout(courseId: string) {
     return this.req().post(`/courses/${courseId}/checkout`).set(this.headers);
+  }
+
+  async deleteAllCourses() {
+    const database = this.app.get<Database>(DATABASE);
+    await database.executeQuery(
+      sql`TRUNCATE TABLE public.course RESTART IDENTITY CASCADE`.compile(
+        database,
+      ),
+    );
   }
 }

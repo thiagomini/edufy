@@ -6,7 +6,12 @@ import { loadEnvFile } from 'process';
 loadEnvFile();
 
 export default async function clearDatabase() {
-  const tables = ['public.user', 'public.ticket', 'public.course'] as const;
+  const tables = [
+    'public.user',
+    'public.ticket',
+    'public.course',
+    'public.purchase',
+  ] as const;
   const dialect = new PostgresDialect({
     pool: new Pool({
       connectionString: process.env.DATABASE_URL,

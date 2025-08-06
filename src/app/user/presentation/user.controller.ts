@@ -34,6 +34,7 @@ import {
   CourseRepository,
   ICourseRepository,
 } from '@src/app/course/domain/course.repository';
+import { PurchaseService } from '@src/app/course/application/purchase.service';
 
 @Controller('users')
 export class UserController {
@@ -46,6 +47,7 @@ export class UserController {
     private readonly ticketRepository: ITicketRepository,
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
+    private readonly purchaseService: PurchaseService,
   ) {}
 
   @Public()
@@ -141,7 +143,7 @@ export class UserController {
     if (user.role !== 'student') {
       throw new ForbiddenException('Only students can access purchase history');
     }
-    return [];
+    return await this.purchaseService.getPurchaseHistory(user);
   }
 
   private signJwtToken(user: UserEntity): Jwt {

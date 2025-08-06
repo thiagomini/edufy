@@ -37,7 +37,42 @@ describe('Get Purchase History (e2e)', () => {
         .expect(200)
         .expect([]);
     });
-    test.todo('returns a list of purchases for the authenticated student');
+    test('returns a list of purchases for the authenticated student', async () => {
+      const { id: javaCourseId } = await dsl.courses
+        .authenticatedAs(instructorUserJwt)
+        .create({
+          title: 'Java Programming',
+          description: 'Learn Java from scratch',
+          price: 250,
+        })
+        .then((res) => res.body);
+
+      await dsl.courses
+        .authenticatedAs(studentUserJwt)
+        .checkout(javaCourseId)
+        .expect(200);
+
+      return dsl.users
+        .authenticatedAs(studentUserJwt)
+        .getPurchaseHistory()
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual([
+            {
+              id: expect.any(String),
+              course: {
+                id: javaCourseId,
+                title: 'Java Programming',
+                description: 'Learn Java from scratch',
+                price: 250,
+                currency: 'BRL',
+              },
+              purchaseDate: expect.any(String),
+              status: 'pending',
+            },
+          ]);
+        });
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is unauthenticated', () => {
