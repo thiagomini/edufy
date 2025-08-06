@@ -29,6 +29,13 @@ export const response = {
       message,
     } as const;
   },
+  forbidden(message: string) {
+    return {
+      statusCode: 403,
+      error: 'Forbidden',
+      message,
+    } as const;
+  },
   validationFailed(errors: string[]) {
     return {
       statusCode: 400,

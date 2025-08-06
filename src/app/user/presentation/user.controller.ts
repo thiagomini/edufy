@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -136,7 +137,11 @@ export class UserController {
   }
 
   @Get('/me/purchase-history')
-  async getPurchaseHistory(@CurrentUser() user: UserEntity) {}
+  async getPurchaseHistory(@CurrentUser() user: UserEntity) {
+    if (user.role !== 'student') {
+      throw new ForbiddenException('Only students can access purchase history');
+    }
+  }
 
   private signJwtToken(user: UserEntity): Jwt {
     return new Jwt(this.jwtService.sign({ sub: user.id }));

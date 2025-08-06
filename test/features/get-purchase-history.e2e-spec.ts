@@ -10,7 +10,7 @@ describe('Get Purchase History (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
   let _studentUserJwt: Jwt;
-  let _instructorUserJwt: Jwt;
+  let instructorUserJwt: Jwt;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,7 +22,7 @@ describe('Get Purchase History (e2e)', () => {
     await app.init();
     dsl = createDSL(app);
     _studentUserJwt = await dsl.users.createUserWithRole('student');
-    _instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -40,6 +40,14 @@ describe('Get Purchase History (e2e)', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when user is not a student');
+    test('returns an error when user is not a student', async () => {
+      return dsl.users
+        .authenticatedAs(instructorUserJwt)
+        .getPurchaseHistory()
+        .expect(403)
+        .expect(
+          response.forbidden('Only students can access purchase history'),
+        );
+    });
   });
 });
