@@ -141,6 +141,7 @@ export class UserController {
     if (user.role !== 'student') {
       throw new ForbiddenException('Only students can access purchase history');
     }
+    return [];
   }
 
   private signJwtToken(user: UserEntity): Jwt {

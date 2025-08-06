@@ -9,7 +9,7 @@ import { response } from '@test/utils/response';
 describe('Get Purchase History (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let _studentUserJwt: Jwt;
+  let studentUserJwt: Jwt;
   let instructorUserJwt: Jwt;
 
   beforeAll(async () => {
@@ -21,7 +21,7 @@ describe('Get Purchase History (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    _studentUserJwt = await dsl.users.createUserWithRole('student');
+    studentUserJwt = await dsl.users.createUserWithRole('student');
     instructorUserJwt = await dsl.users.createUserWithRole('instructor');
   });
 
@@ -30,7 +30,13 @@ describe('Get Purchase History (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('returns an empty list when no purchases exist');
+    test('returns an empty list when no purchases exist', () => {
+      return dsl.users
+        .authenticatedAs(studentUserJwt)
+        .getPurchaseHistory()
+        .expect(200)
+        .expect([]);
+    });
     test.todo('returns a list of purchases for the authenticated student');
   });
   describe('error cases', () => {
