@@ -3,6 +3,7 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  HttpCode,
   Inject,
   NotFoundException,
   Param,
@@ -68,5 +69,20 @@ export class CourseController {
   async getAllCourses() {
     const courses = await this.courseRepository.findAll();
     return courses;
+  }
+
+  @HttpCode(200)
+  @Post(':id/checkout')
+  async checkoutCourse(
+    @Param('id', parseUUIDWithMessage('Invalid course ID format'))
+    courseId: string,
+  ) {
+    const course = await this.courseRepository.findOneById(courseId);
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+    return {
+      checkoutUrl: `https://checkout.example.com/${courseId}`,
+    };
   }
 }

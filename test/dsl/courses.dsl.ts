@@ -28,4 +28,8 @@ export class CoursesDSL extends AbstractDSL {
   getLecturedByUser(userId: string) {
     return this.req().get(`/users/${userId}/courses`).set(this.headers);
   }
+
+  checkout(courseId: string) {
+    return this.req().post(`/courses/${courseId}/checkout`).set(this.headers);
+  }
 }
