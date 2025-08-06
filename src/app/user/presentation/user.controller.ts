@@ -135,6 +135,9 @@ export class UserController {
     return this.courseRepository.findAllLecturedBy(userId);
   }
 
+  @Get('/me/purchase-history')
+  async getPurchaseHistory(@CurrentUser() user: UserEntity) {}
+
   private signJwtToken(user: UserEntity): Jwt {
     return new Jwt(this.jwtService.sign({ sub: user.id }));
   }

@@ -64,4 +64,8 @@ export class UsersDSL extends AbstractDSL {
   tickets() {
     return this.req().get('/users/me/tickets').set(this.headers);
   }
+
+  getPurchaseHistory() {
+    return this.req().get('/users/me/purchase-history').set(this.headers);
+  }
 }
