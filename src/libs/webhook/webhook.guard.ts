@@ -9,6 +9,7 @@ import {
 import { ModuleRef, Reflector } from '@nestjs/core';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { WEBHOOK_CONFIG, WebhookConfig } from './webhook.decorator';
+import webhookConfig from '../configuration/webhook.config';
 
 @Injectable()
 export class WebHookGuard implements CanActivate {
@@ -27,7 +28,7 @@ export class WebHookGuard implements CanActivate {
       this.getWebhookHeaderName(context)
     ] as string;
     if (!hmacHeader) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('HMAC header is missing');
     }
 
     const body = request.rawBody?.toString();
@@ -48,27 +49,37 @@ export class WebHookGuard implements CanActivate {
       this.logger.warn(
         `Invalid HMAC signature for webhook ${classAndMethod}: ${hmac}`,
       );
-      throw new ForbiddenException();
+      throw new ForbiddenException('Invalid HMAC signature');
     }
 
     return true;
   }
 
   private getWebhookSecret(context: ExecutionContext): string {
-    const config = this.getWebhookConfig(context);
-    const secretValue = this.moduleRef.get(config.secretKey, { strict: false });
-    return secretValue.webhookSecret;
+    const secret = this.getWebhookConfig(context).secret;
+    return secret;
   }
 
   private getWebhookHeaderName(context: ExecutionContext): string {
-    const config = this.getWebhookConfig(context);
-    return config.HMACHeader;
+    const header = this.getWebhookConfig(context).hmacHeader;
+    return header;
   }
 
   private getWebhookConfig(context: ExecutionContext): WebhookConfig {
-    return this.reflector.getAllAndOverride<WebhookConfig>(WEBHOOK_CONFIG, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const webHookConfigFromMetadata =
+      this.reflector.getAllAndOverride<WebhookConfig>(WEBHOOK_CONFIG, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
+    if (webHookConfigFromMetadata) {
+      return webHookConfigFromMetadata;
+    }
+    const webHookConfigFromEnv = this.moduleRef.get<WebhookConfig>(
+      webhookConfig.KEY,
+      {
+        strict: false,
+      },
+    );
+    return webHookConfigFromEnv;
   }
 }

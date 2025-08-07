@@ -1,8 +1,8 @@
 import { CreateCourseDto } from '@src/app/course/presentation/create-course.dto';
-import { AbstractDSL } from './abstract.dsl';
-import { Database } from '@src/libs/database/database.type';
 import { DATABASE } from '@src/libs/database/constants';
+import { Database } from '@src/libs/database/database.type';
 import { sql } from 'kysely';
+import { AbstractDSL } from './abstract.dsl';
 
 export class CoursesDSL extends AbstractDSL {
   create(courseData: CreateCourseDto) {

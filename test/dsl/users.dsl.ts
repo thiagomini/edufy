@@ -3,6 +3,7 @@ import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
 import { AbstractDSL } from './abstract.dsl';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { UserRoleEnum } from '@src/app/user/domain/user.role';
+import { UUID } from 'node:crypto';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
@@ -67,5 +68,19 @@ export class UsersDSL extends AbstractDSL {
 
   getPurchaseHistory() {
     return this.req().get('/users/me/purchase-history').set(this.headers);
+  }
+
+  confirmPurchase(purchaseId: UUID) {
+    const purchaseConfirmedEvent = {
+      type: 'purchase.confirmed',
+      data: {
+        purchaseId,
+        confirmedAt: new Date().toISOString(),
+      },
+    };
+    return this.req()
+      .post(`/users/webhook`)
+      .set(this.headers)
+      .send(purchaseConfirmedEvent);
   }
 }

@@ -5,8 +5,8 @@ export const SECRET_KEY = 'SECRET_KEY';
 export const HMAC_HEADER = 'hmac-header';
 
 @Webhook('test', {
-  secretKey: SECRET_KEY,
-  HMACHeader: HMAC_HEADER,
+  secret: SECRET_KEY,
+  hmacHeader: HMAC_HEADER,
 })
 export class WebhookTestController {
   @Post('events')
