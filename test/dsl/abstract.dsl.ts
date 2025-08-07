@@ -29,7 +29,9 @@ export abstract class AbstractDSL {
   }
 
   public usingHMAC(signature: string): this {
-    const hmacHeader = this.app.get<WebhookConfig>(webhookConfig).hmacHeader;
+    const hmacHeader = this.app.get<WebhookConfig>(
+      webhookConfig.KEY,
+    ).hmacHeader;
     return new (this.constructor as new (...args: any[]) => this)(this.app, {
       ...this.headers,
       [hmacHeader]: signature,

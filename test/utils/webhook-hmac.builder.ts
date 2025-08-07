@@ -7,7 +7,7 @@ import { createHmac } from 'crypto';
 export class WebhookHMACBuilder {
   constructor(private readonly secret: string) {}
 
-  buildForPayload(payload: Record<string, unknown>) {
+  buildForPayload(payload: Record<string, any>) {
     const payloadString = this.serialize(payload);
     const hmac = createHmac('sha256', this.secret)
       .update(payloadString)

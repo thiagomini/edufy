@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
-import { AbstractDSL } from './abstract.dsl';
-import { Jwt } from '@src/libs/jwt/jwt';
+import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { UserRoleEnum } from '@src/app/user/domain/user.role';
-import { UUID } from 'node:crypto';
+import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
+import { Jwt } from '@src/libs/jwt/jwt';
+import { AbstractDSL } from './abstract.dsl';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
@@ -70,14 +70,7 @@ export class UsersDSL extends AbstractDSL {
     return this.req().get('/users/me/purchase-history').set(this.headers);
   }
 
-  confirmPurchase(purchaseId: UUID) {
-    const purchaseConfirmedEvent = {
-      type: 'purchase.confirmed',
-      data: {
-        purchaseId,
-        confirmedAt: new Date().toISOString(),
-      },
-    };
+  confirmPurchase(purchaseConfirmedEvent: PurchaseConfirmedEvent) {
     return this.req()
       .post(`/users/webhook`)
       .set(this.headers)
