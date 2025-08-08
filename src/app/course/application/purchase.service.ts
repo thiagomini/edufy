@@ -48,13 +48,4 @@ export class PurchaseService {
     );
     return purchases;
   }
-
-  async confirmPurchase(purchaseId: UUID) {
-    const purchaseById = await this.purchaseRepository.findById(purchaseId);
-    if (purchaseById) {
-      purchaseById.status = 'completed';
-      await this.purchaseRepository.save(purchaseById);
-    }
-    return purchaseById;
-  }
 }

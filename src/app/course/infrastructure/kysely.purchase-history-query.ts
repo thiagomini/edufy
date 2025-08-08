@@ -37,6 +37,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
         currency: row.course.currency,
       },
       purchaseDate: row.purchaseDate,
+      confirmedAt: row.confirmedAt,
       status: row.status as PurchaseStatusEnum,
     };
   }
@@ -66,7 +67,12 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
   private selectPurchaseAndCourse() {
     return this.db
       .selectFrom('purchase')
-      .select(['purchase.id', 'status', 'createdAt as purchaseDate'])
+      .select([
+        'purchase.id',
+        'status',
+        'createdAt as purchaseDate',
+        'confirmedAt',
+      ])
       .select((eb) => [
         jsonObjectFrom(
           eb

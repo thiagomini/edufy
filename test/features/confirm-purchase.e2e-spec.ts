@@ -54,7 +54,7 @@ describe('Confirm Purchase (e2e)', () => {
 
       const purchaseConfirmedEvent = new PurchaseConfirmedEvent({
         data: { id: purchase.id },
-        timestamp: new Date().toISOString(),
+        timestamp: '2025-08-08T13:02:55.972Z',
       });
       const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
 
@@ -80,6 +80,7 @@ describe('Confirm Purchase (e2e)', () => {
               currency: 'BRL',
             },
             purchaseDate: expect.any(String),
+            confirmedAt: '2025-08-08T13:02:55.972Z',
             status: 'completed',
           });
         });

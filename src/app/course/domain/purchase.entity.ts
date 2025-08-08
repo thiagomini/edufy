@@ -14,6 +14,7 @@ export interface PurchaseProps {
   userId: string;
   courseId: string;
   purchaseDate: Date;
+  confirmedAt: Date;
   status: PurchaseStatusEnum;
   price: number;
   currency: string;
@@ -35,6 +36,7 @@ export class PurchaseEntity {
     public status: PurchaseStatusEnum,
     public readonly price: number,
     public readonly currency: string,
+    public confirmedAt: Date | null,
   ) {}
 
   public static create(input: CreatePurchaseInput): PurchaseEntity {
@@ -46,6 +48,7 @@ export class PurchaseEntity {
       PurchaseStatus.Pending,
       input.price,
       input.currency,
+      null,
     );
   }
 
@@ -58,6 +61,7 @@ export class PurchaseEntity {
       props.status,
       props.price,
       props.currency,
+      props.confirmedAt,
     );
   }
 }

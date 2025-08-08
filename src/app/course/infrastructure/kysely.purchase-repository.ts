@@ -1,9 +1,11 @@
 import { Database } from '@src/libs/database/database.type';
-import { PurchaseEntity } from '../domain/purchase.entity';
+import { PurchaseEntity, PurchaseStatusEnum } from '../domain/purchase.entity';
 import { IPurchaseRepository } from '../domain/purchase.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
 import { UUID } from 'crypto';
+import { Selectable } from 'kysely';
+import { Purchase } from '@src/libs/database/generated/db';
 
 @Injectable()
 export class KyselyPurchaseRepository implements IPurchaseRepository {
@@ -35,23 +37,27 @@ export class KyselyPurchaseRepository implements IPurchaseRepository {
           userId: purchase.userId,
           status: purchase.status,
           price: purchase.price,
+          confirmedAt: purchase.confirmedAt,
           updatedAt: new Date(),
         }),
       )
       .execute();
   }
 
-  private mapToPurchaseEntity(row: any): PurchaseEntity | null {
+  private mapToPurchaseEntity(
+    row: Selectable<Purchase>,
+  ): PurchaseEntity | null {
     if (!row) return null;
 
     return PurchaseEntity.fromProps({
       id: row.id,
       courseId: row.courseId,
       userId: row.userId,
-      status: row.status,
-      price: row.price,
+      status: row.status as PurchaseStatusEnum,
+      price: +row.price,
       purchaseDate: row.createdAt,
       currency: 'BRL',
+      confirmedAt: row.confirmedAt,
     });
   }
 }
