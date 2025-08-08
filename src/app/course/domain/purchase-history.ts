@@ -10,5 +10,6 @@ export interface PurchaseHistory {
     currency: string;
   };
   purchaseDate: Date;
+  confirmedAt: Date;
   status: PurchaseStatusEnum;
 }

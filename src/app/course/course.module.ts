@@ -26,6 +26,6 @@ import { PurchaseController } from './presentation/purchase.controller';
     },
     PurchaseService,
   ],
-  exports: [CourseRepository, PurchaseService],
+  exports: [CourseRepository, PurchaseService, PurchaseRepository],
 })
 export class CourseModule {}

@@ -73,6 +73,7 @@ describe('Get Purchase By Id (e2e)', () => {
               },
               purchaseDate: expect.any(String),
               status: 'pending',
+              confirmedAt: null,
             });
           })
       );
