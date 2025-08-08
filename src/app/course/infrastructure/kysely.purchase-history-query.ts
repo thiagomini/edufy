@@ -17,23 +17,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
     purchaseId,
     userId,
   }: UserPurchase): Promise<PurchaseHistory | null> {
-    const row = await this.db
-      .selectFrom('purchase')
-      .select(['purchase.id', 'status', 'createdAt as purchaseDate'])
-      .select((eb) => [
-        jsonObjectFrom(
-          eb
-            .selectFrom('course')
-            .select([
-              'course.id',
-              'course.title',
-              'course.description',
-              'course.price',
-              sql<string>`'BRL'`.as('currency'),
-            ])
-            .whereRef('course.id', '=', 'purchase.courseId'),
-        ).as('course'),
-      ])
+    const row = await this.selectPurchaseAndCourse()
       .where('purchase.id', '=', purchaseId)
       .where('purchase.userId', '=', userId)
       .orderBy('purchase.createdAt', 'desc')
@@ -58,23 +42,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
   }
 
   async findAllByUserId(userId: UUID): Promise<PurchaseHistory[]> {
-    const result = await this.db
-      .selectFrom('purchase')
-      .select(['purchase.id', 'status', 'createdAt as purchaseDate'])
-      .select((eb) => [
-        jsonObjectFrom(
-          eb
-            .selectFrom('course')
-            .select([
-              'course.id',
-              'course.title',
-              'course.description',
-              'course.price',
-              sql<string>`'BRL'`.as('currency'),
-            ])
-            .whereRef('course.id', '=', 'purchase.courseId'),
-        ).as('course'),
-      ])
+    const result = await this.selectPurchaseAndCourse()
       .where('purchase.userId', '=', userId)
       .orderBy('purchase.createdAt', 'desc')
       .execute();
@@ -93,5 +61,25 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
           status: row.status,
         }) as PurchaseHistory,
     );
+  }
+
+  private selectPurchaseAndCourse() {
+    return this.db
+      .selectFrom('purchase')
+      .select(['purchase.id', 'status', 'createdAt as purchaseDate'])
+      .select((eb) => [
+        jsonObjectFrom(
+          eb
+            .selectFrom('course')
+            .select([
+              'course.id',
+              'course.title',
+              'course.description',
+              'course.price',
+              sql<string>`'BRL'`.as('currency'),
+            ])
+            .whereRef('course.id', '=', 'purchase.courseId'),
+        ).as('course'),
+      ]);
   }
 }
