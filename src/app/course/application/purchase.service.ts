@@ -38,6 +38,7 @@ export class PurchaseService {
 
     return {
       checkoutUrl: `https://checkout.example.com/${newPurchase.id}`,
+      id: newPurchase.id,
     };
   }
 
@@ -46,5 +47,14 @@ export class PurchaseService {
       user.id as UUID,
     );
     return purchases;
+  }
+
+  async confirmPurchase(purchaseId: UUID) {
+    const purchaseById = await this.purchaseRepository.findById(purchaseId);
+    if (purchaseById) {
+      purchaseById.status = 'completed';
+      await this.purchaseRepository.save(purchaseById);
+    }
+    return purchaseById;
   }
 }

@@ -3,10 +3,20 @@ import { PurchaseEntity } from '../domain/purchase.entity';
 import { IPurchaseRepository } from '../domain/purchase.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class KyselyPurchaseRepository implements IPurchaseRepository {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
+
+  async findById(id: UUID): Promise<PurchaseEntity | null> {
+    return await this.db
+      .selectFrom('purchase')
+      .selectAll()
+      .where('id', '=', id)
+      .executeTakeFirst()
+      .then((res) => this.mapToPurchaseEntity(res));
+  }
 
   async save(purchase: PurchaseEntity): Promise<void> {
     await this.db
@@ -29,5 +39,19 @@ export class KyselyPurchaseRepository implements IPurchaseRepository {
         }),
       )
       .execute();
+  }
+
+  private mapToPurchaseEntity(row: any): PurchaseEntity | null {
+    if (!row) return null;
+
+    return PurchaseEntity.fromProps({
+      id: row.id,
+      courseId: row.courseId,
+      userId: row.userId,
+      status: row.status,
+      price: row.price,
+      purchaseDate: row.createdAt,
+      currency: 'BRL',
+    });
   }
 }

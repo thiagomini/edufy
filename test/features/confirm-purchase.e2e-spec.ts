@@ -32,7 +32,41 @@ describe('Confirm Purchase (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('successfully confirms a purchase');
+    test('successfully confirms a purchase', async () => {
+      // Arrange
+      const instructorJwt = await dsl.users.createUserWithRole('instructor');
+      const newRustCourse = await dsl.courses
+        .authenticatedAs(instructorJwt)
+        .create({
+          description: 'Rust Course',
+          title: 'Learn Rust',
+          price: 500,
+        })
+        .expect(201)
+        .then((res) => res.body);
+
+      const studentJwt = await dsl.users.createUserWithRole('student');
+      const purchase = await dsl.courses
+        .authenticatedAs(studentJwt)
+        .checkout(newRustCourse.id)
+        .expect(200)
+        .then((res) => res.body);
+
+      const purchaseConfirmedEvent = new PurchaseConfirmedEvent({
+        data: { id: purchase.id },
+        timestamp: new Date().toISOString(),
+      });
+      const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
+
+      // Act
+      await dsl.users
+        .usingHMAC(hmac)
+        .confirmPurchase(purchaseConfirmedEvent)
+        .expect(204);
+
+      // Assert
+      // TODO: Get purchase by id and check its status
+    });
     test.todo('ignores duplicate confirmations for the same purchase');
   });
   describe('error cases', () => {
@@ -48,7 +82,7 @@ describe('Confirm Purchase (e2e)', () => {
     });
     test('returns an error when request data is invalid', () => {
       const purchaseConfirmedEvent: PurchaseConfirmedEvent = {
-        data: { id: 'not-a-uuid' },
+        data: { id: 'not-really-a-valid-uuid' },
         timestamp: new Date().toISOString(),
         type: 'purchase.confirmed',
       } as const;
