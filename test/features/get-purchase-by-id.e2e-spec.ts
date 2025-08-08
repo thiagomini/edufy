@@ -5,7 +5,7 @@ import { Jwt } from '@src/libs/jwt/jwt';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, UUID } from 'node:crypto';
 
 describe('Get Purchase By Id (e2e)', () => {
   let app: INestApplication;
@@ -13,7 +13,7 @@ describe('Get Purchase By Id (e2e)', () => {
   let studentAccessToken: Jwt<{ sub: string }>;
   let instructorAccessToken: Jwt<{ sub: string }>;
   let typescriptCourse: {
-    id: string;
+    id: UUID;
     title: string;
     description: string;
     price: number;
@@ -125,6 +125,13 @@ describe('Get Purchase By Id (e2e)', () => {
           .expect(404)
           .expect(response.notFound('Purchase not found'))
       );
+    });
+    test('returns an error when requesting purchase for an instructor', () => {
+      return dsl.courses
+        .authenticatedAs(instructorAccessToken)
+        .getPurchaseById(randomUUID())
+        .expect(403)
+        .expect(response.forbidden('Instructors cannot access purchases'));
     });
   });
 });

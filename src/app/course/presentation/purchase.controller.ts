@@ -1,5 +1,6 @@
 import {
   Controller,
+  ForbiddenException,
   Get,
   Inject,
   NotFoundException,
@@ -26,6 +27,9 @@ export class PurchaseController {
     @Param('id', parseUUIDWithMessage('Invalid purchase ID format')) id: UUID,
     @CurrentUser() user: UserEntity,
   ) {
+    if (user.role === 'instructor') {
+      throw new ForbiddenException('Instructors cannot access purchases');
+    }
     const purchase = await this.purchaseHistoryQuery.findByUserPurchase({
       userId: user.id,
       purchaseId: id,
