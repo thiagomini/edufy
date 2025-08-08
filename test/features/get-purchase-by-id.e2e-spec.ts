@@ -38,7 +38,13 @@ describe('Get Purchase By Id (e2e)', () => {
         .getPurchaseById(randomUUID())
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when purchase ID is invalid');
+    test('returns an error when purchase ID is invalid', () => {
+      return dsl.courses
+        .authenticatedAs(_jwtAccessToken)
+        .getPurchaseById('not-really-a-valid-uuid')
+        .expect(400)
+        .expect(response.badRequest('Invalid purchase ID format'));
+    });
     test.todo('returns an error when purchase is not found');
   });
 });
