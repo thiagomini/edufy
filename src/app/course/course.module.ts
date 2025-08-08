@@ -7,9 +7,10 @@ import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repos
 import { PurchaseService } from './application/purchase.service';
 import { PurchaseHistoryQuery } from './domain/purchase-history.query';
 import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
+import { PurchaseController } from './presentation/purchase.controller';
 
 @Module({
-  controllers: [CourseController],
+  controllers: [CourseController, PurchaseController],
   providers: [
     {
       provide: CourseRepository,

@@ -3,6 +3,7 @@ import { DATABASE } from '@src/libs/database/constants';
 import { Database } from '@src/libs/database/database.type';
 import { sql } from 'kysely';
 import { AbstractDSL } from './abstract.dsl';
+import { UUID } from 'node:crypto';
 
 export class CoursesDSL extends AbstractDSL {
   create(courseData: CreateCourseDto) {
@@ -34,6 +35,10 @@ export class CoursesDSL extends AbstractDSL {
 
   checkout(courseId: string) {
     return this.req().post(`/courses/${courseId}/checkout`).set(this.headers);
+  }
+
+  getPurchaseById(purchaseId: UUID) {
+    return this.req().get(`/purchases/${purchaseId}`).set(this.headers);
   }
 
   async deleteAllCourses() {
