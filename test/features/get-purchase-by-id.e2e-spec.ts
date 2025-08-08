@@ -10,7 +10,7 @@ import { randomUUID } from 'node:crypto';
 describe('Get Purchase By Id (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let _jwtAccessToken: Jwt<{ sub: string }>;
+  let jwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Get Purchase By Id (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    _jwtAccessToken = await dsl.users.createRandomUser();
+    jwtAccessToken = await dsl.users.createRandomUser();
   });
 
   afterAll(async () => {
@@ -40,11 +40,17 @@ describe('Get Purchase By Id (e2e)', () => {
     });
     test('returns an error when purchase ID is invalid', () => {
       return dsl.courses
-        .authenticatedAs(_jwtAccessToken)
+        .authenticatedAs(jwtAccessToken)
         .getPurchaseById('not-really-a-valid-uuid')
         .expect(400)
         .expect(response.badRequest('Invalid purchase ID format'));
     });
-    test.todo('returns an error when purchase is not found');
+    test('returns an error when purchase is not found', () => {
+      return dsl.courses
+        .authenticatedAs(jwtAccessToken)
+        .getPurchaseById(randomUUID())
+        .expect(404)
+        .expect(response.notFound('Purchase not found'));
+    });
   });
 });
