@@ -10,7 +10,7 @@ import { randomUUID } from 'node:crypto';
 describe('Get Purchase By Id (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let jwtAccessToken: Jwt<{ sub: string }>;
+  let studentAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Get Purchase By Id (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users.createRandomUser();
+    studentAccessToken = await dsl.users.createRandomUser();
   });
 
   afterAll(async () => {
@@ -29,7 +29,49 @@ describe('Get Purchase By Id (e2e)', () => {
   });
 
   describe('success cases', () => {
-    test.todo('returns a purchase by id');
+    test('returns a purchase by id', async () => {
+      // Arrange
+      const instructorAccessToken =
+        await dsl.users.createUserWithRole('instructor');
+      const typescriptCourse = await dsl.courses
+        .authenticatedAs(instructorAccessToken)
+        .create({
+          title: 'Typescript Hero',
+          description: 'Become a Typescript expert',
+          price: 175,
+        })
+        .expect(201)
+        .then((res) => res.body);
+
+      const { id } = await dsl.courses
+        .authenticatedAs(studentAccessToken)
+        .checkout(typescriptCourse.id)
+        .expect(200)
+        .then((res) => res.body);
+
+      // Act
+      return (
+        dsl.courses
+          .authenticatedAs(studentAccessToken)
+          .getPurchaseById(id)
+          // Assert
+          .expect(200)
+          .expect((res) => {
+            expect(res.body).toEqual({
+              id,
+              course: {
+                id: typescriptCourse.id,
+                title: typescriptCourse.title,
+                description: typescriptCourse.description,
+                price: typescriptCourse.price,
+                currency: 'BRL',
+              },
+              purchaseDate: expect.any(String),
+              status: 'pending',
+            });
+          })
+      );
+    });
   });
 
   describe('error cases', () => {
@@ -40,14 +82,14 @@ describe('Get Purchase By Id (e2e)', () => {
     });
     test('returns an error when purchase ID is invalid', () => {
       return dsl.courses
-        .authenticatedAs(jwtAccessToken)
+        .authenticatedAs(studentAccessToken)
         .getPurchaseById('not-really-a-valid-uuid')
         .expect(400)
         .expect(response.badRequest('Invalid purchase ID format'));
     });
     test('returns an error when purchase is not found', () => {
       return dsl.courses
-        .authenticatedAs(jwtAccessToken)
+        .authenticatedAs(studentAccessToken)
         .getPurchaseById(randomUUID())
         .expect(404)
         .expect(response.notFound('Purchase not found'));
