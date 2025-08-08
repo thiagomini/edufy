@@ -60,6 +60,17 @@ describe('Confirm Purchase (e2e)', () => {
         .expect(400)
         .expect(response.validationFailed(['Invalid UUID']));
     });
-    test.todo('returns an error when purchase does not exist');
+    test('returns an error when purchase does not exist', () => {
+      const purchaseConfirmedEvent = new PurchaseConfirmedEvent({
+        data: { id: randomUUID() },
+        timestamp: new Date().toISOString(),
+      });
+      const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
+      return dsl.users
+        .usingHMAC(hmac)
+        .confirmPurchase(purchaseConfirmedEvent)
+        .expect(404)
+        .expect(response.notFound('Purchase not found'));
+    });
   });
 });
