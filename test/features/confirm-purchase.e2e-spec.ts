@@ -65,7 +65,24 @@ describe('Confirm Purchase (e2e)', () => {
         .expect(204);
 
       // Assert
-      // TODO: Get purchase by id and check its status
+      return dsl.courses
+        .authenticatedAs(studentJwt)
+        .getPurchaseById(purchase.id)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toEqual({
+            id: purchase.id,
+            course: {
+              id: newRustCourse.id,
+              title: newRustCourse.title,
+              description: newRustCourse.description,
+              price: newRustCourse.price,
+              currency: 'BRL',
+            },
+            purchaseDate: expect.any(String),
+            status: 'completed',
+          });
+        });
     });
     test.todo('ignores duplicate confirmations for the same purchase');
   });
