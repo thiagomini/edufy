@@ -11,6 +11,13 @@ describe('Get Purchase By Id (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
   let studentAccessToken: Jwt<{ sub: string }>;
+  let instructorAccessToken: Jwt<{ sub: string }>;
+  let typescriptCourse: {
+    id: string;
+    title: string;
+    description: string;
+    price: number;
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +28,17 @@ describe('Get Purchase By Id (e2e)', () => {
     configServer(app);
     await app.init();
     dsl = createDSL(app);
-    studentAccessToken = await dsl.users.createRandomUser();
+    studentAccessToken = await dsl.users.createUserWithRole('student');
+    instructorAccessToken = await dsl.users.createUserWithRole('instructor');
+    typescriptCourse = await dsl.courses
+      .authenticatedAs(instructorAccessToken)
+      .create({
+        title: 'Typescript Hero',
+        description: 'Become a Typescript expert',
+        price: 175,
+      })
+      .expect(201)
+      .then((res) => res.body);
   });
 
   afterAll(async () => {
@@ -31,18 +48,6 @@ describe('Get Purchase By Id (e2e)', () => {
   describe('success cases', () => {
     test('returns a purchase by id', async () => {
       // Arrange
-      const instructorAccessToken =
-        await dsl.users.createUserWithRole('instructor');
-      const typescriptCourse = await dsl.courses
-        .authenticatedAs(instructorAccessToken)
-        .create({
-          title: 'Typescript Hero',
-          description: 'Become a Typescript expert',
-          price: 175,
-        })
-        .expect(201)
-        .then((res) => res.body);
-
       const { id } = await dsl.courses
         .authenticatedAs(studentAccessToken)
         .checkout(typescriptCourse.id)
@@ -93,6 +98,33 @@ describe('Get Purchase By Id (e2e)', () => {
         .getPurchaseById(randomUUID())
         .expect(404)
         .expect(response.notFound('Purchase not found'));
+    });
+    test('returns an error when the user does not own the purchase', async () => {
+      // Arrange
+      const anotherStudentJwt = await dsl.users.createUserWithRole('student');
+      const rustCourse = await dsl.courses
+        .authenticatedAs(instructorAccessToken)
+        .create({
+          title: 'Some Rust course',
+          description: 'Learn Programming in Rust',
+          price: 50,
+        })
+        .then((res) => res.body);
+
+      const { id: rustCoursePurchase } = await dsl.courses
+        .authenticatedAs(anotherStudentJwt)
+        .checkout(rustCourse.id)
+        .then((res) => res.body);
+
+      // Act
+      return (
+        dsl.courses
+          .authenticatedAs(studentAccessToken)
+          .getPurchaseById(rustCoursePurchase)
+          // Assert
+          .expect(404)
+          .expect(response.notFound('Purchase not found'))
+      );
     });
   });
 });

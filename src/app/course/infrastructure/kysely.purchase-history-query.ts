@@ -1,6 +1,9 @@
 import { UUID } from 'crypto';
 import { PurchaseHistory } from '../domain/purchase-history';
-import { IPurchaseHistoryQuery } from '../domain/purchase-history.query';
+import {
+  IPurchaseHistoryQuery,
+  UserPurchase,
+} from '../domain/purchase-history.query';
 import { Inject } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
 import { Database } from '@src/libs/database/database.type';
@@ -10,7 +13,10 @@ import { PurchaseStatusEnum } from '../domain/purchase.entity';
 export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async findByPurchaseId(purchaseId: UUID): Promise<PurchaseHistory | null> {
+  async findByUserPurchase({
+    purchaseId,
+    userId,
+  }: UserPurchase): Promise<PurchaseHistory | null> {
     const row = await this.db
       .selectFrom('purchase')
       .select(['purchase.id', 'status', 'createdAt as purchaseDate'])
@@ -29,6 +35,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
         ).as('course'),
       ])
       .where('purchase.id', '=', purchaseId)
+      .where('purchase.userId', '=', userId)
       .orderBy('purchase.createdAt', 'desc')
       .executeTakeFirst();
 

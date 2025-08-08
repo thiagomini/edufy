@@ -11,6 +11,8 @@ import {
   IPurchaseHistoryQuery,
   PurchaseHistoryQuery,
 } from '../domain/purchase-history.query';
+import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
+import { UserEntity } from '@src/app/user/domain/user.entity';
 
 @Controller('purchases')
 export class PurchaseController {
@@ -22,8 +24,12 @@ export class PurchaseController {
   @Get(':id')
   async getPurchaseById(
     @Param('id', parseUUIDWithMessage('Invalid purchase ID format')) id: UUID,
+    @CurrentUser() user: UserEntity,
   ) {
-    const purchase = await this.purchaseHistoryQuery.findByPurchaseId(id);
+    const purchase = await this.purchaseHistoryQuery.findByUserPurchase({
+      userId: user.id,
+      purchaseId: id,
+    });
     if (!purchase) {
       throw new NotFoundException('Purchase not found');
     }

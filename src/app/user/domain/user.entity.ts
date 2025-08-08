@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID, UUID } from 'node:crypto';
 import { UserRoleEnum } from './user.role';
 
 export interface CreateUserInput {
@@ -6,7 +6,7 @@ export interface CreateUserInput {
   email: string;
   password: string;
   role?: UserRoleEnum | null;
-  id?: string;
+  id?: UUID;
 }
 
 export interface UserProps {
@@ -22,7 +22,7 @@ export interface UserProps {
 
 export class UserEntity {
   private constructor(
-    public readonly id: string,
+    public readonly id: UUID,
     public name: string,
     public readonly email: string,
     public readonly password: string,
@@ -44,7 +44,7 @@ export class UserEntity {
 
   public static fromProps(props: UserProps): UserEntity {
     return new UserEntity(
-      props.id,
+      props.id as UUID,
       props.name,
       props.email,
       props.password,
