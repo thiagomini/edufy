@@ -64,6 +64,7 @@ describe('Get Purchase By Id (e2e)', () => {
           .expect((res) => {
             expect(res.body).toEqual({
               id,
+              userId: studentAccessToken.payload().sub,
               course: {
                 id: typescriptCourse.id,
                 title: typescriptCourse.title,

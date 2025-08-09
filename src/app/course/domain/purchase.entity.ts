@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID, UUID } from 'node:crypto';
 
 export const PurchaseStatus = {
   Completed: 'completed',
@@ -10,9 +10,9 @@ export type PurchaseStatusEnum =
   (typeof PurchaseStatus)[keyof typeof PurchaseStatus];
 
 export interface PurchaseProps {
-  id: string;
-  userId: string;
-  courseId: string;
+  id: UUID;
+  userId: UUID;
+  courseId: UUID;
   purchaseDate: Date;
   confirmedAt: Date;
   status: PurchaseStatusEnum;
@@ -21,17 +21,17 @@ export interface PurchaseProps {
 }
 
 export interface CreatePurchaseInput {
-  userId: string;
-  courseId: string;
+  userId: UUID;
+  courseId: UUID;
   price: number;
   currency: string;
 }
 
 export class PurchaseEntity {
   private constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly courseId: string,
+    public readonly id: UUID,
+    public readonly userId: UUID,
+    public readonly courseId: UUID,
     public readonly purchaseDate: Date,
     public status: PurchaseStatusEnum,
     public readonly price: number,
@@ -54,7 +54,7 @@ export class PurchaseEntity {
 
   public static fromProps(props: PurchaseProps): PurchaseEntity {
     return new PurchaseEntity(
-      props.id,
+      props.id as UUID,
       props.userId,
       props.courseId,
       props.purchaseDate,

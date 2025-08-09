@@ -8,6 +8,8 @@ import { PurchaseService } from './application/purchase.service';
 import { PurchaseHistoryQuery } from './domain/purchase-history.query';
 import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
 import { PurchaseController } from './presentation/purchase.controller';
+import { PaymentGateway } from './application/payment.gateway';
+import { ExamplePaymentGateway } from './application/example-payment.gateway';
 
 @Module({
   controllers: [CourseController, PurchaseController],
@@ -23,6 +25,10 @@ import { PurchaseController } from './presentation/purchase.controller';
     {
       provide: PurchaseHistoryQuery,
       useClass: KyselyPurchaseHistoryQuery,
+    },
+    {
+      provide: PaymentGateway,
+      useClass: ExamplePaymentGateway,
     },
     PurchaseService,
   ],

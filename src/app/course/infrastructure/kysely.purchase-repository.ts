@@ -50,9 +50,9 @@ export class KyselyPurchaseRepository implements IPurchaseRepository {
     if (!row) return null;
 
     return PurchaseEntity.fromProps({
-      id: row.id,
-      courseId: row.courseId,
-      userId: row.userId,
+      id: row.id as UUID,
+      courseId: row.courseId as UUID,
+      userId: row.userId as UUID,
       status: row.status as PurchaseStatusEnum,
       price: +row.price,
       purchaseDate: row.createdAt,

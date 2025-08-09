@@ -72,6 +72,7 @@ describe('Confirm Purchase (e2e)', () => {
         .expect((res) => {
           expect(res.body).toEqual({
             id: purchase.id,
+            userId: studentJwt.payload().sub,
             course: {
               id: newRustCourse.id,
               title: newRustCourse.title,

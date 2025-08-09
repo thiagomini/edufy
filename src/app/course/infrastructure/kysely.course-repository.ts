@@ -5,6 +5,7 @@ import { DATABASE } from '@src/libs/database/constants';
 import { Database } from '@src/libs/database/database.type';
 import { Selectable } from 'kysely';
 import { Course } from '@src/libs/database/generated/db';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class KyselyCourseRepository implements ICourseRepository {
@@ -67,11 +68,11 @@ export class KyselyCourseRepository implements ICourseRepository {
       return null;
     }
     return CourseEntity.fromProps({
-      id: courseInDb.id,
+      id: courseInDb.id as UUID,
       title: courseInDb.title,
       description: courseInDb.description,
       price: +courseInDb.price,
-      instructorId: courseInDb.instructorId,
+      instructorId: courseInDb.instructorId as UUID,
     });
   }
 }

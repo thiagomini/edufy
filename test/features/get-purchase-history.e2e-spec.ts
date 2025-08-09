@@ -60,6 +60,7 @@ describe('Get Purchase History (e2e)', () => {
           expect(res.body).toEqual([
             {
               id: expect.any(String),
+              userId: studentUserJwt.payload().id,
               course: {
                 id: javaCourseId,
                 title: 'Java Programming',

@@ -1,28 +1,28 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID, UUID } from 'node:crypto';
 
 export interface CreateCourseInput {
   title: string;
   description: string;
   price: number;
-  id?: string;
-  instructorId: string;
+  id?: UUID;
+  instructorId: UUID;
 }
 
 export interface CourseProps {
-  id: string;
+  id: UUID;
   title: string;
   description: string;
   price: number;
-  instructorId: string;
+  instructorId: UUID;
 }
 
 export class CourseEntity {
   private constructor(
-    public readonly id: string,
+    public readonly id: UUID,
     public title: string,
     public description: string,
     public price: number,
-    public readonly instructorId: string,
+    public readonly instructorId: UUID,
   ) {}
 
   public static create(input: CreateCourseInput): CourseEntity {

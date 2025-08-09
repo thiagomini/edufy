@@ -29,6 +29,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
 
     return {
       id: row.id,
+      userId: row.userId,
       course: {
         id: row.course.id,
         title: row.course.title,
@@ -38,7 +39,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
       },
       purchaseDate: row.purchaseDate,
       confirmedAt: row.confirmedAt,
-      status: row.status as PurchaseStatusEnum,
+      status: row.status,
     };
   }
 
@@ -69,6 +70,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
       .selectFrom('purchase')
       .select([
         'purchase.id',
+        'userId',
         'status',
         'createdAt as purchaseDate',
         'confirmedAt',
@@ -86,6 +88,11 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
             ])
             .whereRef('course.id', '=', 'purchase.courseId'),
         ).as('course'),
-      ]);
+      ])
+      .$narrowType<{
+        id: UUID;
+        userId: UUID;
+        status: PurchaseStatusEnum;
+      }>();
   }
 }

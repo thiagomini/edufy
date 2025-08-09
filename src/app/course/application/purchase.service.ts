@@ -11,6 +11,7 @@ import {
   PurchaseHistoryQuery,
 } from '../domain/purchase-history.query';
 import { UUID } from 'node:crypto';
+import { IPaymentGateway, PaymentGateway } from './payment.gateway';
 
 export interface PurchaseInput {
   course: CourseEntity;
@@ -24,6 +25,8 @@ export class PurchaseService {
     private readonly purchaseRepository: IPurchaseRepository,
     @Inject(PurchaseHistoryQuery)
     private readonly purchaseHistoryQuery: IPurchaseHistoryQuery,
+    @Inject(PaymentGateway)
+    private readonly paymentGateway: IPaymentGateway,
   ) {}
 
   async processPurchase({ course, user }: PurchaseInput) {
@@ -36,8 +39,14 @@ export class PurchaseService {
 
     await this.purchaseRepository.save(newPurchase);
 
+    const { checkoutUrl } = await this.paymentGateway.createPaymentIntent({
+      amount: course.price,
+      currency: 'BRL',
+      purchaseId: newPurchase.id,
+    });
+
     return {
-      checkoutUrl: `https://checkout.example.com/${newPurchase.id}`,
+      checkoutUrl,
       id: newPurchase.id,
     };
   }
