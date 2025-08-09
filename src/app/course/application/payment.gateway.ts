@@ -6,14 +6,14 @@ export interface CreatePaymentIntentInput {
   purchaseId: UUID;
 }
 
-export interface createPaymentIntentOutput {
+export interface CreatePaymentIntentOutput {
   checkoutUrl: URL;
 }
 
 export interface IPaymentGateway {
   createPaymentIntent(
     input: CreatePaymentIntentInput,
-  ): Promise<createPaymentIntentOutput>;
+  ): Promise<CreatePaymentIntentOutput>;
 }
 
 export const PaymentGateway = Symbol.for('course:PaymentGateway');

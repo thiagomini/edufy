@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import {
   CreatePaymentIntentInput,
-  createPaymentIntentOutput,
+  CreatePaymentIntentOutput,
   IPaymentGateway,
 } from './payment.gateway';
 
@@ -11,9 +11,9 @@ export class PaymentGatewaySpy implements IPaymentGateway {
 
   createPaymentIntent(
     input: CreatePaymentIntentInput,
-  ): Promise<createPaymentIntentOutput> {
+  ): Promise<CreatePaymentIntentOutput> {
     this.createPaymentIntentInput.push(input);
-    const output: createPaymentIntentOutput = {
+    const output: CreatePaymentIntentOutput = {
       checkoutUrl: new URL(faker.internet.url()),
     };
     return Promise.resolve(output);
