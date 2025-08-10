@@ -1,0 +1,39 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+  
+jobs:
+  build:
+    env:
+      DATABASE_URL: postgres://admin:password@localhost:5432/test
+      JWT_SECRET: ci_secret
+      JWT_EXPIRATION: 1h
+      ADMIN_KEY: ci_admin_key
+      WEBHOOK_SECRET: ci_webhook_secret
+      WEBHOOK_HMAC_HEADER: x-hmac-signature
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js Version
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .node-version
+        cache: 'pnpm'
+        cache-dependency-path: 'pnpm-lock.yaml'
+    - run: pnpm install --frozen-lockfile
+    - run: pnpm run lint
+    - run: pnpm run test
+    - run: docker compose up --wait
+    - run: pnpm run kysely migrate:latest -e=test && pnpm run codegen
+    - run: pnpm run test:e2e
