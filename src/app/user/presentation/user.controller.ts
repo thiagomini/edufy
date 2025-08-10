@@ -7,38 +7,37 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
-  Param,
   Patch,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PurchaseService } from '@src/app/course/application/purchase.service';
+import {
+  CourseRepository,
+  ICourseRepository,
+} from '@src/app/course/domain/course.repository';
+import {
+  EnrollmentRepository,
+  IEnrollmentRepository,
+} from '@src/app/course/domain/enrollment.repository';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '@src/app/ticket/domain/ticket.repository';
+import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+import { Jwt } from '@src/libs/jwt/jwt';
 import * as argon2 from 'argon2';
 import { UserService } from '../application/user.service';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
 import { CurrentUser } from './current-user.decorator';
 import { LoginDto } from './dto/login.dto';
-import { Public } from './public.decorator';
 import { SelfAssignRoleDto } from './dto/self-assign-role.dto';
 import { SignupUserDto } from './dto/signup-user.dto';
-import { Jwt } from '@src/libs/jwt/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  ITicketRepository,
-  TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
 import { UserReadDto } from './dto/user.read-dto';
-import {
-  CourseRepository,
-  ICourseRepository,
-} from '@src/app/course/domain/course.repository';
-import { PurchaseService } from '@src/app/course/application/purchase.service';
-import {
-  EnrollmentRepository,
-  IEnrollmentRepository,
-} from '@src/app/course/domain/enrollment.repository';
+import { Public } from './public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -139,9 +138,13 @@ export class UserController {
     return userTickets.map((ticket) => new TicketReadDto(ticket));
   }
 
-  @Get('/:id/courses')
-  async getLecturedCourses(@Param('id') userId: string) {
-    return this.courseRepository.findAllLecturedBy(userId);
+  @Get('/me/courses')
+  async getUserCourses(@CurrentUser() user: UserEntity) {
+    if (user.role === 'instructor') {
+      return this.courseRepository.findAllLecturedBy(user.id);
+    } else {
+      return this.courseRepository.findAllEnrolledBy(user.id);
+    }
   }
 
   @Get('/me/purchase-history')

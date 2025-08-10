@@ -28,6 +28,21 @@ export class KyselyCourseRepository
       .then((courses) => courses.map(this.mapToCourseEntity));
   }
 
+  async findAllEnrolledBy(userId: UUID): Promise<CourseEntity[]> {
+    return await this.database
+      .selectFrom('course')
+      .selectAll('course')
+      .innerJoin('enrollment', (join) =>
+        join
+          .onRef('course.id', '=', 'enrollment.courseId')
+          .on('enrollment.studentId', '=', userId),
+      )
+      .execute()
+      .then((courses) =>
+        courses.map((course) => this.mapToCourseEntity(course)),
+      );
+  }
+
   async save(course: CourseEntity): Promise<void> {
     await this.database
       .insertInto('course')

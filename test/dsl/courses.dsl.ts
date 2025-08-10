@@ -50,8 +50,8 @@ export class CoursesDSL extends AbstractDSL {
     return this.req().get('/courses').set(this.headers);
   }
 
-  getLecturedByUser(userId: string) {
-    return this.req().get(`/users/${userId}/courses`).set(this.headers);
+  getAllByUser() {
+    return this.req().get('/users/me/courses').set(this.headers);
   }
 
   checkout(courseId: string) {

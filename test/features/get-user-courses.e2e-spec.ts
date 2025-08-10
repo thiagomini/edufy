@@ -1,18 +1,19 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
 describe('Get User Courses (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
-  let jwtAccessToken: Jwt<{ sub: string }>;
+  let instructorJwtAccessToken: Jwt<{ sub: string }>;
 
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users.createUserWithRole('instructor');
+    instructorJwtAccessToken = await dsl.users.createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -22,15 +23,15 @@ describe('Get User Courses (e2e)', () => {
   describe('success cases', () => {
     test('returns an empty list when user has no courses', async () => {
       return dsl.courses
-        .authenticatedAs(jwtAccessToken)
-        .getLecturedByUser(jwtAccessToken.payload().sub)
+        .authenticatedAs(instructorJwtAccessToken)
+        .getAllByUser()
         .expect(200)
         .expect([]);
     });
     test('successfully retrieves courses lectured by an instructor', async () => {
       // Arrange
       const course = await dsl.courses
-        .authenticatedAs(jwtAccessToken)
+        .authenticatedAs(instructorJwtAccessToken)
         .create({
           title: 'Test Course',
           description: 'This is a test course',
@@ -41,8 +42,8 @@ describe('Get User Courses (e2e)', () => {
 
       // Act
       return dsl.courses
-        .authenticatedAs(jwtAccessToken)
-        .getLecturedByUser(jwtAccessToken.payload().sub)
+        .authenticatedAs(instructorJwtAccessToken)
+        .getAllByUser()
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual([
@@ -51,7 +52,38 @@ describe('Get User Courses (e2e)', () => {
               title: 'Test Course',
               description: 'This is a test course',
               price: 100,
-              instructorId: jwtAccessToken.payload().sub,
+              instructorId: instructorJwtAccessToken.payload().sub,
+            },
+          ]);
+        });
+    });
+    test('successfully retrieves courses enrolled by a student', async () => {
+      // Arrange
+      const course = await dsl.courses
+        .authenticatedAs(instructorJwtAccessToken)
+        .create({
+          title: 'Another Test Course',
+          description: 'This is another test course',
+          price: 100,
+        })
+        .expect(201)
+        .then((response) => response.body);
+      const studentJwt = await dsl.users.createUserWithRole('student');
+      await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
+
+      // Act
+      return dsl.courses
+        .authenticatedAs(studentJwt)
+        .getAllByUser()
+        .expect(200)
+        .expect((response) => {
+          expect(response.body).toEqual([
+            {
+              id: course.id,
+              title: 'Another Test Course',
+              description: 'This is another test course',
+              price: 100,
+              instructorId: instructorJwtAccessToken.payload().sub,
             },
           ]);
         });
@@ -60,10 +92,9 @@ describe('Get User Courses (e2e)', () => {
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
       return dsl.courses
-        .getLecturedByUser(jwtAccessToken.payload().sub)
+        .getAllByUser()
         .expect(401)
         .expect(response.unauthorized());
     });
-    test.todo('returns an error when user is not an instructor');
   });
 });
