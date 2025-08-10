@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  test:
     env:
       DATABASE_URL: postgres://admin:password@localhost:5432/edufy
       JWT_SECRET: ci_secret
@@ -32,7 +32,7 @@ jobs:
           node-version-file: .node-version
           cache: 'pnpm'
           cache-dependency-path: 'pnpm-lock.yaml'
-      - run: pnpm install --prod --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - run: docker compose up postgres --wait
       - run: pnpm run kysely migrate:latest
       - run: docker compose up app-prod --wait
