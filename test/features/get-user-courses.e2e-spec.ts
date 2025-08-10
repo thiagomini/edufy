@@ -64,5 +64,6 @@ describe('Get User Courses (e2e)', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
+    test.todo('returns an error when user is not an instructor');
   });
 });

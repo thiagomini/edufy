@@ -76,4 +76,8 @@ export class UsersDSL extends AbstractDSL {
       .set(this.headers)
       .send(purchaseConfirmedEvent);
   }
+
+  getEnrollments() {
+    return this.req().get('/users/me/enrollments').set(this.headers);
+  }
 }

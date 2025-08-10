@@ -149,4 +149,12 @@ export class UserController {
   private signJwtToken(user: UserEntity): Jwt {
     return new Jwt(this.jwtService.sign({ sub: user.id }));
   }
+
+  @Get('/me/enrollments')
+  async getEnrollments(@CurrentUser() user: UserEntity) {
+    if (user.role !== 'student') {
+      throw new ForbiddenException('Only students can access enrollments');
+    }
+    return [];
+  }
 }
