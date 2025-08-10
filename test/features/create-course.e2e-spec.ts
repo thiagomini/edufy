@@ -1,10 +1,8 @@
 import { INestApplication } from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { AppModule } from '@src/app/app.module';
 import { Jwt } from '@src/libs/jwt/jwt';
-import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response, validationErrors } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
 
 describe('Create Course E2E Tests', () => {
   let app: INestApplication;
@@ -12,13 +10,7 @@ describe('Create Course E2E Tests', () => {
   let instructorUserJwt: Jwt;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    configServer(app);
-    await app.init();
+    app = await createTestingApp();
     dsl = createDSL(app);
     instructorUserJwt = await dsl.users.createUserWithRole('instructor');
   });

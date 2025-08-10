@@ -1,22 +1,14 @@
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app/app.module';
-import { configServer } from '../../src/server-config';
 import { DSL, createDSL } from '../dsl/dsl.factory';
 import { response } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
 
 describe('Me (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    configServer(app);
-    await app.init();
+    app = await createTestingApp();
     dsl = createDSL(app);
   });
 

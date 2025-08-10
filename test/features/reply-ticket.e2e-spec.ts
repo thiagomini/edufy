@@ -1,10 +1,8 @@
 import { INestApplication } from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { AppModule } from '@src/app/app.module';
 import { Jwt } from '@src/libs/jwt/jwt';
-import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
 import { randomUUID } from 'crypto';
 
 describe('Reply Ticket E2E Tests', () => {
@@ -16,13 +14,7 @@ describe('Reply Ticket E2E Tests', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    configServer(app);
-    await app.init();
+    app = await createTestingApp();
     dsl = createDSL(app);
     jwtAccessToken = await dsl.users.createRandomUser();
   });

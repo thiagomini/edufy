@@ -1,10 +1,8 @@
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app/app.module';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
-import { configServer } from '@src/server-config';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
 import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
 import { randomUUID } from 'node:crypto';
 
@@ -14,15 +12,7 @@ describe('Confirm Purchase (e2e)', () => {
   let hmacBuilder: WebhookHMACBuilder;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication({
-      rawBody: true,
-    });
-    configServer(app);
-    await app.init();
+    app = await createTestingApp();
     dsl = createDSL(app);
     hmacBuilder = WebhookHMACBuilder.for(app);
   });

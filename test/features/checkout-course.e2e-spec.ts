@@ -1,11 +1,9 @@
 import { INestApplication } from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { AppModule } from '@src/app/app.module';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { Jwt } from '@src/libs/jwt/jwt';
-import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
 import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
 import { isURL } from 'class-validator';
 import { randomUUID, UUID } from 'node:crypto';
@@ -19,15 +17,7 @@ describe('Checkout Course (e2e)', () => {
   let hmacBuilder: WebhookHMACBuilder;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication({
-      rawBody: true,
-    });
-    configServer(app);
-    await app.init();
+    app = await createTestingApp();
     dsl = createDSL(app);
     hmacBuilder = WebhookHMACBuilder.for(app);
 
