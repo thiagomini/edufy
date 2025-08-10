@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CourseEntity } from '../domain/course.entity';
 import { PurchaseEntity } from '../domain/purchase.entity';
@@ -30,6 +30,19 @@ export class PurchaseService {
   ) {}
 
   async processPurchase({ course, user }: PurchaseInput) {
+    const existingUserCoursePurchases = await this.purchaseRepository.findAllBy(
+      {
+        userId: user.id,
+        courseId: course.id,
+      },
+    );
+    if (
+      existingUserCoursePurchases.find(
+        (purchase) => purchase.status === 'completed',
+      )
+    ) {
+      throw new ConflictException('You have already purchased this course');
+    }
     const newPurchase = PurchaseEntity.create({
       courseId: course.id,
       userId: user.id,

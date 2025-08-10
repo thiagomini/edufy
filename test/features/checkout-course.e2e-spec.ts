@@ -1,30 +1,47 @@
 import { INestApplication } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import { AppModule } from '@src/app/app.module';
+import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { configServer } from '@src/server-config';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
+import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
 import { isURL } from 'class-validator';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, UUID } from 'node:crypto';
 
 describe('Checkout Course (e2e)', () => {
   let app: INestApplication;
   let dsl: DSL;
   let studentUserJwt: Jwt;
   let instructorUserJwt: Jwt;
+  let courseId: UUID;
+  let hmacBuilder: WebhookHMACBuilder;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication({
+      rawBody: true,
+    });
     configServer(app);
     await app.init();
     dsl = createDSL(app);
+    hmacBuilder = WebhookHMACBuilder.for(app);
+
     studentUserJwt = await dsl.users.createUserWithRole('student');
     instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    courseId = await dsl.courses
+      .authenticatedAs(instructorUserJwt)
+      .create({
+        title: 'Python Programming',
+        description: 'Learn Python from scratch',
+        price: 200,
+      })
+      .expect(201)
+      .then((res) => res.body.id);
   });
 
   afterAll(async () => {
@@ -33,21 +50,10 @@ describe('Checkout Course (e2e)', () => {
 
   describe('success cases', () => {
     test('successfully starts the checkout process for a course', async () => {
-      // Arrange
-      const { id } = await dsl.courses
-        .authenticatedAs(instructorUserJwt)
-        .create({
-          title: 'Python Programming',
-          description: 'Learn Python from scratch',
-          price: 200,
-        })
-        .expect(201)
-        .then((res) => res.body);
-
       // Act
       return dsl.courses
         .authenticatedAs(studentUserJwt)
-        .checkout(id)
+        .checkout(courseId)
         .expect(200)
         .expect((res) => {
           const checkoutUrl = res.body.checkoutUrl;
@@ -86,6 +92,34 @@ describe('Checkout Course (e2e)', () => {
         .expect(403)
         .expect(response.forbidden('Only students can purchase courses'));
     });
-    test.todo('returns an error when user has already bought the course');
+    test('returns an error when user has already bought the course', async () => {
+      // Arrange
+      const { id: purchaseId } = await dsl.courses
+        .authenticatedAs(studentUserJwt)
+        .checkout(courseId)
+        .expect(200)
+        .then((res) => res.body);
+
+      const purchaseConfirmedEvent: PurchaseConfirmedEvent = {
+        type: 'purchase.confirmed',
+        data: { id: purchaseId },
+        timestamp: new Date().toISOString(),
+      };
+      const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
+      await dsl.users
+        .usingHMAC(hmac)
+        .confirmPurchase(purchaseConfirmedEvent)
+        .expect(204);
+
+      // Act
+      return (
+        dsl.courses
+          .authenticatedAs(studentUserJwt)
+          .checkout(courseId)
+          // Assert
+          .expect(409)
+          .expect(response.conflict('You have already purchased this course'))
+      );
+    });
   });
 });

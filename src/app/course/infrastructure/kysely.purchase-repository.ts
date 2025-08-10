@@ -1,5 +1,9 @@
 import { Database } from '@src/libs/database/database.type';
-import { PurchaseEntity, PurchaseStatusEnum } from '../domain/purchase.entity';
+import {
+  PurchaseEntity,
+  PurchaseProps,
+  PurchaseStatusEnum,
+} from '../domain/purchase.entity';
 import { IPurchaseRepository } from '../domain/purchase.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE } from '@src/libs/database/constants';
@@ -10,6 +14,17 @@ import { Purchase } from '@src/libs/database/generated/db';
 @Injectable()
 export class KyselyPurchaseRepository implements IPurchaseRepository {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
+
+  async findAllBy(partial: Partial<PurchaseProps>): Promise<PurchaseEntity[]> {
+    return await this.db
+      .selectFrom('purchase')
+      .selectAll()
+      .where((qb) =>
+        qb.and(partial as unknown as Partial<Selectable<Purchase>>),
+      )
+      .execute()
+      .then((rows) => rows.map((row) => this.mapToPurchaseEntity(row)));
+  }
 
   async findById(id: UUID): Promise<PurchaseEntity | null> {
     return await this.db

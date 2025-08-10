@@ -1,5 +1,5 @@
 import { UUID } from 'crypto';
-import { PurchaseEntity } from '../domain/purchase.entity';
+import { PurchaseEntity, PurchaseProps } from '../domain/purchase.entity';
 import { IPurchaseRepository } from '../domain/purchase.repository';
 import {
   IPurchaseHistoryQuery,
@@ -10,6 +10,15 @@ import { PurchaseHistory } from '../domain/purchase-history';
 export class InMemoryPurchaseRepository
   implements IPurchaseRepository, IPurchaseHistoryQuery
 {
+  findAllBy(partial: Partial<PurchaseProps>): Promise<PurchaseEntity[]> {
+    const purchases = Array.from(this.purchases.values()).filter((purchase) =>
+      Object.entries(partial).every(
+        ([key, value]) => purchase[key as keyof PurchaseEntity] === value,
+      ),
+    );
+    return Promise.resolve(purchases);
+  }
+
   private readonly purchases: Map<UUID, PurchaseEntity> = new Map();
 
   async save(purchase: PurchaseEntity): Promise<void> {
