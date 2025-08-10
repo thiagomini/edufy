@@ -142,8 +142,12 @@ export class UserController {
   async getUserCourses(@CurrentUser() user: UserEntity) {
     if (user.role === 'instructor') {
       return this.courseRepository.findAllLecturedBy(user.id);
-    } else {
+    } else if (user.role === 'student') {
       return this.courseRepository.findAllEnrolledBy(user.id);
+    } else {
+      throw new ForbiddenException(
+        'Only students or instructors have access to owned courses',
+      );
     }
   }
 

@@ -96,5 +96,19 @@ describe('Get User Courses (e2e)', () => {
         .expect(401)
         .expect(response.unauthorized());
     });
+    test('returns an error when user is not an instructor nor a student', async () => {
+      const supportAgentJwt =
+        await workflows(dsl).createUserWithRole('support_agent');
+
+      return dsl.courses
+        .authenticatedAs(supportAgentJwt)
+        .getAllByUser()
+        .expect(403)
+        .expect(
+          response.forbidden(
+            'Only students or instructors have access to owned courses',
+          ),
+        );
+    });
   });
 });

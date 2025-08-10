@@ -4,6 +4,7 @@ import { UserRoleEnum } from '@src/app/user/domain/user.role';
 import { SignupUserDto } from '@src/app/user/presentation/dto/signup-user.dto';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { AbstractDSL } from './abstract.dsl';
+import { UUID } from 'node:crypto';
 
 export class UsersDSL extends AbstractDSL {
   createUser(userData: SignupUserDto) {
@@ -16,7 +17,7 @@ export class UsersDSL extends AbstractDSL {
    */
   async createRandomUser(
     partial: Partial<SignupUserDto> = {},
-  ): Promise<Jwt<{ sub: string }>> {
+  ): Promise<Jwt<{ sub: UUID }>> {
     const userData: SignupUserDto = {
       name: faker.person.fullName(),
       email: faker.internet.email(),
@@ -29,7 +30,7 @@ export class UsersDSL extends AbstractDSL {
   }
 
   async createUserWithRole(
-    role: UserRoleEnum,
+    role: Exclude<UserRoleEnum, 'support_agent'>,
     userData: Partial<SignupUserDto> = {},
   ) {
     const jwt = await this.createRandomUser({
