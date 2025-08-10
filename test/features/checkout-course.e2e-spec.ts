@@ -79,6 +79,13 @@ describe('Checkout Course (e2e)', () => {
         .expect(404)
         .expect(response.notFound('Course not found'));
     });
+    test('returns an error when user is an instructor', () => {
+      return dsl.courses
+        .authenticatedAs(instructorUserJwt)
+        .checkout(randomUUID())
+        .expect(403)
+        .expect(response.forbidden('Only students can purchase courses'));
+    });
     test.todo('returns an error when user has already bought the course');
   });
 });

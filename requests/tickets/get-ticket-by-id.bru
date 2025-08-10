@@ -1,0 +1,19 @@
+meta {
+  name: get-ticket-by-id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/tickets/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 12bb262f-8463-4412-966e-5e9b338cc172
+}
+
+settings {
+  encodeUrl: true
+}

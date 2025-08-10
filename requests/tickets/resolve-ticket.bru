@@ -1,0 +1,25 @@
+meta {
+  name: resolve-ticket
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/tickets/:id/resolve
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 12bb262f-8463-4412-966e-5e9b338cc172
+}
+
+body:json {
+  {
+    "content": "Nice Ticket!"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

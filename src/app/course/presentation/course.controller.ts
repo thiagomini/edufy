@@ -80,6 +80,9 @@ export class CourseController {
     courseId: string,
     @CurrentUser() user: UserEntity,
   ) {
+    if (user.role !== 'student') {
+      throw new ForbiddenException('Only students can purchase courses');
+    }
     const course = await this.courseRepository.findOneById(courseId);
     if (!course) {
       throw new NotFoundException('Course not found');

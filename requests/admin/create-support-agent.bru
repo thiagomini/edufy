@@ -1,0 +1,27 @@
+meta {
+  name: create-support-agent
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/admin/support-agents
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-admin-key: {{adminKey}}
+}
+
+body:json {
+  {
+    "name": "John",
+    "email": "john@support.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

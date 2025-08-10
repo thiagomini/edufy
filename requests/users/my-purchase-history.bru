@@ -1,0 +1,22 @@
+meta {
+  name: my-purchase-history
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/users/me/purchase-history
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "thiago@test.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

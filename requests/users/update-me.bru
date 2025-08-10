@@ -1,0 +1,23 @@
+meta {
+  name: update-me
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/users/me
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "biography": "A new instructor",
+    "interests": ["python", "typescript"],
+    "profilePictureUrl": "https://picsum.photos/200/300"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

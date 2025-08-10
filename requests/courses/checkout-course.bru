@@ -1,0 +1,27 @@
+meta {
+  name: checkout-course
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/courses/:courseId/checkout
+  body: json
+  auth: inherit
+}
+
+params:path {
+  courseId: 37658cb8-4a03-48d6-b0ad-03b2789907b1
+}
+
+body:json {
+  {
+    "title": "Typescript from Zero to Hero",
+    "description": "Become a Typescript Expert",
+    "price": 1000
+  }
+}
+
+settings {
+  encodeUrl: true
+}

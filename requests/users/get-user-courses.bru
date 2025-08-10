@@ -1,0 +1,26 @@
+meta {
+  name: get-user-courses
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/users/:userId/courses
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: 8e6d1688-e2ac-4793-8586-3d74e0b1208e
+}
+
+body:json {
+  {
+    "email": "thiago@test.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

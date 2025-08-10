@@ -1,0 +1,22 @@
+meta {
+  name: create-ticket
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/tickets
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Test Ticket",
+    "description": "Test Ticket Description"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

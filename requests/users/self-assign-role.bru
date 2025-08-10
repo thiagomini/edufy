@@ -1,0 +1,21 @@
+meta {
+  name: self-assign-role
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/users/self-assign-role
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "role": "instructor"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

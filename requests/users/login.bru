@@ -1,0 +1,26 @@
+meta {
+  name: login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/users/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "thiago@test.com",
+    "password": "password123"
+  }
+}
+
+vars:post-response {
+  token: res.body.jwtAccessToken
+}
+
+settings {
+  encodeUrl: true
+}

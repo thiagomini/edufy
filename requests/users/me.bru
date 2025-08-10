@@ -1,0 +1,22 @@
+meta {
+  name: me
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/users/me
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "thiago@test.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

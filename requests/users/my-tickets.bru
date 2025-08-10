@@ -1,0 +1,22 @@
+meta {
+  name: my-tickets
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/users/me/tickets
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "thiago@test.com",
+    "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
