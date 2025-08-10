@@ -5,14 +5,14 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
-  
+
 jobs:
   build:
     env:
@@ -24,16 +24,17 @@ jobs:
       WEBHOOK_HMAC_HEADER: x-hmac-signature
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js Version
-      uses: actions/setup-node@v4
-      with:
-        node-version-file: .node-version
-        cache: 'pnpm'
-        cache-dependency-path: 'pnpm-lock.yaml'
-    - run: pnpm install --frozen-lockfile
-    - run: pnpm run lint
-    - run: pnpm run test
-    - run: docker compose up --wait
-    - run: pnpm run kysely migrate:latest -e=test && pnpm run codegen
-    - run: pnpm run test:e2e
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - name: Use Node.js Version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run test
+      - run: docker compose up --wait
+      - run: pnpm run kysely migrate:latest -e=test && pnpm run codegen
+      - run: pnpm run test:e2e
