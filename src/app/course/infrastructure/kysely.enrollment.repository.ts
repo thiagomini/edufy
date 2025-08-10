@@ -1,13 +1,12 @@
-import { Database } from '@src/libs/database/database.type';
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
+import { UUID } from 'node:crypto';
 import { EnrollmentEntity } from '../domain/enrollment.entity';
 import { IEnrollmentRepository } from '../domain/enrollment.repository';
-import { Inject } from '@nestjs/common';
-import { DATABASE } from '@src/libs/database/constants';
-import { UUID } from 'node:crypto';
 
-export class KyselyEnrollmentRepository implements IEnrollmentRepository {
-  constructor(@Inject(DATABASE) private readonly database: Database) {}
-
+export class KyselyEnrollmentRepository
+  extends KyselyRepository
+  implements IEnrollmentRepository
+{
   async save(enrollment: EnrollmentEntity): Promise<void> {
     await this.database.insertInto('enrollment').values(enrollment).execute();
   }

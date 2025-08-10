@@ -1,19 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Course } from '@src/libs/database/generated/db';
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
+import { UUID } from 'crypto';
+import { Selectable } from 'kysely';
 import { CourseEntity } from '../domain/course.entity';
 import { ICourseRepository } from '../domain/course.repository';
-import { DATABASE } from '@src/libs/database/constants';
-import { Database } from '@src/libs/database/database.type';
-import { Selectable } from 'kysely';
-import { Course } from '@src/libs/database/generated/db';
-import { UUID } from 'crypto';
 
 @Injectable()
-export class KyselyCourseRepository implements ICourseRepository {
-  constructor(
-    @Inject(DATABASE)
-    private readonly database: Database,
-  ) {}
-
+export class KyselyCourseRepository
+  extends KyselyRepository
+  implements ICourseRepository
+{
   async findAll(): Promise<CourseEntity[]> {
     return await this.database
       .selectFrom('course')

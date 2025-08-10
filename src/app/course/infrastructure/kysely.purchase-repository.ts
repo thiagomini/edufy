@@ -1,22 +1,22 @@
-import { Database } from '@src/libs/database/database.type';
+import { Injectable } from '@nestjs/common';
+import { Purchase } from '@src/libs/database/generated/db';
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
+import { UUID } from 'crypto';
+import { Selectable } from 'kysely';
 import {
   PurchaseEntity,
   PurchaseProps,
   PurchaseStatusEnum,
 } from '../domain/purchase.entity';
 import { IPurchaseRepository } from '../domain/purchase.repository';
-import { Inject, Injectable } from '@nestjs/common';
-import { DATABASE } from '@src/libs/database/constants';
-import { UUID } from 'crypto';
-import { Selectable } from 'kysely';
-import { Purchase } from '@src/libs/database/generated/db';
 
 @Injectable()
-export class KyselyPurchaseRepository implements IPurchaseRepository {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
-
+export class KyselyPurchaseRepository
+  extends KyselyRepository
+  implements IPurchaseRepository
+{
   async findAllBy(partial: Partial<PurchaseProps>): Promise<PurchaseEntity[]> {
-    return await this.db
+    return await this.database
       .selectFrom('purchase')
       .selectAll()
       .where((qb) =>
@@ -27,7 +27,7 @@ export class KyselyPurchaseRepository implements IPurchaseRepository {
   }
 
   async findById(id: UUID): Promise<PurchaseEntity | null> {
-    return await this.db
+    return await this.database
       .selectFrom('purchase')
       .selectAll()
       .where('id', '=', id)
@@ -36,7 +36,7 @@ export class KyselyPurchaseRepository implements IPurchaseRepository {
   }
 
   async save(purchase: PurchaseEntity): Promise<void> {
-    await this.db
+    await this.database
       .insertInto('purchase')
       .values({
         id: purchase.id,

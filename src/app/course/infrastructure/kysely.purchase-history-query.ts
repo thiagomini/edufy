@@ -1,18 +1,17 @@
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
 import { UUID } from 'crypto';
+import { sql } from 'kysely';
+import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { PurchaseHistory } from '../domain/purchase-history';
 import {
   IPurchaseHistoryQuery,
   UserPurchase,
 } from '../domain/purchase-history.query';
-import { Inject } from '@nestjs/common';
-import { DATABASE } from '@src/libs/database/constants';
-import { Database } from '@src/libs/database/database.type';
-import { jsonObjectFrom } from 'kysely/helpers/postgres';
-import { sql } from 'kysely';
 import { PurchaseStatusEnum } from '../domain/purchase.entity';
-export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
-
+export class KyselyPurchaseHistoryQuery
+  extends KyselyRepository
+  implements IPurchaseHistoryQuery
+{
   async findByUserPurchase({
     purchaseId,
     userId,
@@ -66,7 +65,7 @@ export class KyselyPurchaseHistoryQuery implements IPurchaseHistoryQuery {
   }
 
   private selectPurchaseAndCourse() {
-    return this.db
+    return this.database
       .selectFrom('purchase')
       .select([
         'purchase.id',

@@ -1,19 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DATABASE } from '@src/libs/database/constants';
-import { Database } from '@src/libs/database/database.type';
+import { Injectable } from '@nestjs/common';
 import { User } from '@src/libs/database/generated/db';
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
 import { Selectable } from 'kysely';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository } from '../domain/user.repository';
 import { UserRoleEnum } from '../domain/user.role';
 
 @Injectable()
-export class KyselyUserRepository implements IUserRepository {
-  constructor(
-    @Inject(DATABASE)
-    private readonly database: Database,
-  ) {}
-
+export class KyselyUserRepository
+  extends KyselyRepository
+  implements IUserRepository
+{
   async findOneByEmail(email: string): Promise<UserEntity | null> {
     return await this.database
       .selectFrom('user')

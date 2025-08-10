@@ -1,17 +1,16 @@
-import { Inject } from '@nestjs/common';
-import { DATABASE } from '@src/libs/database/constants';
-import { Database } from '@src/libs/database/database.type';
 import { Ticket } from '@src/libs/database/generated/db';
+import { KyselyRepository } from '@src/libs/database/kysely.repository';
 import { Selectable } from 'kysely';
 import { TicketEntity, TicketReply } from '../domain/ticket.entity';
 import { ITicketRepository } from '../domain/ticket.repository';
 import { TicketStatusEnum } from '../domain/ticket.status';
 
-export class KyselyTicketRepository implements ITicketRepository {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
-
+export class KyselyTicketRepository
+  extends KyselyRepository
+  implements ITicketRepository
+{
   async save(ticket: TicketEntity): Promise<void> {
-    await this.db
+    await this.database
       .insertInto('ticket')
       .values({
         id: ticket.id,
@@ -35,7 +34,7 @@ export class KyselyTicketRepository implements ITicketRepository {
       .execute();
   }
   async findOneById(id: string): Promise<TicketEntity | null> {
-    return this.db
+    return this.database
       .selectFrom('ticket')
       .selectAll()
       .where('id', '=', id)
@@ -44,7 +43,7 @@ export class KyselyTicketRepository implements ITicketRepository {
   }
 
   async findAllCreatedByUser(userId: string): Promise<TicketEntity[]> {
-    return this.db
+    return this.database
       .selectFrom('ticket')
       .selectAll()
       .where('createdBy', '=', userId)
