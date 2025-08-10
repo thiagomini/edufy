@@ -12,6 +12,7 @@ export function createDSL(app: INestApplication) {
     admin: new AdminDSL(app),
     config: new ConfigDSL(app),
     courses: new CoursesDSL(app),
+    app,
   };
 }
 

@@ -35,7 +35,7 @@ describe('Create Course E2E Tests', () => {
             title: 'New Course',
             description: 'Course description',
             price: 100,
-            instructor: instructorUserJwt.payload().sub,
+            instructorId: instructorUserJwt.payload().sub,
           });
         });
     });

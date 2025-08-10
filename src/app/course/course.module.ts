@@ -10,6 +10,8 @@ import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-his
 import { PurchaseController } from './presentation/purchase.controller';
 import { PaymentGateway } from './application/payment.gateway';
 import { ExamplePaymentGateway } from './application/example-payment.gateway';
+import { EnrollmentRepository } from './domain/enrollment.repository';
+import { InMemoryEnrollmentRepository } from './infrastructure/in-memory.enrollment.repository';
 
 @Module({
   controllers: [CourseController, PurchaseController],
@@ -30,8 +32,17 @@ import { ExamplePaymentGateway } from './application/example-payment.gateway';
       provide: PaymentGateway,
       useClass: ExamplePaymentGateway,
     },
+    {
+      provide: EnrollmentRepository,
+      useClass: InMemoryEnrollmentRepository,
+    },
     PurchaseService,
   ],
-  exports: [CourseRepository, PurchaseService, PurchaseRepository],
+  exports: [
+    CourseRepository,
+    PurchaseService,
+    PurchaseRepository,
+    EnrollmentRepository,
+  ],
 })
 export class CourseModule {}

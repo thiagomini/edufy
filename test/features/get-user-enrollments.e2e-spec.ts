@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
@@ -24,7 +25,34 @@ describe('Get User Enrollments', () => {
         .expect(200)
         .expect([]);
     });
-    test.todo('returns a list of enrolled courses');
+    test('returns a list of enrolled courses', async () => {
+      // Arrange
+      const instructorJwt = await dsl.users.createUserWithRole('instructor');
+      const course = await dsl.courses
+        .authenticatedAs(instructorJwt)
+        .createRandomCourse();
+
+      const studentJwt = await dsl.users.createUserWithRole('student');
+      await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
+
+      // Act
+      return (
+        dsl.users
+          .authenticatedAs(studentJwt)
+          .getEnrollments()
+          // Assert
+          .expect(200)
+          .expect((response) => {
+            expect(response.body).toEqual([
+              {
+                courseId: course.id,
+                studentId: studentJwt.payload().sub,
+                enrolledAt: expect.any(String),
+              },
+            ]);
+          })
+      );
+    });
   });
   describe('error cases', () => {
     test('returns an error when request is unauthenticated', () => {

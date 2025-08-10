@@ -35,6 +35,10 @@ import {
   ICourseRepository,
 } from '@src/app/course/domain/course.repository';
 import { PurchaseService } from '@src/app/course/application/purchase.service';
+import {
+  EnrollmentRepository,
+  IEnrollmentRepository,
+} from '@src/app/course/domain/enrollment.repository';
 
 @Controller('users')
 export class UserController {
@@ -48,6 +52,8 @@ export class UserController {
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
     private readonly purchaseService: PurchaseService,
+    @Inject(EnrollmentRepository)
+    private readonly enrollmentRepository: IEnrollmentRepository,
   ) {}
 
   @Public()
@@ -155,6 +161,6 @@ export class UserController {
     if (user.role !== 'student') {
       throw new ForbiddenException('Only students can access enrollments');
     }
-    return [];
+    return this.enrollmentRepository.findAllByStudentId(user.id);
   }
 }

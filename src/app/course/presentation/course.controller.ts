@@ -19,6 +19,7 @@ import {
 } from '../domain/course.repository';
 import { CreateCourseDto } from './create-course.dto';
 import { PurchaseService } from '../application/purchase.service';
+import { CourseReadDto } from './course.read-dto';
 
 @Controller('courses')
 export class CourseController {
@@ -46,13 +47,7 @@ export class CourseController {
     });
     await this.courseRepository.save(newCourse);
 
-    return {
-      id: newCourse.id,
-      title: newCourse.title,
-      description: newCourse.description,
-      price: newCourse.price,
-      instructor: user.id,
-    };
+    return new CourseReadDto(newCourse);
   }
 
   @Get(':id')
@@ -64,13 +59,13 @@ export class CourseController {
     if (!course) {
       throw new NotFoundException('Course not found');
     }
-    return course;
+    return new CourseReadDto(course);
   }
 
   @Get('/')
   async getAllCourses() {
     const courses = await this.courseRepository.findAll();
-    return courses;
+    return courses.map((course) => new CourseReadDto(course));
   }
 
   @HttpCode(200)
