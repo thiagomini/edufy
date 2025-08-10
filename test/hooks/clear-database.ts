@@ -1,9 +1,6 @@
 import { DB } from '@src/libs/database/generated/db';
 import { CamelCasePlugin, Kysely, PostgresDialect, sql } from 'kysely';
 import { Pool } from 'pg';
-import { loadEnvFile } from 'process';
-
-loadEnvFile();
 
 export default async function clearDatabase() {
   const tables = [
