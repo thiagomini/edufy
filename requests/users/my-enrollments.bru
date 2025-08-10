@@ -1,0 +1,15 @@
+meta {
+  name: my-enrollments
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/users/me/enrollments
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
