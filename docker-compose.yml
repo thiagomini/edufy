@@ -19,6 +19,25 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: edufy-app:prod
+    ports:
+      - '3000:3000'
+    env_file:
+      - docker/docker.env.prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000/ || exit 1']
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
 volumes:
   postgres_data:
