@@ -10,7 +10,7 @@ on:
     branches: ['main']
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: smoke-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
