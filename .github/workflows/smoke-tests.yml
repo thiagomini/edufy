@@ -34,7 +34,7 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
       - run: pnpm install --frozen-lockfile
       - run: docker compose up postgres --wait
-      - run: pnpm run kysely migrate:latest
+      - run: pnpm run kysely migrate:latest && pnpm run codegen
       - run: docker compose up app-prod --wait
       - name: Execute Bruno Smoke Tests
         run: pnpm install -g @usebruno/cli@2.9.0 && ./scripts/test-api.sh
