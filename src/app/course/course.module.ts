@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { CourseController } from './presentation/course.controller';
-import { CourseRepository } from './domain/course.repository';
-import { KyselyCourseRepository } from './infrastructure/kysely.course-repository';
-import { PurchaseRepository } from './domain/purchase.repository';
-import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
-import { PurchaseService } from './application/purchase.service';
-import { PurchaseHistoryQuery } from './domain/purchase-history.query';
-import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
-import { PurchaseController } from './presentation/purchase.controller';
-import { PaymentGateway } from './application/payment.gateway';
 import { ExamplePaymentGateway } from './application/example-payment.gateway';
+import { PaymentGateway } from './application/payment.gateway';
+import { PurchaseService } from './application/purchase.service';
+import { CourseRepository } from './domain/course.repository';
 import { EnrollmentRepository } from './domain/enrollment.repository';
-import { InMemoryEnrollmentRepository } from './infrastructure/in-memory.enrollment.repository';
+import { PurchaseHistoryQuery } from './domain/purchase-history.query';
+import { PurchaseRepository } from './domain/purchase.repository';
+import { KyselyCourseRepository } from './infrastructure/kysely.course-repository';
+import { KyselyEnrollmentRepository } from './infrastructure/kysely.enrollment.repository';
+import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
+import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
+import { CourseController } from './presentation/course.controller';
+import { PurchaseController } from './presentation/purchase.controller';
 
 @Module({
   controllers: [CourseController, PurchaseController],
@@ -34,7 +34,7 @@ import { InMemoryEnrollmentRepository } from './infrastructure/in-memory.enrollm
     },
     {
       provide: EnrollmentRepository,
-      useClass: InMemoryEnrollmentRepository,
+      useClass: KyselyEnrollmentRepository,
     },
     PurchaseService,
   ],
