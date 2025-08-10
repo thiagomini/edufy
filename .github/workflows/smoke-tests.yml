@@ -37,4 +37,4 @@ jobs:
       - run: pnpm run kysely migrate:latest && pnpm run codegen
       - run: docker compose up app-prod --wait
       - name: Execute Bruno Smoke Tests
-        run: pnpm install -g @usebruno/cli@2.9.0 && ./scripts/test-api.sh
+        run: pnpm setup && pnpm install -g @usebruno/cli@2.9.0 && ./scripts/test-api.sh
