@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
@@ -21,8 +22,8 @@ describe('Checkout Course (e2e)', () => {
     dsl = createDSL(app);
     hmacBuilder = WebhookHMACBuilder.for(app);
 
-    studentUserJwt = await dsl.users.createUserWithRole('student');
-    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    studentUserJwt = await workflows(dsl).createUserWithRole('student');
+    instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');
     courseId = await dsl.courses
       .authenticatedAs(instructorUserJwt)
       .create({

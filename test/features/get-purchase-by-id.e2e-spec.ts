@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { randomUUID, UUID } from 'node:crypto';
@@ -20,8 +21,9 @@ describe('Get Purchase By Id (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    studentAccessToken = await dsl.users.createUserWithRole('student');
-    instructorAccessToken = await dsl.users.createUserWithRole('instructor');
+    studentAccessToken = await workflows(dsl).createUserWithRole('student');
+    instructorAccessToken =
+      await workflows(dsl).createUserWithRole('instructor');
     typescriptCourse = await dsl.courses
       .authenticatedAs(instructorAccessToken)
       .create({
@@ -95,7 +97,8 @@ describe('Get Purchase By Id (e2e)', () => {
     });
     test('returns an error when the user does not own the purchase', async () => {
       // Arrange
-      const anotherStudentJwt = await dsl.users.createUserWithRole('student');
+      const anotherStudentJwt =
+        await workflows(dsl).createUserWithRole('student');
       const rustCourse = await dsl.courses
         .authenticatedAs(instructorAccessToken)
         .create({

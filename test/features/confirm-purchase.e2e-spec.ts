@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
@@ -24,7 +25,8 @@ describe('Confirm Purchase (e2e)', () => {
   describe('success cases', () => {
     test('successfully confirms a purchase', async () => {
       // Arrange
-      const instructorJwt = await dsl.users.createUserWithRole('instructor');
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
       const newRustCourse = await dsl.courses
         .authenticatedAs(instructorJwt)
         .create({
@@ -35,7 +37,7 @@ describe('Confirm Purchase (e2e)', () => {
         .expect(201)
         .then((res) => res.body);
 
-      const studentJwt = await dsl.users.createUserWithRole('student');
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
       const purchase = await dsl.courses
         .authenticatedAs(studentJwt)
         .checkout(newRustCourse.id)

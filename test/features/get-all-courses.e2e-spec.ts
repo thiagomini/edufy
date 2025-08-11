@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
@@ -12,7 +13,7 @@ describe('Get All Courses (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');
   });
 
   beforeEach(async () => {

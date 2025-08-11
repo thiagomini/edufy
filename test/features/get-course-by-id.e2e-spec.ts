@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { randomUUID } from 'crypto';
@@ -13,7 +14,7 @@ describe('Get Course by ID (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    jwtAccessToken = await dsl.users.createUserWithRole('instructor');
+    jwtAccessToken = await workflows(dsl).createUserWithRole('instructor');
   });
 
   afterAll(async () => {

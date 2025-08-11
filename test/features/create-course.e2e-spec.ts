@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response, validationErrors } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
@@ -12,7 +13,7 @@ describe('Create Course E2E Tests', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -69,7 +70,7 @@ describe('Create Course E2E Tests', () => {
         );
     });
     test('returns an error when user is not an instructor', async () => {
-      const studentUserJwt = await dsl.users.createUserWithRole('student');
+      const studentUserJwt = await workflows(dsl).createUserWithRole('student');
 
       return dsl.courses
         .authenticatedAs(studentUserJwt)

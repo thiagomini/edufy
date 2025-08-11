@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
@@ -13,8 +14,8 @@ describe('Get Purchase History (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    studentUserJwt = await dsl.users.createUserWithRole('student');
-    instructorUserJwt = await dsl.users.createUserWithRole('instructor');
+    studentUserJwt = await workflows(dsl).createUserWithRole('student');
+    instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');
   });
 
   afterAll(async () => {

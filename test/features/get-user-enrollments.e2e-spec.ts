@@ -18,7 +18,7 @@ describe('Get User Enrollments', () => {
   });
   describe('success cases', () => {
     test('returns an empty list when student did not enroll in any course', async () => {
-      const studentJwt = await dsl.users.createUserWithRole('student');
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
       return dsl.users
         .authenticatedAs(studentJwt)
         .getEnrollments()
@@ -27,12 +27,13 @@ describe('Get User Enrollments', () => {
     });
     test('returns a list of enrolled courses', async () => {
       // Arrange
-      const instructorJwt = await dsl.users.createUserWithRole('instructor');
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
       const course = await dsl.courses
         .authenticatedAs(instructorJwt)
         .createRandomCourse();
 
-      const studentJwt = await dsl.users.createUserWithRole('student');
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
       await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
 
       // Act
@@ -62,7 +63,8 @@ describe('Get User Enrollments', () => {
         .expect(response.unauthorized());
     });
     test('returns an error when requesting user is not a student', async () => {
-      const instructorJwt = await dsl.users.createUserWithRole('instructor');
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
 
       return dsl.users
         .authenticatedAs(instructorJwt)

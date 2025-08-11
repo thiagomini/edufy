@@ -13,7 +13,8 @@ describe('Get User Courses (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    instructorJwtAccessToken = await dsl.users.createUserWithRole('instructor');
+    instructorJwtAccessToken =
+      await workflows(dsl).createUserWithRole('instructor');
   });
 
   afterAll(async () => {
@@ -68,7 +69,7 @@ describe('Get User Courses (e2e)', () => {
         })
         .expect(201)
         .then((response) => response.body);
-      const studentJwt = await dsl.users.createUserWithRole('student');
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
       await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
 
       // Act
