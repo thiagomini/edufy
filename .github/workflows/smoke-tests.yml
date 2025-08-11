@@ -22,6 +22,7 @@ jobs:
       ADMIN_KEY: ci_admin_key
       WEBHOOK_SECRET: ci_webhook_secret
       WEBHOOK_HMAC_HEADER: x-hmac-signature
+      DEBUG: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -5,7 +5,7 @@ import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
-import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
+import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import { isURL } from 'class-validator';
 import { randomUUID, UUID } from 'node:crypto';
 
@@ -20,7 +20,7 @@ describe('Checkout Course (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    hmacBuilder = WebhookHMACBuilder.for(app);
+    hmacBuilder = app.get(WebhookHMACBuilder, { strict: false });
 
     studentUserJwt = await workflows(dsl).createUserWithRole('student');
     instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');

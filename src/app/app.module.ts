@@ -8,6 +8,8 @@ import { AppController } from './app.controller';
 import { TicketModule } from './ticket/ticket.module';
 import { UserModule } from './user/user.module';
 import { AppService } from './app.service';
+import { DebugModule } from './debug/debug.module';
+import { ConditionalModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { AppService } from './app.service';
     DatabaseModule,
     CourseModule,
     ValidationModule,
+    ConditionalModule.registerWhen(DebugModule, (env) => env.DEBUG === 'true'),
   ],
   controllers: [AppController],
   providers: [AppService],

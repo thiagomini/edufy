@@ -1,6 +1,6 @@
 import { type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
+import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import * as request from 'supertest';
 import {
   HMAC_HEADER,
@@ -8,13 +8,14 @@ import {
   WebhookTestController,
 } from './test/webhook-test.controller';
 import { WebhookModule } from './webhook.module';
+import { ConfigurationModule } from '../configuration/configuration.module';
 
 describe('WebhookGuard', () => {
   let testingApp: INestApplication;
 
   beforeAll(async () => {
     const testingModule = await Test.createTestingModule({
-      imports: [WebhookModule],
+      imports: [WebhookModule, ConfigurationModule],
       controllers: [WebhookTestController],
     }).compile();
 
@@ -50,9 +51,10 @@ describe('WebhookGuard', () => {
   test('returns unauthorized error when HMAC signature is invalid', async () => {
     // Arrange
     const eventPayload = { timestamp: new Date().toISOString() };
-    const hmac = new WebhookHMACBuilder('invalid').buildForPayload(
-      eventPayload,
-    );
+    const hmac = new WebhookHMACBuilder({
+      hmacHeader: HMAC_HEADER,
+      secret: 'invalid',
+    }).buildForPayload(eventPayload);
 
     // Act
     await request(testingApp.getHttpServer())
@@ -72,7 +74,10 @@ describe('WebhookGuard', () => {
   test('returns unauthorized error when HMAC signature does not match payload', async () => {
     // Arrange
     const eventPayload = { timestamp: new Date().toISOString() };
-    const hmac = new WebhookHMACBuilder(SECRET_KEY).buildForPayload({
+    const hmac = new WebhookHMACBuilder({
+      hmacHeader: HMAC_HEADER,
+      secret: SECRET_KEY,
+    }).buildForPayload({
       timestamp: 'invalid',
     });
 
@@ -94,9 +99,10 @@ describe('WebhookGuard', () => {
   test('returns 201 when HMAC signature is valid', async () => {
     // Arrange
     const eventPayload = { timestamp: new Date().toISOString() };
-    const hmac = new WebhookHMACBuilder(SECRET_KEY).buildForPayload(
-      eventPayload,
-    );
+    const hmac = new WebhookHMACBuilder({
+      hmacHeader: HMAC_HEADER,
+      secret: SECRET_KEY,
+    }).buildForPayload(eventPayload);
 
     // Act
     await request(testingApp.getHttpServer())

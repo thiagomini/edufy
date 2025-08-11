@@ -1,0 +1,25 @@
+meta {
+  name: create-hmac
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/debug/hmac
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "type": "purchase.confirmed",
+    "timestamp": "2025-08-08T13:02:55.972Z",
+    "data": {
+      "id": "a01a907d-4481-4d96-9c78-77afa82633ba"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,7 +1,7 @@
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL } from './dsl.factory';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
-import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
+import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import { UserRoleEnum } from '@src/app/user/domain/user.role';
 import { UUID } from 'node:crypto';
 
@@ -21,7 +21,7 @@ export const workflows = (dsl: DSL) =>
         timestamp: new Date().toISOString(),
       });
 
-      const hmacBuilder = WebhookHMACBuilder.for(dsl.app);
+      const hmacBuilder = dsl.app.get(WebhookHMACBuilder, { strict: false });
       const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
 
       await dsl.users

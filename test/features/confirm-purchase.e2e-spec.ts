@@ -4,7 +4,7 @@ import { createDSL, DSL } from '@test/dsl/dsl.factory';
 import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
-import { WebhookHMACBuilder } from '@test/utils/webhook-hmac.builder';
+import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import { randomUUID } from 'node:crypto';
 
 describe('Confirm Purchase (e2e)', () => {
@@ -15,7 +15,7 @@ describe('Confirm Purchase (e2e)', () => {
   beforeAll(async () => {
     app = await createTestingApp();
     dsl = createDSL(app);
-    hmacBuilder = WebhookHMACBuilder.for(app);
+    hmacBuilder = app.get(WebhookHMACBuilder, { strict: false });
   });
 
   afterAll(async () => {
