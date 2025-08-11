@@ -43,7 +43,7 @@ export const workflows = (dsl: DSL) =>
             password: 'random-password-123',
           })
           .expect(200)
-          .then((res) => res.body.jwtAccessToken);
+          .then((res) => new Jwt(res.body.jwtAccessToken));
       } else {
         return dsl.users.createUserWithRole(role);
       }

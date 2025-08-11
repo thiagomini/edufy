@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -87,6 +88,11 @@ export class TicketController {
     id: string,
     @CurrentUser() user: UserEntity,
   ) {
+    if (user.role !== 'support_agent') {
+      throw new ForbiddenException(
+        'You do not have permission to resolve this ticket',
+      );
+    }
     const ticket = await this.ticketRepository.findOneById(id);
     if (!ticket) {
       throw new NotFoundException(`Ticket with ID ${id} not found`);
