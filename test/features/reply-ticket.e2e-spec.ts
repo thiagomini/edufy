@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Jwt } from '@src/libs/jwt/jwt';
 import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { randomUUID } from 'crypto';
@@ -104,8 +105,11 @@ describe('Reply Ticket E2E Tests', () => {
         })
         .expect(201)
         .then((response) => response.body);
+
+      const supportAgentJwt =
+        await workflows(dsl).createUserWithRole('support_agent');
       await dsl.tickets
-        .authenticatedAs(jwtAccessToken)
+        .authenticatedAs(supportAgentJwt)
         .resolve(ticket.id)
         .expect(200);
 
