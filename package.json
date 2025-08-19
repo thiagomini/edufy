@@ -23,7 +23,7 @@
     "test:cov": "dotenvx run -f .env.test -- jest --coverage",
     "test:debug": "dotenvx run -f .env.test -- node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenvx run -f .env.test -- jest --config ./test/jest-e2e.json --runInBand",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "kysely": "dotenvx run -- kysely",
     "codegen": "kysely-codegen --camel-case --out-file ./src/libs/database/generated/db.ts"
   },

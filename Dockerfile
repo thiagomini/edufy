@@ -5,12 +5,14 @@ RUN apk update && apk add procps curl && rm -rf /var/lib/apt/lists/*
 COPY . .
 RUN npm install -g corepack@0.32.0
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV HUSKY=0
 RUN corepack enable && corepack install
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
 FROM base AS production
 WORKDIR /mnt/app
+ENV HUSKY=0
 COPY --chown=1000:1000 --from=base /app/dist /mnt/app/dist
 COPY --chown=1000:1000 --from=base /app/node_modules /mnt/app/node_modules
 COPY --chown=1000:1000 --from=base /app/package.json /mnt/app/package.json
