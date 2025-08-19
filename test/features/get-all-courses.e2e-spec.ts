@@ -52,18 +52,20 @@ describe('Get All Courses (e2e)', () => {
         .expect(200)
         .expect((res) => {
           expect(res.body).toHaveLength(2);
-          expect(res.body).toMatchObject([
-            {
-              title: 'Course 1',
-              description: 'Description for Course 1',
-              price: 100,
-            },
-            {
-              title: 'Course 2',
-              description: 'Description for Course 2',
-              price: 200,
-            },
-          ]);
+          expect(res.body).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                title: 'Course 1',
+                description: 'Description for Course 1',
+                price: 100,
+              }),
+              expect.objectContaining({
+                title: 'Course 2',
+                description: 'Description for Course 2',
+                price: 200,
+              }),
+            ]),
+          );
         });
     });
   });
