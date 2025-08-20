@@ -17,6 +17,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - postgres_network
   app-prod:
     build:
       context: .
@@ -36,7 +38,50 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    profiles:
+      - prod
+    networks:
+      - postgres_network
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: edufy-app:dev
+    ports:
+      - '3000:3000'
+    env_file:
+      - docker/docker.env.dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000/ || exit 1']
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    develop:
+      watch:
+        - path: .
+          action: sync
+          target: /app
+          ignore:
+            - node_modules
+            - .git
+        - path: package.json
+          action: rebuild
+        - path: ./docker/docker.env.dev
+          action: rebuild
+    profiles:
+      - dev
+    networks:
+      - postgres_network
 
 volumes:
   postgres_data:
     driver: local
+
+networks:
+  postgres_network:
+    driver: bridge

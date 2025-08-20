@@ -10,6 +10,12 @@ RUN corepack enable && corepack install
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
+FROM base AS development
+WORKDIR /app
+COPY --from=base /app ./
+EXPOSE 8000
+CMD [ "pnpm", "run", "start:dev" ]
+
 FROM base AS production
 WORKDIR /mnt/app
 ENV HUSKY=0
