@@ -25,6 +25,8 @@
     "test:e2e": "dotenvx run -f .env.test -- jest --config ./test/jest-e2e.json --runInBand",
     "prepare": "husky || true",
     "kysely": "dotenvx run -- kysely",
+    "migrate": "pnpm run kysely migrate:latest",
+    "postmigrate": "pnpm run codegen",
     "codegen": "kysely-codegen --camel-case --out-file ./src/libs/database/generated/db.ts"
   },
   "dependencies": {

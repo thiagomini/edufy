@@ -8,21 +8,30 @@ ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV HUSKY=0
 RUN corepack enable && corepack install
 RUN pnpm install --frozen-lockfile
-RUN pnpm run build
+
+FROM base AS migrate
+ARG database_url
+ENV DATABASE_URL=$database_url
+CMD ["sh", "-c", "pnpm run migrate"]
 
 FROM base AS development
 WORKDIR /app
 COPY --from=base /app ./
 EXPOSE 8000
-CMD [ "pnpm", "run", "start:dev" ]
+CMD ["sh", "-c", "pnpm run codegen && pnpm run start:dev"]
+
+FROM base AS build
+WORKDIR /app
+COPY --from=base /app ./
+RUN echo 'export interface DB {}' > ./src/libs/database/generated/db.ts
+RUN pnpm run build
 
 FROM base AS production
 WORKDIR /mnt/app
 ENV HUSKY=0
-COPY --chown=1000:1000 --from=base /app/dist /mnt/app/dist
-COPY --chown=1000:1000 --from=base /app/node_modules /mnt/app/node_modules
-COPY --chown=1000:1000 --from=base /app/package.json /mnt/app/package.json
-COPY --chown=1000:1000 --from=base /app/pnpm-lock.yaml /mnt/app/pnpm-lock.yaml
+COPY --chown=1000:1000 --from=build /app/dist/ /mnt/app/dist/
+COPY --chown=1000:1000 --from=build /app/package.json /mnt/app/
+COPY --chown=1000:1000 --from=build /app/pnpm-lock.yaml /mnt/app/
 RUN pnpm install --prod --frozen-lockfile
 EXPOSE 3000
-CMD ["node", "/mnt/app/dist/src/main.js"]
+CMD ["sh", "-c", "pnpm run codegen && node /mnt/app/dist/src/main.js"]

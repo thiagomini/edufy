@@ -32,6 +32,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ['CMD-SHELL', 'curl -f http://localhost:3000/ || exit 1']
       interval: 1m30s
@@ -55,6 +57,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ['CMD-SHELL', 'curl -f http://localhost:3000/ || exit 1']
       interval: 1m30s
@@ -75,6 +79,18 @@ services:
           action: rebuild
     profiles:
       - dev
+    networks:
+      - postgres_network
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrate
+      args:
+        - database_url=postgres://admin:password@postgres:5432/edufy
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - postgres_network
 
