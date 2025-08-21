@@ -1,0 +1,1 @@
+docker compose run --rm --user $(id -u):$(id -g) migrate

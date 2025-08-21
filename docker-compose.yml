@@ -86,11 +86,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: migrate
-      args:
-        - database_url=postgres://admin:password@postgres:5432/edufy
+    env_file:
+      - docker/docker.env.prod
+
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ./src/libs/database/generated:/app/src/libs/database/generated
     networks:
       - postgres_network
 
