@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS migrate
 ENV DATABASE=
-CMD ["sh", "-c", "pnpm run kysely migrate:latest", "-e=", "${DATABASE}"]
+CMD ["pnpm", "run", "kysely", "migrate:latest", "-e", "${DATABASE}"]
 
 FROM base AS development
 WORKDIR /app

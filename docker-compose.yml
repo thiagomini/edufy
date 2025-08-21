@@ -86,16 +86,17 @@ services:
       context: .
       dockerfile: Dockerfile
       target: migrate
-    env_file:
-      - docker/docker.env.prod
 
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - ./src/libs/database/generated:/app/src/libs/database/generated
+      - ./kysely.config.ts:/app/kysely.config.ts:ro
     networks:
       - postgres_network
+    env_file:
+      - ./docker/docker.env.dev
 
 volumes:
   postgres_data:
