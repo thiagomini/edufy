@@ -23,7 +23,23 @@ Run the setup script that will handle everything for you:
 ./scripts/setup.sh
 ```
 
-#### Option 2: Manual Setup
+#### Option 2: Automated Setup (Docker)
+
+Ensure you have docker available in your machine. Then, run the setup-docker script:
+
+Run the setup script that will handle everything for you:
+
+```bash
+./scripts/setup-docker.sh
+```
+
+Alternatively, if you're using Windows, run the powershell script version:
+
+```powershell
+& .\scripts\setup-docker.ps1
+```
+
+#### Option 3: Manual Setup
 
 1. **Install Node.js 22.17.1**
 
@@ -53,6 +69,12 @@ Run the setup script that will handle everything for you:
    pnpm --version  # Should output: 9.15.0
    ```
 
+4. **Copy .env files**:
+```bash
+cp .env.template .env
+cp .env.template.test .env.test
+```
+
 The project includes:
 
 - `.nvmrc` file for Node.js version management
@@ -64,6 +86,15 @@ The project includes:
 
 ```bash
 $ pnpm install
+```
+
+## Running Migrations
+
+Ensure the database is running (you can run it with `docker compose up postgres --wait -d`).
+Then, run the script:
+
+```bash
+pnpm run migrate
 ```
 
 ## Compile and run the project
@@ -87,33 +118,4 @@ $ pnpm run test
 
 # e2e tests
 $ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
