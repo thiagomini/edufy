@@ -49,6 +49,20 @@ fi
 echo "📥 Installing dependencies..."
 pnpm install
 
+echo "📄 Copying .env files..."
+cp .env.template .env
+cp .env.test.template .env.test
+
+echo "🛠️ Starting Docker container for Database"
+
+docker compose up postgres --wait -d
+
+echo "🔄 Running migrations..."
+
+pnpm run migrate
+
+echo "✅ Migrations completed successfully."
+
 echo ""
 echo "🎉 Environment setup complete!"
 echo "   Node.js: $(node --version)"
@@ -56,4 +70,5 @@ echo "   pnpm: $(pnpm --version)"
 echo ""
 echo "You can now run:"
 echo "   pnpm run start:dev  # Start development server"
-echo "   pnpm test          # Run tests"
+echo "   pnpm run start      # Start production server"
+echo "   pnpm test:e2e       # Run e2e tests"
