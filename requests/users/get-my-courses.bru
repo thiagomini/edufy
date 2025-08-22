@@ -1,0 +1,15 @@
+meta {
+  name: get-my-courses
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/users/me/courses
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
