@@ -25,7 +25,6 @@ import {
   ITicketRepository,
   TicketRepository,
 } from '@src/app/ticket/domain/ticket.repository';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
 import { Jwt } from '@src/libs/jwt/jwt';
 import * as argon2 from 'argon2';
 import { UserService } from '../application/user.service';
@@ -128,14 +127,6 @@ export class UserController {
     }
 
     await this.userRepository.save(user);
-  }
-
-  @Get('/me/tickets')
-  async getMyTickets(@CurrentUser() user: UserEntity) {
-    const userTickets = await this.ticketRepository.findAllCreatedByUser(
-      user.id,
-    );
-    return userTickets.map((ticket) => new TicketReadDto(ticket));
   }
 
   @Get('/me/courses')
