@@ -21,10 +21,6 @@ import {
   EnrollmentRepository,
   IEnrollmentRepository,
 } from '@src/app/course/domain/enrollment.repository';
-import {
-  ITicketRepository,
-  TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
 import { Jwt } from '@src/libs/jwt/jwt';
 import * as argon2 from 'argon2';
 import { UserService } from '../application/user.service';
@@ -45,8 +41,6 @@ export class UserController {
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
     private readonly userService: UserService,
-    @Inject(TicketRepository)
-    private readonly ticketRepository: ITicketRepository,
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
     private readonly purchaseService: PurchaseService,

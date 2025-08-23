@@ -23,12 +23,20 @@ import { TicketStatus } from '../domain/ticket.status';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { ReplyTicketDto } from './dto/reply-ticket.dto';
 import { TicketReadDto } from './dto/ticket.read-dto';
+import { EmailService } from '@src/libs/email/email.service';
+import {
+  IUserRepository,
+  UserRepository,
+} from '@src/app/user/domain/user.repository';
 
 @Controller('')
 export class TicketController {
   constructor(
     @Inject(TicketRepository)
     private readonly ticketRepository: ITicketRepository,
+    private readonly emailService: EmailService,
+    @Inject(UserRepository)
+    private readonly userRepository: IUserRepository,
   ) {}
 
   @Get('tickets/:id')
@@ -105,7 +113,20 @@ export class TicketController {
     ticket.status = 'closed';
     ticket.resolvedBy = user.id;
     await this.ticketRepository.save(ticket);
+
+    // Enviar um email ao criador do ticket
+    const creator = await this.userRepository.findOneById(ticket.createdBy);
+    await this.sendTicketResolvedEmail(creator, ticket);
     return new TicketReadDto(ticket);
+  }
+
+  private async sendTicketResolvedEmail(to: UserEntity, ticket: TicketEntity) {
+    const email = to.email;
+    await this.emailService.send({
+      to: email,
+      subject: `O ticket ${ticket.id} foi resolvido!`,
+      body: `Seu Ticket ${ticket.title} foi resolvido com sucesso!`,
+    });
   }
 
   @Get('users/me/tickets')

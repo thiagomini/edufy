@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfiguredJwtModule } from '@src/libs/jwt/jwt.module';
+import { CourseModule } from '../course/course.module';
 import { UserService } from './application/user.service';
-import { KyselyUserRepository } from './infrastructure/kysely.user.repository';
 import { UserRepository } from './domain/user.repository';
+import { KyselyUserRepository } from './infrastructure/kysely.user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
-import { TicketModule } from '../ticket/ticket.module';
-import { CourseModule } from '../course/course.module';
 import { UserWebhook } from './presentation/user.webhook';
 
 @Module({
-  imports: [ConfiguredJwtModule, TicketModule, CourseModule],
+  imports: [ConfiguredJwtModule, CourseModule],
   controllers: [UserController, UserWebhook],
   providers: [
     {
