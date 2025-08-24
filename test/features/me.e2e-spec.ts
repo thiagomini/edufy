@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { DSL, createDSL } from '../dsl/dsl.factory';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
+import { workflows } from '@test/dsl/workflows';
 
 describe('Me (e2e)', () => {
   let app: INestApplication;
@@ -43,6 +44,22 @@ describe('Me (e2e)', () => {
           });
         });
     });
+    test('returns 0 tickets resolved for a support agent', async () => {
+      const jwt = await workflows(dsl).createUserWithRole('support_agent');
+
+      await dsl.users
+        .authenticatedAs(jwt)
+        // 2. Enviar uma request GET para o endpoint /users/me
+        .me()
+        .expect(200)
+        .then((response) => {
+          // 3. Esperamos que no body da requisicao exista um atributo chamado ticketsResolved = 0
+          expect(response.body).toMatchObject({
+            ticketsResolved: 0,
+          });
+        });
+    });
+    test.todo('returns 1 tickets resolved for a support agent');
   });
 
   describe('error cases', () => {

@@ -33,6 +33,7 @@ import { SignupUserDto } from './dto/signup-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserReadDto } from './dto/user.read-dto';
 import { Public } from './public.decorator';
+import { instanceToPlain } from 'class-transformer';
 
 @Controller('users')
 export class UserController {
@@ -81,7 +82,8 @@ export class UserController {
 
   @Get('/me')
   async me(@CurrentUser() user: UserEntity) {
-    return new UserReadDto(user);
+    const readDto = new UserReadDto(user);
+    return instanceToPlain(readDto, { groups: [user.role] });
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
