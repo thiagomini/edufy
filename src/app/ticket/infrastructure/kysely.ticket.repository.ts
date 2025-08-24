@@ -9,6 +9,15 @@ export class KyselyTicketRepository
   extends KyselyRepository
   implements ITicketRepository
 {
+  async findAllResolvedByUser(userId: string): Promise<TicketEntity[]> {
+    return await this.database
+      .selectFrom('ticket')
+      .selectAll()
+      .where('resolvedBy', '=', userId)
+      .execute()
+      .then((rows) => rows.map((row) => this.mapToEntity(row)).filter(Boolean));
+  }
+
   async save(ticket: TicketEntity): Promise<void> {
     await this.database
       .insertInto('ticket')

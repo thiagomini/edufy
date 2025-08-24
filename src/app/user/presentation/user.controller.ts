@@ -34,6 +34,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserReadDto } from './dto/user.read-dto';
 import { Public } from './public.decorator';
 import { instanceToPlain } from 'class-transformer';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '@src/app/ticket/domain/ticket.repository';
 
 @Controller('users')
 export class UserController {
@@ -47,6 +51,8 @@ export class UserController {
     private readonly purchaseService: PurchaseService,
     @Inject(EnrollmentRepository)
     private readonly enrollmentRepository: IEnrollmentRepository,
+    @Inject(TicketRepository)
+    private readonly ticketRepository: ITicketRepository,
   ) {}
 
   @Public()
@@ -82,7 +88,13 @@ export class UserController {
 
   @Get('/me')
   async me(@CurrentUser() user: UserEntity) {
-    const readDto = new UserReadDto(user);
+    const ticketsResolved = await this.ticketRepository.findAllResolvedByUser(
+      user.id,
+    );
+    const readDto = new UserReadDto({
+      ...user,
+      ticketsResolved: ticketsResolved.length,
+    });
     return instanceToPlain(readDto, { groups: [user.role] });
   }
 

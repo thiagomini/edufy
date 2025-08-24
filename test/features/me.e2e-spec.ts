@@ -59,7 +59,34 @@ describe('Me (e2e)', () => {
           });
         });
     });
-    test.todo('returns 1 tickets resolved for a support agent');
+    test('returns 1 tickets resolved for a support agent', async () => {
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
+
+      const ticketId = await dsl.tickets
+        .authenticatedAs(instructorJwt)
+        .create({
+          title: 'Ticket Test',
+          description: 'Ticket Description',
+        })
+        .then((res) => res.body.id);
+
+      const supportAgentJwt =
+        await workflows(dsl).createUserWithRole('support_agent');
+      await dsl.tickets.authenticatedAs(supportAgentJwt).resolve(ticketId);
+
+      await dsl.users
+        .authenticatedAs(supportAgentJwt)
+        // 2. Enviar uma request GET para o endpoint /users/me
+        .me()
+        .expect(200)
+        .then((response) => {
+          // 3. Esperamos que no body da requisicao exista um atributo chamado ticketsResolved = 0
+          expect(response.body).toMatchObject({
+            ticketsResolved: 1,
+          });
+        });
+    });
   });
 
   describe('error cases', () => {

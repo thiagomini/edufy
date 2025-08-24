@@ -59,6 +59,7 @@ describe('Create support agent (e2e)', () => {
             biography: null,
             interests: [],
             profilePictureUrl: null,
+            ticketsResolved: 0,
           });
         });
     });
