@@ -1,0 +1,77 @@
+import { INestApplication } from '@nestjs/common';
+import { DSL, createDSL } from '../../dsl/dsl.factory';
+import { response, validationErrors } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
+import { type Jwt } from '@src/libs/jwt/jwt';
+
+describe('Submit Ticket (e2e)', () => {
+  let app: INestApplication;
+  let dsl: DSL;
+  let jwtAccessToken: Jwt<{ sub: string }>;
+
+  beforeAll(async () => {
+    app = await createTestingApp();
+    dsl = createDSL(app);
+    jwtAccessToken = await dsl.users.createRandomUser();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe('success cases', () => {
+    test('successfully submits a ticket with valid data', async () => {
+      const userId = await dsl.users
+        .authenticatedAs(jwtAccessToken)
+        .me()
+        .expect(200)
+        .then((response) => response.body.id);
+      return dsl.support
+        .authenticatedAs(jwtAccessToken)
+        .createTicket({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toEqual({
+            id: expect.any(String),
+            title: 'Test Ticket',
+            description: 'This is a test ticket',
+            status: 'open',
+            createdBy: userId,
+            resolvedBy: null,
+            replies: [],
+          });
+        });
+    });
+  });
+  describe('error cases', () => {
+    test('returns an error when request is not authenticated', async () => {
+      return dsl.support
+        .createTicket({
+          title: 'Test Ticket',
+          description: 'This is a test ticket',
+        })
+        .expect(401)
+        .expect(
+          response.unauthorized('Authorization header is missing or malformed'),
+        );
+    });
+    test('returns an error when ticket data is invalid', async () => {
+      return dsl.support
+        .authenticatedAs(jwtAccessToken)
+        .createTicket({
+          title: '',
+          description: '',
+        })
+        .expect(400)
+        .expect(
+          response.validationFailed([
+            validationErrors.isNotEmpty('title'),
+            validationErrors.isNotEmpty('description'),
+          ]),
+        );
+    });
+  });
+});

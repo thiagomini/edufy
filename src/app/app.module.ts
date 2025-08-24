@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { AppService } from './app.service';
 import { DebugModule } from './debug/debug.module';
 import { ConditionalModule } from '@nestjs/config';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConditionalModule } from '@nestjs/config';
     CourseModule,
     ValidationModule,
     ConditionalModule.registerWhen(DebugModule, (env) => env.DEBUG === 'true'),
+    SupportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
