@@ -7,4 +7,10 @@ export class SupportDSL extends AbstractDSL {
       .set(this.headers)
       .send(data);
   }
+
+  resolveTicket(ticketId: string) {
+    return this.req()
+      .post(`/support/agent/tickets/${ticketId}/resolve`)
+      .set(this.headers);
+  }
 }
