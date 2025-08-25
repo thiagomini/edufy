@@ -23,9 +23,9 @@ describe('Resolve Ticket (e2e)', () => {
 
   describe('success cases', () => {
     test('successfully resolves a ticket', async () => {
-      const ticket = await dsl.tickets
+      const ticket = await dsl.support
         .authenticatedAs(supportAgentJwt)
-        .create({
+        .createTicket({
           title: 'Test Ticket',
           description: 'This is a test ticket',
         })
@@ -76,9 +76,9 @@ describe('Resolve Ticket (e2e)', () => {
         });
     });
     test('returns an error when trying to resolve a ticket that is not open', async () => {
-      const ticket = await dsl.tickets
+      const ticket = await dsl.support
         .authenticatedAs(supportAgentJwt)
-        .create({
+        .createTicket({
           title: 'Test Ticket',
           description: 'This is a test ticket',
         })

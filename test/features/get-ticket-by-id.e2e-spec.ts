@@ -22,9 +22,9 @@ describe('Get Ticket E2E Tests', () => {
 
   describe('success cases', () => {
     test('successfully retrieves a ticket with valid ID', async () => {
-      const ticket = await dsl.tickets
+      const ticket = await dsl.support
         .authenticatedAs(jwtAccessToken)
-        .create({
+        .createTicket({
           title: 'Test Ticket',
           description: 'This is a test ticket',
         })

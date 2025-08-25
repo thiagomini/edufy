@@ -63,9 +63,9 @@ describe('Me (e2e)', () => {
       const instructorJwt =
         await workflows(dsl).createUserWithRole('instructor');
 
-      const ticketId = await dsl.tickets
+      const ticketId = await dsl.support
         .authenticatedAs(instructorJwt)
-        .create({
+        .createTicket({
           title: 'Ticket Test',
           description: 'Ticket Description',
         })

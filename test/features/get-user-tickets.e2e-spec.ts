@@ -31,16 +31,16 @@ describe('Get User Tickets', () => {
     });
     test('successfully retrieves all tickets for a user', async () => {
       // Arrange
-      const ticket1 = await dsl.tickets
+      const ticket1 = await dsl.support
         .authenticatedAs(jwtAccessToken)
-        .create({
+        .createTicket({
           title: 'User Ticket 1',
           description: 'This is a user ticket',
         })
         .then((response) => response.body);
-      const ticket2 = await dsl.tickets
+      const ticket2 = await dsl.support
         .authenticatedAs(jwtAccessToken)
-        .create({
+        .createTicket({
           title: 'User Ticket 2',
           description: 'This is another user ticket',
         })

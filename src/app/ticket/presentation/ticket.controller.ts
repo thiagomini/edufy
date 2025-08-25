@@ -20,7 +20,6 @@ import {
   TicketRepository,
 } from '../domain/ticket.repository';
 import { TicketStatus } from '../domain/ticket.status';
-import { CreateTicketDto } from './dto/create-ticket.dto';
 import { ReplyTicketDto } from './dto/reply-ticket.dto';
 import { TicketReadDto } from './dto/ticket.read-dto';
 import { EmailService } from '@src/libs/email/email.service';
@@ -49,20 +48,6 @@ export class TicketController {
       throw new NotFoundException(`Ticket with ID ${id} not found`);
     }
     return new TicketReadDto(ticket);
-  }
-
-  @Post('tickets/')
-  async create(
-    @Body() ticket: CreateTicketDto,
-    @CurrentUser() user: UserEntity,
-  ) {
-    const newTicket = TicketEntity.create({
-      title: ticket.title,
-      description: ticket.description,
-      createdBy: user.id,
-    });
-    await this.ticketRepository.save(newTicket);
-    return new TicketReadDto(newTicket);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
