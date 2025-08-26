@@ -44,9 +44,9 @@ describe('Reply Ticket E2E Tests', () => {
         .expect(204);
 
       // Assert
-      return dsl.tickets
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .getById(ticket.id)
+        .getTicketById(ticket.id)
         .expect(200)
         .expect((response) => {
           expect(response.body).toMatchObject({

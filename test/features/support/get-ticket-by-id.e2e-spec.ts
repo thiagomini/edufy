@@ -30,9 +30,9 @@ describe('Get Ticket E2E Tests', () => {
         })
         .then((response) => response.body);
 
-      return dsl.tickets
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .getById(ticket.id)
+        .getTicketById(ticket.id)
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual({
@@ -49,23 +49,23 @@ describe('Get Ticket E2E Tests', () => {
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.tickets
-        .getById(randomUUID())
+      return dsl.support
+        .getTicketById(randomUUID())
         .expect(401)
         .expect(response.unauthorized());
     });
     test('returns an error when ticket ID is invalid', () => {
-      return dsl.tickets
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .getById('invalid-id')
+        .getTicketById('invalid-id')
         .expect(400)
         .expect(response.badRequest('Invalid ticket ID format'));
     });
     test('returns an error when ticket does not exist', () => {
       const nonExistingTicketId = randomUUID();
-      return dsl.tickets
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .getById(nonExistingTicketId)
+        .getTicketById(nonExistingTicketId)
         .expect(404)
         .expect(
           response.notFound(`Ticket with ID ${nonExistingTicketId} not found`),
