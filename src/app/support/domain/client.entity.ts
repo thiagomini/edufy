@@ -1,3 +1,7 @@
+import {
+  CreateTicketInput,
+  TicketEntity,
+} from '@src/app/ticket/domain/ticket.entity';
 import { randomUUID, UUID } from 'node:crypto';
 
 export interface CreateClientInput {
@@ -25,5 +29,13 @@ export class ClientEntity {
 
   public static fromProps(props: ClientProps): ClientEntity {
     return new ClientEntity(props.id as UUID, props.name, props.email);
+  }
+
+  createTicket(props: Pick<CreateTicketInput, 'title' | 'description'>) {
+    return TicketEntity.create({
+      title: props.title,
+      description: props.description,
+      createdBy: this.id,
+    });
   }
 }

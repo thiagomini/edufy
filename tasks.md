@@ -5,4 +5,5 @@
 - [x] Implementar a nova rota para criar um ticket de suporte: POST /support/client/tickets
 - [x] Migrar a rota para resolver um ticket de suporte: POST /support/agent/tickets/:id/resolve
 - [x] Remover o endpoint antigo para resolver um ticket de suporte
-- [ ] Realizar as adaptações na controller atual para não dependermos do UserRepository -> Client, Agente
+- [x] Realizar as adaptações na controller atual para não dependermos do UserRepository -> Client, Agente
+- [x] Modificar a rota de criação de ticket para utilizar a entidade "Cliente"
