@@ -6,10 +6,11 @@ import { ClientRepository } from './domain/client.repository';
 import { KyselyClientRepository } from './infrastructure/kysely.client-repository';
 import { AgentController } from './presentation/controllers/agent.controller';
 import { ClientController } from './presentation/controllers/client.controller';
+import { TicketController } from './presentation/controllers/ticket.controller';
 
 @Module({
   imports: [EmailModule],
-  controllers: [ClientController, AgentController],
+  controllers: [ClientController, AgentController, TicketController],
   providers: [
     {
       provide: TicketRepository,
