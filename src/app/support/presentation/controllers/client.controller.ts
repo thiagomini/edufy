@@ -7,7 +7,7 @@ import {
 import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
-import { CreateTicketDto } from './create-ticket.dto';
+import { CreateTicketDto } from '../dtos/create-ticket.dto';
 
 @Controller('support/client')
 export class ClientController {

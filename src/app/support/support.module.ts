@@ -1,18 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ClientController } from './client/client.controller';
+import { EmailModule } from '@src/libs/email/email.module';
 import { TicketRepository } from '../ticket/domain/ticket.repository';
 import { KyselyTicketRepository } from '../ticket/infrastructure/kysely.ticket.repository';
-import { AgentController } from './agent/agent.controller';
-import { EmailModule } from '@src/libs/email/email.module';
-import { UserModule } from '../user/user.module';
+import { ClientRepository } from './domain/client.repository';
+import { KyselyClientRepository } from './infrastructure/kysely.client-repository';
+import { AgentController } from './presentation/controllers/agent.controller';
+import { ClientController } from './presentation/controllers/client.controller';
 
 @Module({
-  imports: [EmailModule, UserModule],
+  imports: [EmailModule],
   controllers: [ClientController, AgentController],
   providers: [
     {
       provide: TicketRepository,
       useClass: KyselyTicketRepository,
+    },
+    {
+      provide: ClientRepository,
+      useClass: KyselyClientRepository,
     },
   ],
   exports: [TicketRepository],
