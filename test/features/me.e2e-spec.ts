@@ -73,7 +73,9 @@ describe('Me (e2e)', () => {
 
       const supportAgentJwt =
         await workflows(dsl).createUserWithRole('support_agent');
-      await dsl.tickets.authenticatedAs(supportAgentJwt).resolve(ticketId);
+      await dsl.support
+        .authenticatedAs(supportAgentJwt)
+        .resolveTicket(ticketId);
 
       await dsl.users
         .authenticatedAs(supportAgentJwt)

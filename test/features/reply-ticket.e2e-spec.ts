@@ -108,9 +108,9 @@ describe('Reply Ticket E2E Tests', () => {
 
       const supportAgentJwt =
         await workflows(dsl).createUserWithRole('support_agent');
-      await dsl.tickets
+      await dsl.support
         .authenticatedAs(supportAgentJwt)
-        .resolve(ticket.id)
+        .resolveTicket(ticket.id)
         .expect(200);
 
       return dsl.tickets
