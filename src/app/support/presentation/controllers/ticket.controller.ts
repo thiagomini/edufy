@@ -21,7 +21,7 @@ import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';
 
-@Controller('support/tickets')
+@Controller('support')
 export class TicketController {
   constructor(
     @Inject(TicketRepository)
@@ -29,7 +29,7 @@ export class TicketController {
   ) {}
 
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Post(':id/reply')
+  @Post('tickets/:id/reply')
   async reply(
     @Param('id', parseUUIDWithMessage('Invalid ticket ID format'))
     id: string,
@@ -52,7 +52,7 @@ export class TicketController {
     await this.ticketRepository.save(ticket);
   }
 
-  @Get(':id')
+  @Get('tickets/:id')
   async getTicketById(
     @Param('id', parseUUIDWithMessage('Invalid ticket ID format'))
     id: string,

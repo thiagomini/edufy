@@ -24,4 +24,8 @@ export class SupportDSL extends AbstractDSL {
   getTicketById(ticketId: string) {
     return this.req().get(`/support/tickets/${ticketId}`).set(this.headers);
   }
+
+  myTickets() {
+    return this.req().get('/support/client/tickets').set(this.headers);
+  }
 }

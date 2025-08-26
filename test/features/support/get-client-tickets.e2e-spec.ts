@@ -4,7 +4,7 @@ import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
-describe('Get User Tickets', () => {
+describe('Get Client Tickets', () => {
   let app: INestApplication;
   let dsl: DSL;
   let jwtAccessToken: Jwt<{ sub: string }>;
@@ -21,9 +21,9 @@ describe('Get User Tickets', () => {
 
   describe('success cases', () => {
     test('returns an empty array when user has no tickets', async () => {
-      return dsl.users
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .tickets()
+        .myTickets()
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual([]);
@@ -47,9 +47,9 @@ describe('Get User Tickets', () => {
         .then((response) => response.body);
 
       // Act and Assert
-      return dsl.users
+      return dsl.support
         .authenticatedAs(jwtAccessToken)
-        .tickets()
+        .myTickets()
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual([ticket1, ticket2]);
@@ -59,7 +59,10 @@ describe('Get User Tickets', () => {
 
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.users.tickets().expect(401).expect(response.unauthorized());
+      return dsl.support
+        .myTickets()
+        .expect(401)
+        .expect(response.unauthorized());
     });
   });
 });
