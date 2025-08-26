@@ -65,8 +65,8 @@ describe('Reply Ticket E2E Tests', () => {
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.tickets
-        .reply(randomUUID(), DUMMY_TICKET_REPLY)
+      return dsl.support
+        .replyTicket(randomUUID(), DUMMY_TICKET_REPLY)
         .expect(401)
         .expect(response.unauthorized());
     });
