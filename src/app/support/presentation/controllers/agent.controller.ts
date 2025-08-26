@@ -9,12 +9,8 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { TicketEntity } from '@src/app/ticket/domain/ticket.entity';
-import {
-  ITicketRepository,
-  TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+
+import { TicketReadDto } from '@src/app/support/presentation/dtos/ticket.read-dto';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { EmailService } from '@src/libs/email/email.service';
@@ -25,6 +21,11 @@ import {
   ClientRepository,
   IClientRepository,
 } from '../../domain/client.repository';
+import { TicketEntity } from '../../domain/ticket.entity';
+import {
+  TicketRepository,
+  ITicketRepository,
+} from '../../domain/ticket.repository';
 
 @Controller('support/agent')
 export class AgentController {

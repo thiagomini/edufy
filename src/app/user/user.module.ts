@@ -8,10 +8,10 @@ import { KyselyUserRepository } from './infrastructure/kysely.user.repository';
 import { JwtGuard } from './presentation/jwt.guard';
 import { UserController } from './presentation/user.controller';
 import { UserWebhook } from './presentation/user.webhook';
-import { TicketModule } from '../ticket/ticket.module';
+import { SupportModule } from '../support/support.module';
 
 @Module({
-  imports: [ConfiguredJwtModule, CourseModule, TicketModule],
+  imports: [ConfiguredJwtModule, CourseModule, SupportModule],
   controllers: [UserController, UserWebhook],
   providers: [
     {

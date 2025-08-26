@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
-import {
-  ITicketRepository,
-  TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+
+import { TicketReadDto } from '@src/app/support/presentation/dtos/ticket.read-dto';
 import { ClientEntity } from '../../domain/client.entity';
 import { CurrentClient } from '../decorators/current-client.decorator';
 import { CreateTicketDto } from '../dtos/create-ticket.dto';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '../../domain/ticket.repository';
 
 @Controller('support/client')
 export class ClientController {

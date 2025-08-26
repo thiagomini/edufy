@@ -1,7 +1,4 @@
-import {
-  CreateTicketInput,
-  TicketEntity,
-} from '@src/app/ticket/domain/ticket.entity';
+import { CreateTicketInput, TicketEntity } from './ticket.entity';
 import { randomUUID, UUID } from 'node:crypto';
 
 export interface CreateClientInput {

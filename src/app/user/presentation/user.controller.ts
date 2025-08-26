@@ -35,9 +35,9 @@ import { UserReadDto } from './dto/user.read-dto';
 import { Public } from './public.decorator';
 import { instanceToPlain } from 'class-transformer';
 import {
-  ITicketRepository,
   TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
+  ITicketRepository,
+} from '@src/app/support/domain/ticket.repository';
 
 @Controller('users')
 export class UserController {

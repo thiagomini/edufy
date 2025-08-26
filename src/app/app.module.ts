@@ -5,7 +5,6 @@ import { ConfigurationModule } from '../libs/configuration/configuration.module'
 import { DatabaseModule } from '../libs/database/database.module';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
-import { TicketModule } from './ticket/ticket.module';
 import { UserModule } from './user/user.module';
 import { AppService } from './app.service';
 import { DebugModule } from './debug/debug.module';
@@ -16,7 +15,6 @@ import { SupportModule } from './support/support.module';
   imports: [
     UserModule,
     ConfigurationModule,
-    TicketModule,
     AdminModule,
     DatabaseModule,
     CourseModule,

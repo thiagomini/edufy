@@ -10,16 +10,17 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import {
-  ITicketRepository,
-  TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
-import { TicketStatus } from '@src/app/ticket/domain/ticket.status';
-import { ReplyTicketDto } from '@src/app/ticket/presentation/dto/reply-ticket.dto';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+
+import { ReplyTicketDto } from '@src/app/support/presentation/dtos/reply-ticket.dto';
+import { TicketReadDto } from '@src/app/support/presentation/dtos/ticket.read-dto';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';
+import {
+  TicketRepository,
+  ITicketRepository,
+} from '../../domain/ticket.repository';
+import { TicketStatus } from '../../domain/ticket.status';
 
 @Controller('support')
 export class TicketController {
