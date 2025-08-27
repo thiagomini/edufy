@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  RawBodyRequest,
+  Req,
+} from '@nestjs/common';
 import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import { Public } from '../user/presentation/public.decorator';
 
@@ -9,8 +16,8 @@ export class DebugController {
 
   @HttpCode(HttpStatus.OK)
   @Post('hmac')
-  async createHmacForPayload(@Body() payload: Record<string, any>) {
-    const hmac = this.webhookHmacBuilder.buildForPayload(payload);
+  async createHmacForPayload(@Req() request: RawBodyRequest<Request>) {
+    const hmac = this.webhookHmacBuilder.buildForPayload(request.rawBody);
     return { hmac };
   }
 }
