@@ -97,7 +97,7 @@ describe('Checkout Course (e2e)', () => {
         timestamp: new Date().toISOString(),
       };
       const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
-      await dsl.users
+      await dsl.payments
         .usingHMAC(hmac)
         .confirmPurchase(purchaseConfirmedEvent)
         .expect(204);
