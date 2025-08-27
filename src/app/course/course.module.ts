@@ -12,6 +12,7 @@ import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-his
 import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
 import { CourseController } from './presentation/course.controller';
 import { PurchaseController } from './presentation/purchase.controller';
+import { PurchaseProcessedEventHandler } from './application/purchase-processed.event-handler';
 
 @Module({
   controllers: [CourseController, PurchaseController],
@@ -37,6 +38,7 @@ import { PurchaseController } from './presentation/purchase.controller';
       useClass: KyselyEnrollmentRepository,
     },
     PurchaseService,
+    PurchaseProcessedEventHandler,
   ],
   exports: [
     CourseRepository,

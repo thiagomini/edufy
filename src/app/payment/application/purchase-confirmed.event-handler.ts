@@ -1,10 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { EnrollmentEntity } from '@src/app/course/domain/enrollment.entity';
-import {
-  EnrollmentRepository,
-  IEnrollmentRepository,
-} from '@src/app/course/domain/enrollment.repository';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import {
   IPurchaseRepository,
   PurchaseRepository,
@@ -16,8 +11,7 @@ export class PurchaseConfirmedEventHandler {
   constructor(
     @Inject(PurchaseRepository)
     private readonly purchaseRepository: IPurchaseRepository,
-    @Inject(EnrollmentRepository)
-    private readonly enrollmentRepository: IEnrollmentRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @OnEvent('purchase.confirmed')
@@ -34,10 +28,10 @@ export class PurchaseConfirmedEventHandler {
 
     await this.purchaseRepository.save(purchase);
 
-    const enrollment = EnrollmentEntity.create({
-      courseId: purchase.courseId,
+    await this.eventEmitter.emitAsync('payment.purchase.processed', {
+      purchaseId: purchase.id,
       studentId: purchase.userId,
+      courseId: purchase.courseId,
     });
-    await this.enrollmentRepository.save(enrollment);
   }
 }
