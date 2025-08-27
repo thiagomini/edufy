@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { DebugModule } from './debug/debug.module';
 import { ConditionalModule } from '@nestjs/config';
 import { SupportModule } from './support/support.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SupportModule } from './support/support.module';
     ValidationModule,
     ConditionalModule.registerWhen(DebugModule, (env) => env.DEBUG === 'true'),
     SupportModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
