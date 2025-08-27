@@ -17,6 +17,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "start:repl": "pnpm run start --watch --watchAssets --entryFile repl",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "dotenvx run -f .env.test -- jest",
     "test:watch": "dotenvx run -f .env.test -- jest --watch",
