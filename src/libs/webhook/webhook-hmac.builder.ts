@@ -19,16 +19,6 @@ export class WebhookHMACBuilder {
     return hmac;
   }
 
-  buildFromRawBody(rawBody: Buffer) {
-    const unixTimestamp = Math.floor(Date.now() / 1000);
-    const payloadString = this.serialize(rawBody);
-    const header = `${unixTimestamp}.${payloadString}`;
-    const hmac = createHmac('sha256', this.webhookConfig.secret)
-      .update(header)
-      .digest('hex');
-    return `t=${unixTimestamp},v1=${hmac}`;
-  }
-
   private serialize(payload: Record<string, unknown> | Buffer) {
     if (Buffer.isBuffer(payload)) {
       return payload.toString();
