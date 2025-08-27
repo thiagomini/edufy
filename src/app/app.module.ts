@@ -11,6 +11,7 @@ import { DebugModule } from './debug/debug.module';
 import { ConditionalModule } from '@nestjs/config';
 import { SupportModule } from './support/support.module';
 import { PaymentModule } from './payment/payment.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -23,6 +24,9 @@ import { PaymentModule } from './payment/payment.module';
     ConditionalModule.registerWhen(DebugModule, (env) => env.DEBUG === 'true'),
     SupportModule,
     PaymentModule,
+    EventEmitterModule.forRoot({
+      global: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

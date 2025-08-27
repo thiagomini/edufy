@@ -121,17 +121,5 @@ describe('Confirm Purchase (e2e)', () => {
           response.validationFailed([validationErrors.isNotEmpty('type')]),
         );
     });
-    test('returns an error when purchase does not exist', () => {
-      const purchaseConfirmedEvent = new PurchaseConfirmedEvent({
-        data: { id: randomUUID() },
-        timestamp: new Date().toISOString(),
-      });
-      const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
-      return dsl.payments
-        .usingHMAC(hmac)
-        .confirmPurchase(purchaseConfirmedEvent)
-        .expect(404)
-        .expect(response.notFound('Purchase not found'));
-    });
   });
 });

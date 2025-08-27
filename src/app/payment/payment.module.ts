@@ -3,6 +3,7 @@ import { PaymentsWebhook } from './presentation/payments.webhook';
 import { PurchaseRepository } from '../course/domain/purchase.repository';
 import { KyselyPurchaseRepository } from '../course/infrastructure/kysely.purchase-repository';
 import { CourseModule } from '../course/course.module';
+import { PurchaseConfirmedEventHandler } from './application/purchase-confirmed.event-handler';
 
 @Module({
   imports: [CourseModule],
@@ -11,6 +12,7 @@ import { CourseModule } from '../course/course.module';
       provide: PurchaseRepository,
       useClass: KyselyPurchaseRepository,
     },
+    PurchaseConfirmedEventHandler,
   ],
   controllers: [PaymentsWebhook],
 })
