@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { createDSL, DSL } from '@test/dsl/dsl.factory';
 import { workflows } from '@test/dsl/workflows';
-import { response } from '@test/utils/response';
+import { response, validationErrors } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 import { WebhookHMACBuilder } from '@src/libs/webhook/webhook-hmac.builder';
 import { randomUUID } from 'node:crypto';
@@ -37,6 +37,7 @@ describe('Confirm Purchase (e2e)', () => {
         .expect(201)
         .then((res) => res.body);
 
+      // Student Purchase
       const studentJwt = await workflows(dsl).createUserWithRole('student');
       const purchase = await dsl.courses
         .authenticatedAs(studentJwt)
@@ -77,6 +78,19 @@ describe('Confirm Purchase (e2e)', () => {
             status: 'completed',
           });
         });
+      await dsl.users
+        .authenticatedAs(studentJwt)
+        .getEnrollments()
+        .expect(200)
+        .expect((response) => {
+          expect(response.body).toEqual([
+            {
+              courseId: newRustCourse.id,
+              studentId: studentJwt.payload().sub,
+              enrolledAt: expect.any(String),
+            },
+          ]);
+        });
     });
     test.todo('ignores duplicate confirmations for the same purchase');
   });
@@ -93,9 +107,9 @@ describe('Confirm Purchase (e2e)', () => {
     });
     test('returns an error when request data is invalid', () => {
       const purchaseConfirmedEvent: PurchaseConfirmedEvent = {
-        data: { id: 'not-really-a-valid-uuid' },
+        data: { id: randomUUID() },
         timestamp: new Date().toISOString(),
-        type: 'purchase.confirmed',
+        type: '' as 'purchase.confirmed',
       } as const;
 
       const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
@@ -103,7 +117,9 @@ describe('Confirm Purchase (e2e)', () => {
         .usingHMAC(hmac)
         .confirmPurchase(purchaseConfirmedEvent)
         .expect(400)
-        .expect(response.validationFailed(['Invalid UUID']));
+        .expect(
+          response.validationFailed([validationErrors.isNotEmpty('type')]),
+        );
     });
     test('returns an error when purchase does not exist', () => {
       const purchaseConfirmedEvent = new PurchaseConfirmedEvent({
