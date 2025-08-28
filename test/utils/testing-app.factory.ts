@@ -14,9 +14,11 @@ export async function createTestingApp(
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule, ...additionalImports],
   }).compile();
-  const app = moduleFixture.createNestApplication({
-    rawBody: true,
-  });
+  const app = moduleFixture
+    .createNestApplication({
+      rawBody: true,
+    })
+    .enableShutdownHooks();
   configServer(app);
   await app.init();
   return app;

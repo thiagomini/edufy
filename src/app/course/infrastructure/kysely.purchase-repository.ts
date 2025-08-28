@@ -36,27 +36,33 @@ export class KyselyPurchaseRepository
   }
 
   async save(purchase: PurchaseEntity): Promise<void> {
-    await this.database
-      .insertInto('purchase')
-      .values({
-        id: purchase.id,
-        courseId: purchase.courseId,
-        userId: purchase.userId,
-        status: purchase.status,
-        price: purchase.price,
-        createdAt: purchase.purchaseDate,
-      })
-      .onConflict((oc) =>
-        oc.column('id').doUpdateSet({
+    await this.database.transaction().execute(async (trx) => {
+      await trx
+        .insertInto('purchase')
+        .values({
+          id: purchase.id,
           courseId: purchase.courseId,
           userId: purchase.userId,
           status: purchase.status,
           price: purchase.price,
-          confirmedAt: purchase.confirmedAt,
-          updatedAt: new Date(),
-        }),
-      )
-      .execute();
+          createdAt: purchase.purchaseDate,
+        })
+        .onConflict((oc) =>
+          oc.column('id').doUpdateSet({
+            courseId: purchase.courseId,
+            userId: purchase.userId,
+            status: purchase.status,
+            price: purchase.price,
+            confirmedAt: purchase.confirmedAt,
+            updatedAt: new Date(),
+          }),
+        )
+        .execute();
+
+      if (purchase.jobs.length > 0) {
+        await trx.insertInto('pgboss.job').values(purchase.jobs).execute();
+      }
+    });
   }
 
   private mapToPurchaseEntity(

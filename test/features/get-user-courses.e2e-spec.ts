@@ -4,6 +4,7 @@ import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
+import { waitFor } from '@test/utils/wait-for';
 
 describe('Get User Courses (e2e)', () => {
   let app: INestApplication;
@@ -73,21 +74,23 @@ describe('Get User Courses (e2e)', () => {
       await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
 
       // Act
-      return dsl.courses
-        .authenticatedAs(studentJwt)
-        .getAllByUser()
-        .expect(200)
-        .expect((response) => {
-          expect(response.body).toEqual([
-            {
-              id: course.id,
-              title: 'Another Test Course',
-              description: 'This is another test course',
-              price: 100,
-              instructorId: instructorJwtAccessToken.payload().sub,
-            },
-          ]);
-        });
+      await waitFor(() => {
+        dsl.courses
+          .authenticatedAs(studentJwt)
+          .getAllByUser()
+          .expect(200)
+          .expect((response) => {
+            expect(response.body).toEqual([
+              {
+                id: course.id,
+                title: 'Another Test Course',
+                description: 'This is another test course',
+                price: 100,
+                instructorId: instructorJwtAccessToken.payload().sub,
+              },
+            ]);
+          });
+      });
     });
   });
   describe('error cases', () => {

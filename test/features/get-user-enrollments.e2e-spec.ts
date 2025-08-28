@@ -3,6 +3,7 @@ import { DSL, createDSL } from '@test/dsl/dsl.factory';
 import { workflows } from '@test/dsl/workflows';
 import { response } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
+import { waitFor } from '@test/utils/wait-for';
 
 describe('Get User Enrollments', () => {
   let app: INestApplication;
@@ -37,7 +38,7 @@ describe('Get User Enrollments', () => {
       await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
 
       // Act
-      return (
+      await waitFor(() => {
         dsl.users
           .authenticatedAs(studentJwt)
           .getEnrollments()
@@ -51,8 +52,8 @@ describe('Get User Enrollments', () => {
                 enrolledAt: expect.any(String),
               },
             ]);
-          })
-      );
+          });
+      });
     });
   });
   describe('error cases', () => {
