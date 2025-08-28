@@ -1,17 +1,20 @@
 import { Inject } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { OnEvent } from '@nestjs/event-emitter';
 import {
   IPurchaseRepository,
   PurchaseRepository,
 } from '@src/app/course/domain/purchase.repository';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
+import { InjectQueue } from '@src/libs/queue/queue.decorators';
+import { Queue } from '@src/libs/queue/queue.interface';
 import { WebhookEventDto } from '@src/libs/webhook/webhook.event';
 
 export class PurchaseConfirmedEventHandler {
   constructor(
     @Inject(PurchaseRepository)
     private readonly purchaseRepository: IPurchaseRepository,
-    private readonly eventEmitter: EventEmitter2,
+    @InjectQueue('enroll-student')
+    private readonly enrollStudentQueue: Queue,
   ) {}
 
   @OnEvent('purchase.confirmed')
@@ -28,7 +31,7 @@ export class PurchaseConfirmedEventHandler {
 
     await this.purchaseRepository.save(purchase);
 
-    await this.eventEmitter.emitAsync('payment.purchase.processed', {
+    await this.enrollStudentQueue.addJob({
       purchaseId: purchase.id,
       studentId: purchase.userId,
       courseId: purchase.courseId,

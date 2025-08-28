@@ -3,8 +3,10 @@ import { PurchaseRepository } from '../course/domain/purchase.repository';
 import { KyselyPurchaseRepository } from '../course/infrastructure/kysely.purchase-repository';
 import { PurchaseConfirmedEventHandler } from './application/purchase-confirmed.event-handler';
 import { PaymentsWebhook } from './presentation/payments.webhook';
+import { QueueModule } from '@src/libs/queue/queue.module';
 
 @Module({
+  imports: [QueueModule.registerQueue('enroll-student')],
   providers: [
     {
       provide: PurchaseRepository,

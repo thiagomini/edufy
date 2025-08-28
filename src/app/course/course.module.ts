@@ -12,9 +12,11 @@ import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-his
 import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
 import { CourseController } from './presentation/course.controller';
 import { PurchaseController } from './presentation/purchase.controller';
-import { PurchaseProcessedEventHandler } from './application/purchase-processed.event-handler';
+import { EnrollStudentProcessor } from './application/enroll-student.processor';
+import { QueueModule } from '@src/libs/queue/queue.module';
 
 @Module({
+  imports: [QueueModule.registerQueue('enroll-student')],
   controllers: [CourseController, PurchaseController],
   providers: [
     {
@@ -38,7 +40,7 @@ import { PurchaseProcessedEventHandler } from './application/purchase-processed.
       useClass: KyselyEnrollmentRepository,
     },
     PurchaseService,
-    PurchaseProcessedEventHandler,
+    EnrollStudentProcessor,
   ],
   exports: [
     CourseRepository,

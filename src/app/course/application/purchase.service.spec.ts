@@ -11,6 +11,11 @@ import { PaymentGatewaySpy } from './payment.gateway.spy';
 import { PurchaseService } from './purchase.service';
 import { DatabaseModule } from '@src/libs/database/database.module';
 import { ConfigurationModule } from '@src/libs/configuration/configuration.module';
+import { ConfigModule } from '@nestjs/config';
+import databaseConfig, {
+  DatabaseConfig,
+} from '@src/libs/configuration/database.config';
+import { QueueModule } from '@src/libs/queue/queue.module';
 
 describe('PurchaseService', () => {
   let testingModule: TestingModule;
@@ -18,7 +23,20 @@ describe('PurchaseService', () => {
 
   beforeEach(async () => {
     testingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ConfigurationModule, CourseModule],
+      imports: [
+        CourseModule,
+        DatabaseModule,
+        ConfigurationModule,
+        QueueModule.forRootAsync({
+          imports: [ConfigModule.forFeature(databaseConfig)],
+          inject: [databaseConfig.KEY],
+          useFactory: (config: DatabaseConfig) => {
+            return {
+              connectionString: config.url,
+            };
+          },
+        }),
+      ],
     })
       .overrideProvider(PurchaseRepository)
       .useClass(InMemoryPurchaseRepository)
