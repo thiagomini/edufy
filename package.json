@@ -23,6 +23,7 @@
     "test:watch": "dotenvx run -f .env.test -- jest --watch",
     "test:cov": "dotenvx run -f .env.test -- jest --coverage",
     "test:debug": "dotenvx run -f .env.test -- node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:int": "dotenvx run -f .env.test -- jest --config ./test/jest-int.json --runInBand",
     "test:e2e": "dotenvx run -f .env.test -- jest --config ./test/jest-e2e.json --runInBand",
     "prepare": "husky || true",
     "kysely": "dotenvx run -- kysely",
@@ -43,6 +44,7 @@
     "class-validator": "0.14.2",
     "kysely": "0.28.5",
     "pg": "8.16.3",
+    "pg-boss": "^10.3.2",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
     "zod": "4.0.17"
