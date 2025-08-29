@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { DSL, createDSL } from '../dsl/dsl.factory';
+import { DSL, createDSL } from '../../dsl/dsl.factory';
 import { response, validationErrors } from '@test/utils/response';
 import { createTestingApp } from '@test/utils/testing-app.factory';
 
