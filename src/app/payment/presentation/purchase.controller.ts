@@ -6,11 +6,11 @@ import {
   NotFoundException,
   Param,
 } from '@nestjs/common';
-import { PurchaseService } from '@src/app/course/application/purchase.service';
+import { PurchaseService } from '@src/app/payment/application/purchase.service';
 import {
   PurchaseHistoryQuery,
   IPurchaseHistoryQuery,
-} from '@src/app/course/domain/purchase-history.query';
+} from '@src/app/payment/domain/purchase-history.query';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
 import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';

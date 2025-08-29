@@ -1,21 +1,15 @@
 import { Module } from '@nestjs/common';
 import { QueueModule } from '@src/libs/queue/queue.module';
 import { EnrollStudentProcessor } from './application/enroll-student.processor';
-import { ExamplePaymentGateway } from './application/example-payment.gateway';
-import { PaymentGateway } from './application/payment.gateway';
-import { PurchaseService } from './application/purchase.service';
 import { CourseRepository } from './domain/course.repository';
 import { EnrollmentRepository } from './domain/enrollment.repository';
-import { PurchaseHistoryQuery } from './domain/purchase-history.query';
-import { PurchaseRepository } from './domain/purchase.repository';
 import { KyselyCourseRepository } from './infrastructure/kysely.course-repository';
 import { KyselyEnrollmentRepository } from './infrastructure/kysely.enrollment.repository';
-import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
-import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
 import { CourseController } from './presentation/course.controller';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
-  imports: [QueueModule.registerQueue('enroll-student')],
+  imports: [QueueModule.registerQueue('enroll-student'), PaymentModule],
   controllers: [CourseController],
   providers: [
     {
@@ -23,29 +17,11 @@ import { CourseController } from './presentation/course.controller';
       useClass: KyselyCourseRepository,
     },
     {
-      provide: PurchaseRepository,
-      useClass: KyselyPurchaseRepository,
-    },
-    {
-      provide: PurchaseHistoryQuery,
-      useClass: KyselyPurchaseHistoryQuery,
-    },
-    {
-      provide: PaymentGateway,
-      useClass: ExamplePaymentGateway,
-    },
-    {
       provide: EnrollmentRepository,
       useClass: KyselyEnrollmentRepository,
     },
-    PurchaseService,
     EnrollStudentProcessor,
   ],
-  exports: [
-    CourseRepository,
-    PurchaseService,
-    PurchaseRepository,
-    EnrollmentRepository,
-  ],
+  exports: [CourseRepository, EnrollmentRepository],
 })
 export class CourseModule {}

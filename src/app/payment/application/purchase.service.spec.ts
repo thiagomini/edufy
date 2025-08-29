@@ -1,21 +1,22 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '@src/app/user/domain/user.entity';
-import { randomUUID } from 'node:crypto';
-import { CourseModule } from '../course.module';
-import { CourseEntity } from '../domain/course.entity';
-import { PurchaseHistoryQuery } from '../domain/purchase-history.query';
-import { PurchaseRepository } from '../domain/purchase.repository';
-import { InMemoryPurchaseRepository } from '../infrastructure/in-memory.purchase-repository';
-import { PaymentGateway } from './payment.gateway';
-import { PaymentGatewaySpy } from './payment.gateway.spy';
-import { PurchaseService } from './purchase.service';
-import { DatabaseModule } from '@src/libs/database/database.module';
 import { ConfigurationModule } from '@src/libs/configuration/configuration.module';
-import { ConfigModule } from '@nestjs/config';
 import databaseConfig, {
   DatabaseConfig,
 } from '@src/libs/configuration/database.config';
+import { DatabaseModule } from '@src/libs/database/database.module';
 import { QueueModule } from '@src/libs/queue/queue.module';
+import { randomUUID } from 'node:crypto';
+import { PaymentGateway } from './payment.gateway';
+import { PaymentGatewaySpy } from './payment.gateway.spy';
+import { CourseEntity } from '../../course/domain/course.entity';
+import { PurchaseHistoryQuery } from '../domain/purchase-history.query';
+import { PurchaseRepository } from '../domain/purchase.repository';
+import { InMemoryPurchaseRepository } from '../infrastructure/in-memory.purchase-repository';
+import { PaymentModule } from '../payment.module';
+import { PurchaseService } from './purchase.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('PurchaseService', () => {
   let testingModule: TestingModule;
@@ -24,7 +25,7 @@ describe('PurchaseService', () => {
   beforeEach(async () => {
     testingModule = await Test.createTestingModule({
       imports: [
-        CourseModule,
+        PaymentModule,
         DatabaseModule,
         ConfigurationModule,
         QueueModule.forRootAsync({
@@ -35,6 +36,9 @@ describe('PurchaseService', () => {
               connectionString: config.url,
             };
           },
+        }),
+        EventEmitterModule.forRoot({
+          global: true,
         }),
       ],
     })

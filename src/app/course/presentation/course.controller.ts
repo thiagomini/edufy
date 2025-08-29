@@ -18,7 +18,7 @@ import {
   ICourseRepository,
 } from '../domain/course.repository';
 import { CreateCourseDto } from './create-course.dto';
-import { PurchaseService } from '../application/purchase.service';
+import { PurchaseService } from '../../payment/application/purchase.service';
 import { CourseReadDto } from './course.read-dto';
 
 @Controller('courses')

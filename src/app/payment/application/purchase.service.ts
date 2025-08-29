@@ -1,6 +1,6 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { UserEntity } from '@src/app/user/domain/user.entity';
-import { CourseEntity } from '../domain/course.entity';
+import { CourseEntity } from '../../course/domain/course.entity';
 import { PurchaseEntity } from '../domain/purchase.entity';
 import {
   IPurchaseRepository,

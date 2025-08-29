@@ -12,7 +12,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PurchaseService } from '@src/app/course/application/purchase.service';
 import {
   CourseRepository,
   ICourseRepository,
@@ -21,8 +20,13 @@ import {
   EnrollmentRepository,
   IEnrollmentRepository,
 } from '@src/app/course/domain/enrollment.repository';
+import {
+  ITicketRepository,
+  TicketRepository,
+} from '@src/app/support/domain/ticket.repository';
 import { Jwt } from '@src/libs/jwt/jwt';
 import * as argon2 from 'argon2';
+import { instanceToPlain } from 'class-transformer';
 import { UserService } from '../application/user.service';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
@@ -33,11 +37,6 @@ import { SignupUserDto } from './dto/signup-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserReadDto } from './dto/user.read-dto';
 import { Public } from './public.decorator';
-import { instanceToPlain } from 'class-transformer';
-import {
-  TicketRepository,
-  ITicketRepository,
-} from '@src/app/support/domain/ticket.repository';
 
 @Controller('users')
 export class UserController {
@@ -48,7 +47,6 @@ export class UserController {
     private readonly userService: UserService,
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
-    private readonly purchaseService: PurchaseService,
     @Inject(EnrollmentRepository)
     private readonly enrollmentRepository: IEnrollmentRepository,
     @Inject(TicketRepository)
@@ -148,14 +146,6 @@ export class UserController {
         'Only students or instructors have access to owned courses',
       );
     }
-  }
-
-  @Get('/me/purchase-history')
-  async getPurchaseHistory(@CurrentUser() user: UserEntity) {
-    if (user.role !== 'student') {
-      throw new ForbiddenException('Only students can access purchase history');
-    }
-    return await this.purchaseService.getPurchaseHistory(user);
   }
 
   private signJwtToken(user: UserEntity): Jwt {

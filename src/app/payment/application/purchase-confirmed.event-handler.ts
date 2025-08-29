@@ -3,7 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import {
   IPurchaseRepository,
   PurchaseRepository,
-} from '@src/app/course/domain/purchase.repository';
+} from '@src/app/payment/domain/purchase.repository';
 import { PurchaseConfirmedEvent } from '@src/app/user/domain/purchase-confirmed.event';
 import { WebhookEventDto } from '@src/libs/webhook/webhook.event';
 

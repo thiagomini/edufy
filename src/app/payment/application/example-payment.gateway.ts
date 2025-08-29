@@ -1,7 +1,7 @@
 import {
+  IPaymentGateway,
   CreatePaymentIntentInput,
   CreatePaymentIntentOutput,
-  IPaymentGateway,
 } from './payment.gateway';
 
 export class ExamplePaymentGateway implements IPaymentGateway {
