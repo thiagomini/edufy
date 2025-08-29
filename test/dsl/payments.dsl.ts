@@ -15,4 +15,8 @@ export class PaymentsDSL extends AbstractDSL {
       .get(`/payments/purchases/${purchaseId}`)
       .set(this.headers);
   }
+
+  getPurchaseHistory() {
+    return this.req().get('/payments/purchase-history').set(this.headers);
+  }
 }
