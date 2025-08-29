@@ -1,0 +1,19 @@
+meta {
+  name: get-purchase-by-id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/payments/purchases/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+settings {
+  encodeUrl: true
+}

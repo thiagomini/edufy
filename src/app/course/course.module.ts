@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { QueueModule } from '@src/libs/queue/queue.module';
+import { EnrollStudentProcessor } from './application/enroll-student.processor';
 import { ExamplePaymentGateway } from './application/example-payment.gateway';
 import { PaymentGateway } from './application/payment.gateway';
 import { PurchaseService } from './application/purchase.service';
@@ -11,13 +13,10 @@ import { KyselyEnrollmentRepository } from './infrastructure/kysely.enrollment.r
 import { KyselyPurchaseHistoryQuery } from './infrastructure/kysely.purchase-history-query';
 import { KyselyPurchaseRepository } from './infrastructure/kysely.purchase-repository';
 import { CourseController } from './presentation/course.controller';
-import { PurchaseController } from './presentation/purchase.controller';
-import { EnrollStudentProcessor } from './application/enroll-student.processor';
-import { QueueModule } from '@src/libs/queue/queue.module';
 
 @Module({
   imports: [QueueModule.registerQueue('enroll-student')],
-  controllers: [CourseController, PurchaseController],
+  controllers: [CourseController],
   providers: [
     {
       provide: CourseRepository,

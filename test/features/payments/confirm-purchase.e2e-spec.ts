@@ -59,7 +59,7 @@ describe('Confirm Purchase (e2e)', () => {
         .expect(204);
 
       // Assert
-      await dsl.courses
+      await dsl.payments
         .authenticatedAs(studentJwt)
         .getPurchaseById(purchase.id)
         .expect(200)
