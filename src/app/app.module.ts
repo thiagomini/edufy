@@ -16,6 +16,7 @@ import databaseConfig, {
   DatabaseConfig,
 } from '@src/libs/configuration/database.config';
 import { QueueModule } from '@src/libs/queue/queue.module';
+import { LearningModule } from './learning/learning.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { QueueModule } from '@src/libs/queue/queue.module';
         };
       },
     }),
+    LearningModule,
   ],
   controllers: [AppController],
   providers: [AppService],

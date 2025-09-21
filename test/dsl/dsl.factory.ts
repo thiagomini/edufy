@@ -5,6 +5,7 @@ import { ConfigDSL } from './config.dsl';
 import { CoursesDSL } from './courses.dsl';
 import { SupportDSL } from './support.dsl';
 import { PaymentsDSL } from './payments.dsl';
+import { LearningDSL } from './learning.dsl';
 
 export function createDSL(app: INestApplication) {
   return {
@@ -14,6 +15,7 @@ export function createDSL(app: INestApplication) {
     courses: new CoursesDSL(app),
     support: new SupportDSL(app),
     payments: new PaymentsDSL(app),
+    learning: new LearningDSL(app),
     app,
   };
 }
