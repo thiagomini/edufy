@@ -23,7 +23,7 @@ describe('Get Course by ID (e2e)', () => {
 
   describe('success cases', () => {
     test('successfully retrieves a course by valid ID', async () => {
-      const course = await dsl.courses
+      const course = await dsl.learning
         .authenticatedAs(jwtAccessToken)
         .create({
           title: 'Test Course',

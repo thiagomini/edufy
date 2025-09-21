@@ -24,7 +24,7 @@ describe('Get Purchase By Id (e2e)', () => {
     studentAccessToken = await workflows(dsl).createUserWithRole('student');
     instructorAccessToken =
       await workflows(dsl).createUserWithRole('instructor');
-    typescriptCourse = await dsl.courses
+    typescriptCourse = await dsl.learning
       .authenticatedAs(instructorAccessToken)
       .create({
         title: 'Typescript Hero',
@@ -99,7 +99,7 @@ describe('Get Purchase By Id (e2e)', () => {
       // Arrange
       const anotherStudentJwt =
         await workflows(dsl).createUserWithRole('student');
-      const rustCourse = await dsl.courses
+      const rustCourse = await dsl.learning
         .authenticatedAs(instructorAccessToken)
         .create({
           title: 'Some Rust course',

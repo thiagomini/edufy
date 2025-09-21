@@ -33,7 +33,7 @@ export class LearningDSL extends AbstractDSL {
       .then((res) => res.body);
   }
 
-  async createMany(courses: CreateCourseDto[]) {
+  async createManyCourses(courses: CreateCourseDto[]) {
     const newCourses = await Promise.all(
       courses.map((course) =>
         this.create(course)

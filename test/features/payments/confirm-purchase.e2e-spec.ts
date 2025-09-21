@@ -28,7 +28,7 @@ describe('Confirm Purchase (e2e)', () => {
       // Arrange
       const instructorJwt =
         await workflows(dsl).createUserWithRole('instructor');
-      const newRustCourse = await dsl.courses
+      const newRustCourse = await dsl.learning
         .authenticatedAs(instructorJwt)
         .create({
           description: 'Rust Course',

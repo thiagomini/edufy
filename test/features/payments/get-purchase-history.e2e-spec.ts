@@ -31,7 +31,7 @@ describe('Get Purchase History (e2e)', () => {
         .expect([]);
     });
     test('returns a list of purchases for the authenticated student', async () => {
-      const { id: javaCourseId } = await dsl.courses
+      const { id: javaCourseId } = await dsl.learning
         .authenticatedAs(instructorUserJwt)
         .create({
           title: 'Java Programming',

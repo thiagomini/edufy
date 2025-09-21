@@ -32,7 +32,7 @@ describe('Get User Courses (e2e)', () => {
     });
     test('successfully retrieves courses lectured by an instructor', async () => {
       // Arrange
-      const course = await dsl.courses
+      const course = await dsl.learning
         .authenticatedAs(instructorJwtAccessToken)
         .create({
           title: 'Test Course',
@@ -61,7 +61,7 @@ describe('Get User Courses (e2e)', () => {
     });
     test('successfully retrieves courses enrolled by a student', async () => {
       // Arrange
-      const course = await dsl.courses
+      const course = await dsl.learning
         .authenticatedAs(instructorJwtAccessToken)
         .create({
           title: 'Another Test Course',

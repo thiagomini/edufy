@@ -30,7 +30,7 @@ describe('Get User Enrollments', () => {
       // Arrange
       const instructorJwt =
         await workflows(dsl).createUserWithRole('instructor');
-      const course = await dsl.courses
+      const course = await dsl.learning
         .authenticatedAs(instructorJwt)
         .createRandomCourse();
 

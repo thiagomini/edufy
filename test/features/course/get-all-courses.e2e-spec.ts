@@ -33,7 +33,7 @@ describe('Get All Courses (e2e)', () => {
         .expect([]);
     });
     test('returns a list of courses', async () => {
-      await dsl.courses.authenticatedAs(instructorUserJwt).createMany([
+      await dsl.learning.authenticatedAs(instructorUserJwt).createManyCourses([
         {
           title: 'Course 1',
           description: 'Description for Course 1',

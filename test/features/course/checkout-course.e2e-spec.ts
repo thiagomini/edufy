@@ -24,7 +24,7 @@ describe('Checkout Course (e2e)', () => {
 
     studentUserJwt = await workflows(dsl).createUserWithRole('student');
     instructorUserJwt = await workflows(dsl).createUserWithRole('instructor');
-    courseId = await dsl.courses
+    courseId = await dsl.learning
       .authenticatedAs(instructorUserJwt)
       .create({
         title: 'Python Programming',
