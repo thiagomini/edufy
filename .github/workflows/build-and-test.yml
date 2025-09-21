@@ -36,6 +36,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: docker compose up postgres --wait
-      - run: pnpm run kysely migrate:latest -e=test && pnpm run codegen
+      - run: pnpm run kysely migrate:latest -e=test && node ./scripts/migrate-pgboss-schema.ts && pnpm run codegen
       - run: pnpm run test
       - run: pnpm run test:e2e
