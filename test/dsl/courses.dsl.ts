@@ -4,10 +4,6 @@ import { sql } from 'kysely';
 import { AbstractDSL } from './abstract.dsl';
 
 export class CoursesDSL extends AbstractDSL {
-  getById(courseId: string) {
-    return this.req().get(`/courses/${courseId}`).set(this.headers);
-  }
-
   getAll() {
     return this.req().get('/courses').set(this.headers);
   }

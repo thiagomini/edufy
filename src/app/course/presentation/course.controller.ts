@@ -26,18 +26,6 @@ export class CourseController {
     private readonly purchaseService: PurchaseService,
   ) {}
 
-  @Get(':id')
-  async getCourseById(
-    @Param('id', parseUUIDWithMessage('Invalid course ID format'))
-    id: string,
-  ) {
-    const course = await this.courseRepository.findOneById(id);
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
-    return new CourseReadDto(course);
-  }
-
   @Get('/')
   async getAllCourses() {
     const courses = await this.courseRepository.findAll();

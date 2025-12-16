@@ -33,9 +33,9 @@ describe('Get Course by ID (e2e)', () => {
         .expect(201)
         .then((response) => response.body);
 
-      return dsl.courses
+      return dsl.learning
         .authenticatedAs(jwtAccessToken)
-        .getById(course.id)
+        .getCourseById(course.id)
         .expect(200)
         .expect((response) => {
           expect(response.body).toEqual({
@@ -50,21 +50,21 @@ describe('Get Course by ID (e2e)', () => {
   });
   describe('error cases', () => {
     test('returns an error when request is not authenticated', () => {
-      return dsl.courses
-        .getById(randomUUID())
+      return dsl.learning
+        .getCourseById(randomUUID())
         .expect(401)
         .expect(response.unauthorized());
     });
     test('returns an error when course ID is invalid', () => {
-      return dsl.courses
+      return dsl.learning
         .authenticatedAs(jwtAccessToken)
-        .getById('Invalid course ID format')
+        .getCourseById('Invalid course ID format')
         .expect(400);
     });
     test('returns an error when course does not exist', () => {
-      return dsl.courses
+      return dsl.learning
         .authenticatedAs(jwtAccessToken)
-        .getById(randomUUID())
+        .getCourseById(randomUUID())
         .expect(404)
         .expect(response.notFound('Course not found'));
     });

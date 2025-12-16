@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Inject,
+  NotFoundException,
+  Param,
   Post,
 } from '@nestjs/common';
 import { CourseEntity } from '@src/app/course/domain/course.entity';
@@ -14,6 +17,7 @@ import { CourseReadDto } from '@src/app/course/presentation/course.read-dto';
 import { CreateCourseDto } from '@src/app/course/presentation/create-course.dto';
 import { UserEntity } from '@src/app/user/domain/user.entity';
 import { CurrentUser } from '@src/app/user/presentation/current-user.decorator';
+import { parseUUIDWithMessage } from '@src/libs/validation/parse-uuid-with-message.pipe';
 
 @Controller('learning/courses')
 export class CourseController {
@@ -41,5 +45,17 @@ export class CourseController {
     await this.courseRepository.save(newCourse);
 
     return new CourseReadDto(newCourse);
+  }
+
+  @Get(':id')
+  async getCourseById(
+    @Param('id', parseUUIDWithMessage('Invalid course ID format'))
+    id: string,
+  ) {
+    const course = await this.courseRepository.findOneById(id);
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+    return new CourseReadDto(course);
   }
 }

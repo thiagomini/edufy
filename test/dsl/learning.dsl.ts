@@ -44,7 +44,7 @@ export class LearningDSL extends AbstractDSL {
     return newCourses;
   }
 
-  getById(courseId: string) {
+  getCourseById(courseId: string) {
     return this.req().get(`/learning/courses/${courseId}`).set(this.headers);
   }
 
