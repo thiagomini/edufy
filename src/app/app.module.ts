@@ -5,22 +5,43 @@ import { ConfigurationModule } from '../libs/configuration/configuration.module'
 import { DatabaseModule } from '../libs/database/database.module';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
-import { TicketModule } from './ticket/ticket.module';
 import { UserModule } from './user/user.module';
 import { AppService } from './app.service';
 import { DebugModule } from './debug/debug.module';
-import { ConditionalModule } from '@nestjs/config';
+import { ConditionalModule, ConfigModule } from '@nestjs/config';
+import { SupportModule } from './support/support.module';
+import { PaymentModule } from './payment/payment.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import databaseConfig, {
+  DatabaseConfig,
+} from '@src/libs/configuration/database.config';
+import { QueueModule } from '@src/libs/queue/queue.module';
+import { LearningModule } from './learning/learning.module';
 
 @Module({
   imports: [
     UserModule,
     ConfigurationModule,
-    TicketModule,
     AdminModule,
     DatabaseModule,
     CourseModule,
     ValidationModule,
     ConditionalModule.registerWhen(DebugModule, (env) => env.DEBUG === 'true'),
+    SupportModule,
+    PaymentModule,
+    EventEmitterModule.forRoot({
+      global: true,
+    }),
+    QueueModule.forRootAsync({
+      imports: [ConfigModule.forFeature(databaseConfig)],
+      inject: [databaseConfig.KEY],
+      useFactory: (config: DatabaseConfig) => {
+        return {
+          connectionString: config.url,
+        };
+      },
+    }),
+    LearningModule,
   ],
   controllers: [AppController],
   providers: [AppService],

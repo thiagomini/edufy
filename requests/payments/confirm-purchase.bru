@@ -1,0 +1,29 @@
+meta {
+  name: confirm-purchase
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/payments/webhook
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-hmac-signature: 4fa97ba0e990d5369c6c152643fbdda0eab4b88d3801224c74af19c7baca2322
+}
+
+body:json {
+  {
+    "type": "purchase.confirmed",
+    "data": {
+      "id": "id"
+    },
+    "timestamp": "date"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,77 @@
+import { INestApplication } from '@nestjs/common';
+import { DSL, createDSL } from '@test/dsl/dsl.factory';
+import { workflows } from '@test/dsl/workflows';
+import { response } from '@test/utils/response';
+import { createTestingApp } from '@test/utils/testing-app.factory';
+import { waitFor } from '@test/utils/wait-for';
+
+describe('Get User Enrollments', () => {
+  let app: INestApplication;
+  let dsl: DSL;
+
+  beforeAll(async () => {
+    app = await createTestingApp();
+    dsl = createDSL(app);
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+  describe('success cases', () => {
+    test('returns an empty list when student did not enroll in any course', async () => {
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
+      return dsl.users
+        .authenticatedAs(studentJwt)
+        .getEnrollments()
+        .expect(200)
+        .expect([]);
+    });
+    test('returns a list of enrolled courses', async () => {
+      // Arrange
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
+      const course = await dsl.learning
+        .authenticatedAs(instructorJwt)
+        .createRandomCourse();
+
+      const studentJwt = await workflows(dsl).createUserWithRole('student');
+      await workflows(dsl).enrollStudentInCourse(studentJwt, course.id);
+
+      // Act
+      await waitFor(() => {
+        dsl.users
+          .authenticatedAs(studentJwt)
+          .getEnrollments()
+          // Assert
+          .expect(200)
+          .expect((response) => {
+            expect(response.body).toEqual([
+              {
+                courseId: course.id,
+                studentId: studentJwt.payload().sub,
+                enrolledAt: expect.any(String),
+              },
+            ]);
+          });
+      });
+    });
+  });
+  describe('error cases', () => {
+    test('returns an error when request is unauthenticated', () => {
+      return dsl.users
+        .getEnrollments()
+        .expect(401)
+        .expect(response.unauthorized());
+    });
+    test('returns an error when requesting user is not a student', async () => {
+      const instructorJwt =
+        await workflows(dsl).createUserWithRole('instructor');
+
+      return dsl.users
+        .authenticatedAs(instructorJwt)
+        .getEnrollments()
+        .expect(403)
+        .expect(response.forbidden('Only students can access enrollments'));
+    });
+  });
+});

@@ -12,7 +12,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PurchaseService } from '@src/app/course/application/purchase.service';
 import {
   CourseRepository,
   ICourseRepository,
@@ -24,10 +23,10 @@ import {
 import {
   ITicketRepository,
   TicketRepository,
-} from '@src/app/ticket/domain/ticket.repository';
-import { TicketReadDto } from '@src/app/ticket/presentation/dto/ticket.read-dto';
+} from '@src/app/support/domain/ticket.repository';
 import { Jwt } from '@src/libs/jwt/jwt';
 import * as argon2 from 'argon2';
+import { instanceToPlain } from 'class-transformer';
 import { UserService } from '../application/user.service';
 import { UserEntity } from '../domain/user.entity';
 import { IUserRepository, UserRepository } from '../domain/user.repository';
@@ -46,13 +45,12 @@ export class UserController {
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
     private readonly userService: UserService,
-    @Inject(TicketRepository)
-    private readonly ticketRepository: ITicketRepository,
     @Inject(CourseRepository)
     private readonly courseRepository: ICourseRepository,
-    private readonly purchaseService: PurchaseService,
     @Inject(EnrollmentRepository)
     private readonly enrollmentRepository: IEnrollmentRepository,
+    @Inject(TicketRepository)
+    private readonly ticketRepository: ITicketRepository,
   ) {}
 
   @Public()
@@ -88,7 +86,14 @@ export class UserController {
 
   @Get('/me')
   async me(@CurrentUser() user: UserEntity) {
-    return new UserReadDto(user);
+    const ticketsResolved = await this.ticketRepository.findAllResolvedByUser(
+      user.id,
+    );
+    const readDto = new UserReadDto({
+      ...user,
+      ticketsResolved: ticketsResolved.length,
+    });
+    return instanceToPlain(readDto, { groups: [user.role] });
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -130,14 +135,6 @@ export class UserController {
     await this.userRepository.save(user);
   }
 
-  @Get('/me/tickets')
-  async getMyTickets(@CurrentUser() user: UserEntity) {
-    const userTickets = await this.ticketRepository.findAllCreatedByUser(
-      user.id,
-    );
-    return userTickets.map((ticket) => new TicketReadDto(ticket));
-  }
-
   @Get('/me/courses')
   async getUserCourses(@CurrentUser() user: UserEntity) {
     if (user.role === 'instructor') {
@@ -149,14 +146,6 @@ export class UserController {
         'Only students or instructors have access to owned courses',
       );
     }
-  }
-
-  @Get('/me/purchase-history')
-  async getPurchaseHistory(@CurrentUser() user: UserEntity) {
-    if (user.role !== 'student') {
-      throw new ForbiddenException('Only students can access purchase history');
-    }
-    return await this.purchaseService.getPurchaseHistory(user);
   }
 
   private signJwtToken(user: UserEntity): Jwt {

@@ -1,5 +1,10 @@
-import { UserEntity } from '../../domain/user.entity';
-import { UserRoleEnum } from '../../domain/user.role';
+import { Expose } from 'class-transformer';
+import { UserProps } from '../../domain/user.entity';
+import { UserRole, UserRoleEnum } from '../../domain/user.role';
+
+export interface CreateUserReadDtoInput extends UserProps {
+  ticketsResolved?: number;
+}
 
 export class UserReadDto {
   id: string;
@@ -10,7 +15,10 @@ export class UserReadDto {
   interests?: string[];
   profilePictureUrl?: string;
 
-  constructor(user: UserEntity) {
+  @Expose({ groups: [UserRole.SupportAgent] })
+  ticketsResolved: number;
+
+  constructor(user: CreateUserReadDtoInput) {
     this.id = user.id;
     this.name = user.name;
     this.email = user.email;
@@ -18,5 +26,6 @@ export class UserReadDto {
     this.biography = user.biography;
     this.interests = user.interests;
     this.profilePictureUrl = user.profilePictureUrl;
+    this.ticketsResolved = user.ticketsResolved;
   }
 }

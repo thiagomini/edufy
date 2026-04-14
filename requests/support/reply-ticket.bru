@@ -1,0 +1,25 @@
+meta {
+  name: reply-ticket
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/support/tickets/:id/reply
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 12bb262f-8463-4412-966e-5e9b338cc172
+}
+
+body:json {
+  {
+    "content": "Nice Ticket!"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

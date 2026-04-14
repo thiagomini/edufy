@@ -24,7 +24,7 @@ export const workflows = (dsl: DSL) =>
       const hmacBuilder = dsl.app.get(WebhookHMACBuilder, { strict: false });
       const hmac = hmacBuilder.buildForPayload(purchaseConfirmedEvent);
 
-      await dsl.users
+      await dsl.payments
         .usingHMAC(hmac)
         .confirmPurchase(purchaseConfirmedEvent)
         .expect(204);
